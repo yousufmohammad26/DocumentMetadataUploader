@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, jsonb, timestamp } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -15,10 +15,7 @@ export const documents = pgTable("documents", {
   fileSize: integer("file_size").notNull(),
   fileType: text("file_type").notNull(),
   name: text("name").notNull(),
-  description: text("description"),
-  category: text("category"),
-  documentDate: text("document_date"),
-  tags: text("tags").array(),
+  metadata: jsonb("metadata").default({}).notNull(), // Store metadata as key-value pairs
   accessLevel: text("access_level").notNull().default("private"),
   uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
 });
@@ -39,15 +36,18 @@ export type User = typeof users.$inferSelect;
 export type InsertDocument = z.infer<typeof insertDocumentSchema>;
 export type Document = typeof documents.$inferSelect;
 
+// Define the metadata key-value pair type
+export const metadataKeyValueSchema = z.object({
+  key: z.string().min(1, "Key is required"),
+  value: z.string().min(1, "Value is required"),
+});
+
+export type MetadataKeyValue = z.infer<typeof metadataKeyValueSchema>;
+
 // Schema for form validation
 export const documentMetadataSchema = z.object({
   name: z.string().min(1, "Document name is required"),
-  description: z.string().optional(),
-  category: z.string().optional(),
-  documentDate: z.string().optional(),
-  tags: z.string().optional().transform(val => 
-    val ? val.split(',').map(tag => tag.trim()).filter(Boolean) : []
-  ),
+  metadata: z.array(metadataKeyValueSchema).default([]),
   accessLevel: z.enum(["public", "private"]).default("private"),
 });
 

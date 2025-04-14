@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { DocumentMetadata, documentMetadataSchema } from "@shared/schema";
+import { DocumentMetadata, documentMetadataSchema, MetadataKeyValue } from "@shared/schema";
 import { FileUpload } from "@/components/ui/file-upload";
-import { uploadFileToS3, formatFileSize, formatDate, getCategoryColor, UploadProgress } from "@/lib/s3";
+import { uploadFileToS3, formatFileSize, formatDate, UploadProgress } from "@/lib/s3";
 
 import {
   Form,
@@ -19,8 +19,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -33,8 +31,8 @@ import {
   Edit,
   Trash2,
   Info,
-  Clock,
-  Tag,
+  Plus,
+  X,
   Eye,
 } from "lucide-react";
 import {
@@ -61,12 +59,15 @@ export default function Home() {
     resolver: zodResolver(documentMetadataSchema),
     defaultValues: {
       name: "",
-      description: "",
-      category: "",
-      documentDate: "",
-      tags: "",
+      metadata: [],
       accessLevel: "private",
     },
+  });
+
+  // Set up field array for dynamic metadata key-value pairs
+  const { fields, append, remove } = useFieldArray({
+    name: "metadata",
+    control: form.control,
   });
 
   // Query for retrieving documents
@@ -178,13 +179,19 @@ export default function Home() {
     }
   };
 
+  // Add a new empty metadata field
+  const addMetadataField = () => {
+    append({ key: "", value: "" });
+  };
+
   // Filter documents based on search term
-  const filteredDocuments = searchTerm
+  const filteredDocuments = searchTerm && Array.isArray(documents)
     ? documents.filter((doc: any) =>
         doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doc.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doc.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doc.tags?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+        (doc.metadata && Object.entries(doc.metadata).some(([key, value]) => 
+          key.toLowerCase().includes(searchTerm.toLowerCase()) || 
+          String(value).toLowerCase().includes(searchTerm.toLowerCase())
+        ))
       )
     : documents;
 
@@ -327,91 +334,69 @@ export default function Home() {
                             />
                           </div>
 
+                          {/* Metadata Key-Value Pairs */}
                           <div className="col-span-6">
-                            <FormField
-                              control={form.control}
-                              name="description"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Description</FormLabel>
-                                  <FormControl>
-                                    <Textarea 
-                                      placeholder="Enter document description"
-                                      rows={3}
-                                      {...field} 
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-
-                          <div className="col-span-6 sm:col-span-3">
-                            <FormField
-                              control={form.control}
-                              name="category"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Category</FormLabel>
-                                  <Select 
-                                    onValueChange={field.onChange} 
-                                    defaultValue={field.value}
-                                  >
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Select a category" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      <SelectItem value="none">Select a category</SelectItem>
-                                      <SelectItem value="financial">Financial</SelectItem>
-                                      <SelectItem value="legal">Legal</SelectItem>
-                                      <SelectItem value="hr">Human Resources</SelectItem>
-                                      <SelectItem value="marketing">Marketing</SelectItem>
-                                      <SelectItem value="technical">Technical</SelectItem>
-                                      <SelectItem value="other">Other</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-
-                          <div className="col-span-6 sm:col-span-3">
-                            <FormField
-                              control={form.control}
-                              name="documentDate"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Document Date</FormLabel>
-                                  <FormControl>
-                                    <Input type="date" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-
-                          <div className="col-span-6">
-                            <FormField
-                              control={form.control}
-                              name="tags"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Tags (separated by commas)</FormLabel>
-                                  <FormControl>
-                                    <Input 
-                                      placeholder="report, 2023, quarterly"
-                                      {...field} 
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
+                            <div className="flex items-center justify-between mb-2">
+                              <FormLabel>Metadata</FormLabel>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={addMetadataField}
+                                className="flex items-center"
+                              >
+                                <Plus className="h-4 w-4 mr-1" />
+                                Add Metadata
+                              </Button>
+                            </div>
+                            
+                            {fields.length === 0 && (
+                              <div className="text-sm text-gray-500 py-2 text-center border border-dashed rounded-md">
+                                No metadata added. Click "Add Metadata" to add key-value pairs.
+                              </div>
+                            )}
+                            
+                            {fields.map((field, index) => (
+                              <div key={field.id} className="flex items-start space-x-2 mb-2">
+                                <div className="flex-1">
+                                  <FormField
+                                    control={form.control}
+                                    name={`metadata.${index}.key`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input placeholder="Key" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                                <div className="flex-1">
+                                  <FormField
+                                    control={form.control}
+                                    name={`metadata.${index}.value`}
+                                    render={({ field }) => (
+                                      <FormItem>
+                                        <FormControl>
+                                          <Input placeholder="Value" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                      </FormItem>
+                                    )}
+                                  />
+                                </div>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => remove(index)}
+                                  className="mt-2"
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ))}
                           </div>
 
                           <div className="col-span-6">
@@ -503,7 +488,7 @@ export default function Home() {
                 <div className="p-6 text-center">Loading documents...</div>
               ) : docsError ? (
                 <div className="p-6 text-center text-red-500">Error loading documents</div>
-              ) : filteredDocuments.length > 0 ? (
+              ) : Array.isArray(filteredDocuments) && filteredDocuments.length > 0 ? (
                 <ul className="divide-y divide-gray-200">
                   {filteredDocuments.map((doc: any) => (
                     <li key={doc.id}>
@@ -521,33 +506,26 @@ export default function Home() {
                             </div>
                           </div>
                           <div>
-                            {doc.category && (
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getCategoryColor(doc.category)}`}>
-                                {doc.category.charAt(0).toUpperCase() + doc.category.slice(1)}
-                              </span>
-                            )}
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${doc.accessLevel === 'public' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                              {doc.accessLevel}
+                            </span>
                           </div>
                         </div>
-                        <div className="mt-2 sm:flex sm:justify-between">
-                          <div className="sm:flex">
-                            <div className="flex items-center text-sm text-gray-500">
-                              <Info className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" />
-                              <span>{doc.description || 'No description provided'}</span>
+                        
+                        {/* Display metadata key-value pairs */}
+                        {doc.metadata && Object.keys(doc.metadata).length > 0 && (
+                          <div className="mt-2">
+                            <h4 className="text-xs font-medium text-gray-500 mb-1">Metadata:</h4>
+                            <div className="flex flex-wrap gap-1">
+                              {Object.entries(doc.metadata).map(([key, value], idx) => (
+                                <span key={idx} className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-800">
+                                  {key}: {String(value)}
+                                </span>
+                              ))}
                             </div>
                           </div>
-                          <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                            {doc.tags && doc.tags.length > 0 && (
-                              <>
-                                <span className="mr-1">Tags:</span>
-                                {doc.tags.map((tag: string, idx: number) => (
-                                  <span key={idx} className="px-2 py-0.5 rounded text-xs bg-gray-200 text-gray-800 mr-1">
-                                    {tag}
-                                  </span>
-                                ))}
-                              </>
-                            )}
-                          </div>
-                        </div>
+                        )}
+                        
                         <div className="mt-2 flex">
                           <Button 
                             variant="link" 

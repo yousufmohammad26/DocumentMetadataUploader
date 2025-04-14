@@ -97,12 +97,24 @@ export async function uploadFileToS3(
     // Step 3: Save metadata
     onProgress({ percentage: 85, status: 'Saving metadata...' });
     
+    // Convert metadata array to object
+    const metadataObject = {};
+    if (metadata.metadata && Array.isArray(metadata.metadata)) {
+      metadata.metadata.forEach((item: { key: string; value: string }) => {
+        if (item.key && item.value) {
+          metadataObject[item.key] = item.value;
+        }
+      });
+    }
+    
     const documentData = {
-      ...metadata,
+      name: metadata.name,
       fileName: file.name,
       fileKey,
       fileSize: file.size,
       fileType: file.type,
+      metadata: metadataObject,
+      accessLevel: metadata.accessLevel || 'private',
     };
     
     const saveMetadataResponse = await apiRequest('POST', '/api/documents', documentData);
