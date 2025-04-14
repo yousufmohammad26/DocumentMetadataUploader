@@ -264,7 +264,7 @@ export default function Home() {
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-semibold text-gray-800">DocumentMetadata</h1>
+            <h1 className="text-xl font-semibold text-gray-800">Document Metadata Uploader</h1>
             <div>
               <span className="text-sm text-gray-600">Connected to AWS S3</span>
               <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
