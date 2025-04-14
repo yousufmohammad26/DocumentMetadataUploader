@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { DocumentMetadata, documentMetadataSchema, MetadataKeyValue } from "@shared/schema";
 import { FileUpload } from "@/components/ui/file-upload";
 import { uploadFileToS3, formatFileSize, formatDate, UploadProgress } from "@/lib/s3";
-import TestUpload from "@/components/TestUpload";
+
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
@@ -355,9 +355,7 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-                
-                {/* Test Upload Component */}
-                <TestUpload />
+
               </div>
             </div>
 

@@ -164,8 +164,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Extract custom metadata
           const metadata: Record<string, string> = {};
           
-          // Log raw metadata object for debugging
-          console.log(`Raw metadata for ${object.Key}:`, objectDetails.Metadata);
+
           
           // Process each metadata entry
           Object.entries(objectDetails.Metadata || {}).forEach(([key, value]) => {
@@ -374,8 +373,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Log metadata object for debugging
-      console.log('Stored metadata object:', metadataObject);
+
       
       // Store document metadata in storage
       const document = await storage.createDocument({
