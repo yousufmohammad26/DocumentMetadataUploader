@@ -262,6 +262,46 @@ export default function Home() {
     append({ key: "", value: "" });
   };
 
+  // Function to get color scheme for metadata tags
+  const getMetadataTagColors = (key: string): { bg: string, text: string, hoverBg: string } => {
+    // Convert key to lowercase for consistent matching
+    const lowerKey = key.toLowerCase();
+    
+    // Common metadata categories with assigned colors
+    if (lowerKey.includes('date') || lowerKey.includes('time') || lowerKey.includes('created') || lowerKey.includes('modified')) {
+      return { bg: "bg-purple-50", text: "text-purple-800", hoverBg: "#f3e8ff" }; // Purple for dates/times
+    } else if (lowerKey.includes('author') || lowerKey.includes('creator') || lowerKey.includes('owner') || lowerKey.includes('user')) {
+      return { bg: "bg-green-50", text: "text-green-800", hoverBg: "#dcfce7" }; // Green for author/user info
+    } else if (lowerKey.includes('category') || lowerKey.includes('type') || lowerKey.includes('group')) {
+      return { bg: "bg-yellow-50", text: "text-yellow-800", hoverBg: "#fef9c3" }; // Yellow for categories
+    } else if (lowerKey.includes('status') || lowerKey.includes('state') || lowerKey.includes('priority')) {
+      return { bg: "bg-red-50", text: "text-red-800", hoverBg: "#fee2e2" }; // Red for status/priority
+    } else if (lowerKey.includes('version') || lowerKey.includes('revision')) {
+      return { bg: "bg-sky-50", text: "text-sky-800", hoverBg: "#e0f2fe" }; // Sky blue for versions
+    } else if (lowerKey.includes('tag') || lowerKey.includes('label')) {
+      return { bg: "bg-orange-50", text: "text-orange-800", hoverBg: "#ffedd5" }; // Orange for tags/labels
+    } else if (lowerKey.includes('department') || lowerKey.includes('team') || lowerKey.includes('division')) {
+      return { bg: "bg-indigo-50", text: "text-indigo-800", hoverBg: "#e0e7ff" }; // Indigo for organizational units
+    } else if (lowerKey.includes('location') || lowerKey.includes('place') || lowerKey.includes('geo')) {
+      return { bg: "bg-emerald-50", text: "text-emerald-800", hoverBg: "#d1fae5" }; // Emerald for locations
+    } else {
+      // Generate a color based on the first character of the key for consistent coloring
+      const colors = [
+        { bg: "bg-blue-50", text: "text-blue-800", hoverBg: "#dbeafe" },
+        { bg: "bg-green-50", text: "text-green-800", hoverBg: "#dcfce7" },
+        { bg: "bg-yellow-50", text: "text-yellow-800", hoverBg: "#fef9c3" },
+        { bg: "bg-red-50", text: "text-red-800", hoverBg: "#fee2e2" },
+        { bg: "bg-purple-50", text: "text-purple-800", hoverBg: "#f3e8ff" },
+        { bg: "bg-pink-50", text: "text-pink-800", hoverBg: "#fce7f3" },
+        { bg: "bg-indigo-50", text: "text-indigo-800", hoverBg: "#e0e7ff" },
+        { bg: "bg-cyan-50", text: "text-cyan-800", hoverBg: "#cffafe" },
+      ];
+      
+      const index = Math.abs(key.charCodeAt(0)) % colors.length;
+      return colors[index];
+    }
+  };
+
   // Filter documents based on search term
   const filteredDocuments = searchTerm && Array.isArray(documents)
     ? documents.filter((doc: DocumentData) =>
@@ -437,47 +477,75 @@ export default function Home() {
                               </div>
                             )}
                             
-                            {fields.map((field, index) => (
-                              <div key={field.id} className="flex items-start space-x-2 mb-2">
-                                <div className="flex-1">
-                                  <FormField
-                                    control={form.control}
-                                    name={`metadata.${index}.key`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormControl>
-                                          <Input placeholder="Key" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                </div>
-                                <div className="flex-1">
-                                  <FormField
-                                    control={form.control}
-                                    name={`metadata.${index}.value`}
-                                    render={({ field }) => (
-                                      <FormItem>
-                                        <FormControl>
-                                          <Input placeholder="Value" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                      </FormItem>
-                                    )}
-                                  />
-                                </div>
-                                <Button
-                                  type="button"
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => remove(index)}
-                                  className="mt-2"
+                            {fields.map((field, index) => {
+                              // Get the current key value from the form
+                              const currentKey = form.watch(`metadata.${index}.key`);
+                              // Get tag colors based on the key (if it exists)
+                              const { bg, text } = currentKey ? getMetadataTagColors(currentKey) : { bg: "", text: "" };
+                              
+                              return (
+                                <motion.div 
+                                  key={field.id} 
+                                  className="flex items-start space-x-2 mb-2 rounded-md"
+                                  initial={{ opacity: 0, y: -10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.3 }}
                                 >
-                                  <X className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            ))}
+                                  <div className="flex-1">
+                                    <FormField
+                                      control={form.control}
+                                      name={`metadata.${index}.key`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormControl>
+                                            <div className="relative">
+                                              <Input 
+                                                placeholder="Key" 
+                                                {...field} 
+                                                className={`${currentKey ? `border-l-4 ${bg.replace('bg-', 'border-').replace('-50', '-300')}` : ''}`}
+                                              />
+                                              {currentKey && (
+                                                <div 
+                                                  className={`absolute right-2 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full ${bg.replace('-50', '-300')}`}
+                                                ></div>
+                                              )}
+                                            </div>
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <div className="flex-1">
+                                    <FormField
+                                      control={form.control}
+                                      name={`metadata.${index}.value`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormControl>
+                                            <Input 
+                                              placeholder="Value" 
+                                              {...field} 
+                                              className={currentKey ? `border-l-4 ${bg.replace('bg-', 'border-').replace('-50', '-200')}` : ''}
+                                            />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => remove(index)}
+                                    className="mt-2"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </motion.div>
+                              );
+                            })}
                           </div>
 
                           <div className="col-span-6">
@@ -696,16 +764,25 @@ export default function Home() {
                                   // Remove any 'x-amz-meta-' prefix that might still be present
                                   const displayKey = key.startsWith('x-amz-meta-') ? key.replace('x-amz-meta-', '') : key;
                                   
+                                  // Get tag colors based on the key
+                                  const { bg, text, hoverBg } = getMetadataTagColors(displayKey);
+                                  
                                   return (
                                     <motion.span 
                                       key={idx}
                                       initial={{ opacity: 0, scale: 0.8 }}
                                       animate={{ opacity: 1, scale: 1 }}
                                       transition={{ duration: 0.2, delay: idx * 0.05 }}
-                                      className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-800"
-                                      whileHover={{ scale: 1.05, backgroundColor: "#dbeafe" }}
+                                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs ${bg} ${text} shadow-sm border border-opacity-10`}
+                                      whileHover={{ 
+                                        scale: 1.05, 
+                                        backgroundColor: hoverBg,
+                                        boxShadow: "0 1px 3px rgba(0,0,0,0.12)" 
+                                      }}
                                     >
-                                      {displayKey}: {String(value)}
+                                      <span className="font-semibold">{displayKey}</span>
+                                      <span className="mx-1">:</span>
+                                      <span>{String(value)}</span>
                                     </motion.span>
                                   );
                                 })}
