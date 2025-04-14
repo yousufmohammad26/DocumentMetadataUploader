@@ -55,6 +55,7 @@ export default function Home() {
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   // Form for metadata
   const form = useForm<DocumentMetadata>({
@@ -198,6 +199,44 @@ export default function Home() {
       });
     } finally {
       setIsUploading(false);
+    }
+  };
+  
+  // Synchronize documents from S3 bucket
+  const syncFromS3 = async () => {
+    if (isSyncing) return;
+    
+    setIsSyncing(true);
+    try {
+      const response = await apiRequest("GET", "/api/documents/sync-from-s3");
+      const result = await response.json();
+      
+      if (result.success) {
+        // Refresh document list and stats
+        queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+        
+        // Show success toast
+        toast({
+          title: "Synchronization Complete",
+          description: result.message,
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: "Sync Error",
+          description: result.message || "Failed to sync documents from S3",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Sync Error",
+        description: "Failed to sync documents from S3",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSyncing(false);
     }
   };
 
