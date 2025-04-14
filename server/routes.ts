@@ -60,14 +60,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create a unique file key
       const fileKey = `${Date.now()}-${fileName}`;
       
-      // Create the presigned URL
+      // Basic metadata that will be available on presigned URL creation
+      // Full metadata will be passed from the client during actual upload
+      const metadata = {
+        'original-filename': fileName,
+        'content-type': fileType
+      };
+      
+      // Create the presigned URL with initial metadata
       const command = new PutObjectCommand({
         Bucket: bucketName,
         Key: fileKey,
         ContentType: fileType,
+        Metadata: metadata
       });
       
-      const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+      const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 10000 });
       
       res.json({
         presignedUrl,

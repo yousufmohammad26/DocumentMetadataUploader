@@ -89,8 +89,35 @@ export async function uploadFileToS3(
         reject(new Error('Upload aborted'));
       });
       
+      // Prepare metadata headers for S3
+      const s3Metadata: Record<string, string> = {};
+      
+      // Add document metadata as x-amz-meta-* headers
+      if (metadata.metadata && Array.isArray(metadata.metadata)) {
+        metadata.metadata.forEach(item => {
+          if (item.key && item.value) {
+            // S3 metadata headers must be prefixed with x-amz-meta-
+            // Keys must be lowercase and use hyphens instead of spaces
+            const sanitizedKey = item.key.toLowerCase().replace(/\s+/g, '-');
+            s3Metadata[`x-amz-meta-${sanitizedKey}`] = item.value;
+          }
+        });
+      }
+      
+      // Add document name to metadata
+      s3Metadata['x-amz-meta-document-name'] = metadata.name || '';
+      
+      // Add access level to metadata
+      s3Metadata['x-amz-meta-access-level'] = metadata.accessLevel || 'private';
+      
       xhr.open('PUT', presignedUrl);
       xhr.setRequestHeader('Content-Type', file.type);
+      
+      // Add all the metadata headers
+      Object.entries(s3Metadata).forEach(([key, value]) => {
+        xhr.setRequestHeader(key, String(value));
+      });
+      
       xhr.send(file);
     });
     
@@ -98,7 +125,7 @@ export async function uploadFileToS3(
     onProgress({ percentage: 85, status: 'Saving metadata...' });
     
     // Convert metadata array to object
-    const metadataObject = {};
+    const metadataObject: Record<string, string> = {};
     if (metadata.metadata && Array.isArray(metadata.metadata)) {
       metadata.metadata.forEach((item: { key: string; value: string }) => {
         if (item.key && item.value) {
