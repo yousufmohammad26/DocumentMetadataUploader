@@ -9,6 +9,15 @@ import { FileUpload } from "@/components/ui/file-upload";
 import { uploadFileToS3, formatFileSize, formatDate, UploadProgress } from "@/lib/s3";
 
 import { motion, AnimatePresence } from "framer-motion";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import {
   Form,
@@ -320,13 +329,44 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-semibold text-gray-800">Document Metadata Uploader</h1>
-            <div>
-              <span className="text-sm text-gray-600">
-                Connected to AWS Account {isLoadingAwsAccount ? '...' : awsAccount.accountIdentifier}
-              </span>
-              <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                {isLoadingAwsAccount ? 'Loading...' : awsAccount.active ? 'Active' : 'Inactive'}
-              </span>
+            <div className="flex items-center space-x-4">
+              <div>
+                <span className="text-sm text-gray-600">
+                  Connected to AWS Account {isLoadingAwsAccount ? '...' : awsAccount.accountIdentifier}
+                </span>
+                <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  {isLoadingAwsAccount ? 'Loading...' : awsAccount.active ? 'Active' : 'Inactive'}
+                </span>
+              </div>
+              
+              {/* User Profile with Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <motion.div 
+                    className="cursor-pointer flex items-center"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  >
+                    <Avatar className="h-8 w-8 border-2 border-primary shadow-sm">
+                      <AvatarImage src="/assets/Profile.jpg" alt="User Profile" />
+                      <AvatarFallback>YM</AvatarFallback>
+                    </Avatar>
+                    <div className="ml-2 text-sm hidden sm:block">
+                      <p className="font-medium text-gray-700">Yousuf Mohammad</p>
+                      <p className="text-xs text-gray-500">Administrator</p>
+                    </div>
+                  </motion.div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                  <DropdownMenuItem>Documents</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Sign out</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
