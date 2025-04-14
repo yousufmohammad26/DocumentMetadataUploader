@@ -13,7 +13,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -22,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Card, CardContent } from "@/components/ui/card";
+
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -32,7 +31,6 @@ import {
   Download,
   Edit,
   Trash2,
-  Info,
   Plus,
   X,
   Eye,
