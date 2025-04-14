@@ -2,10 +2,10 @@ import type { Express, Request, Response, NextFunction } from "express";
 import type { FileRequest } from "multer";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand, ListObjectsV2Command, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { insertDocumentSchema, documentMetadataSchema, presignedUrlRequestSchema } from "@shared/schema";
-import multer from "multer";
+import * as multer from "multer";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 
@@ -21,10 +21,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const bucketName = process.env.AWS_S3_BUCKET_NAME || "document-metadata-bucket";
 
-  // Use in-memory storage for multer
-  const memoryStorage = multer.memoryStorage();
-  const upload = multer({
-    storage: memoryStorage,
+  // Use multer for file uploads with memory storage
+  // @ts-ignore
+  const upload = multer.default({
+    // @ts-ignore
+    storage: multer.default.memoryStorage(),
     limits: {
       fileSize: 10 * 1024 * 1024, // 10MB limit
     },
@@ -290,6 +291,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ 
         success: false,
         message: error instanceof Error ? error.message : 'Failed to upload document'
+      });
+    }
+  });
+
+  // Synchronize documents from S3 bucket
+  app.get('/api/documents/sync-from-s3', async (req: Request, res: Response) => {
+    try {
+      // Get all existing documents in our storage to check what's already synced
+      const existingDocs = await storage.getAllDocuments();
+      const existingFileKeys = new Set(existingDocs.map(doc => doc.fileKey));
+      
+      // List all objects in the S3 bucket
+      const listCommand = new ListObjectsV2Command({
+        Bucket: bucketName
+      });
+      
+      const s3Objects = await s3.send(listCommand);
+      
+      if (!s3Objects.Contents || s3Objects.Contents.length === 0) {
+        return res.json({ 
+          success: true, 
+          message: 'No objects found in S3 bucket',
+          syncedCount: 0
+        });
+      }
+      
+      const newDocuments = [];
+      
+      // Process each S3 object
+      for (const object of s3Objects.Contents) {
+        if (!object.Key) continue;
+        
+        // Skip if we already have this file in our storage
+        if (existingFileKeys.has(object.Key)) continue;
+        
+        try {
+          // Get metadata for the object
+          const headCommand = new HeadObjectCommand({
+            Bucket: bucketName,
+            Key: object.Key
+          });
+          
+          const objectDetails = await s3.send(headCommand);
+          
+          // Extract file information
+          const fileName = objectDetails.Metadata?.['original-filename'] || object.Key.split('-').slice(1).join('-');
+          const contentType = objectDetails.Metadata?.['content-type'] || objectDetails.ContentType || 'application/octet-stream';
+          const docName = objectDetails.Metadata?.['document-name'] || fileName;
+          const accessLevel = objectDetails.Metadata?.['access-level'] || 'private';
+          const fileSize = object.Size || 0;
+          
+          // Extract custom metadata
+          const metadata: Record<string, string> = {};
+          Object.entries(objectDetails.Metadata || {}).forEach(([key, value]) => {
+            if (key.startsWith('x-amz-meta-') && value) {
+              const metaKey = key.replace('x-amz-meta-', '');
+              metadata[metaKey] = value;
+            }
+          });
+          
+          // Store document in our application's storage
+          const document = await storage.createDocument({
+            name: docName,
+            fileName: fileName,
+            fileKey: object.Key,
+            fileSize: fileSize,
+            fileType: contentType,
+            metadata: metadata,
+            accessLevel: accessLevel
+          });
+          
+          newDocuments.push(document);
+        } catch (error) {
+          console.error(`Error syncing object ${object.Key}:`, error);
+          // Continue with next object if one fails
+        }
+      }
+      
+      res.json({ 
+        success: true, 
+        message: `Synced ${newDocuments.length} new documents from S3`,
+        syncedCount: newDocuments.length,
+        documents: newDocuments
+      });
+    } catch (error) {
+      console.error('Sync error:', error);
+      res.status(500).json({ 
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to sync documents from S3'
       });
     }
   });
