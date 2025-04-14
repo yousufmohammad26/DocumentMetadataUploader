@@ -1,4 +1,5 @@
 import type { Express, Request, Response, NextFunction } from "express";
+import type { FileRequest } from "multer";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
@@ -197,6 +198,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: 'Failed to delete document' });
+    }
+  });
+
+  // Server-side upload endpoint to bypass CORS issues
+  app.post('/api/documents/upload', upload.single('file'), async (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false,
+          message: 'No file uploaded' 
+        });
+      }
+
+      // Get metadata from request body
+      const docName = req.body.name || 'Untitled Document';
+      let metadataArr = [];
+      
+      try {
+        // Parse metadata from the request body if available
+        if (req.body.metadata) {
+          metadataArr = JSON.parse(req.body.metadata);
+        }
+      } catch (e) {
+        console.error('Error parsing metadata:', e);
+      }
+
+      const accessLevel = req.body.accessLevel || 'private';
+      
+      // Create a unique file key
+      const fileName = req.file.originalname;
+      const fileKey = `${Date.now()}-${fileName}`;
+      
+      // Prepare S3 metadata
+      const s3Metadata: Record<string, string> = {
+        'original-filename': fileName,
+        'content-type': req.file.mimetype,
+        'document-name': docName,
+        'access-level': accessLevel
+      };
+      
+      // Add custom metadata with x-amz-meta- prefix
+      if (Array.isArray(metadataArr)) {
+        metadataArr.forEach((item: { key: string; value: string }) => {
+          if (item.key && item.value) {
+            const sanitizedKey = item.key.toLowerCase().replace(/\s+/g, '-');
+            s3Metadata[`x-amz-meta-${sanitizedKey}`] = item.value;
+          }
+        });
+      }
+      
+      // Upload to S3
+      const command = new PutObjectCommand({
+        Bucket: bucketName,
+        Key: fileKey,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+        Metadata: s3Metadata
+      });
+      
+      await s3.send(command);
+      
+      // Convert metadata array to object for storage
+      const metadataObject: Record<string, string> = {};
+      if (Array.isArray(metadataArr)) {
+        metadataArr.forEach((item: { key: string; value: string }) => {
+          if (item.key && item.value) {
+            metadataObject[item.key] = item.value;
+          }
+        });
+      }
+      
+      // Store document metadata in storage
+      const document = await storage.createDocument({
+        name: docName,
+        fileName: fileName,
+        fileKey: fileKey,
+        fileSize: req.file.size,
+        fileType: req.file.mimetype,
+        metadata: metadataObject,
+        accessLevel: accessLevel
+      });
+      
+      res.status(201).json({
+        success: true,
+        message: 'Document uploaded successfully',
+        document
+      });
+    } catch (error) {
+      console.error('Upload error:', error);
+      res.status(500).json({ 
+        success: false,
+        message: error instanceof Error ? error.message : 'Failed to upload document'
+      });
     }
   });
 

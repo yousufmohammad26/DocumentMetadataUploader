@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useToast } from "@/hooks/use-toast";
-import { uploadFileToS3 } from '@/lib/s3';
+import { queryClient } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 
 export default function TestUpload() {
@@ -40,28 +40,43 @@ export default function TestUpload() {
       const file = new File([blob], 'Profile.jpg', { type: 'image/jpeg' });
       addLog(`Created file object: size=${formatBytes(file.size)}, type=${file.type}`);
       
-      // Step 3: Create test metadata with the required "UploadedBy" field
-      const metadata = {
-        name: "Sample Profile Image",
-        metadata: [
-          { key: "UploadedBy", value: "Yousuf M" }
-        ],
-        accessLevel: "private"
-      };
+      // Step 3: Create the FormData object for server-side upload
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('name', 'Sample Profile Image');
+      
+      // Add metadata
+      const metadata = [{ key: 'UploadedBy', value: 'Yousuf M' }];
+      formData.append('metadata', JSON.stringify(metadata));
+      formData.append('accessLevel', 'private');
+      
       addLog('Prepared metadata with UploadedBy = "Yousuf M"');
       
-      // Step 4: Set up progress callback
-      const progressCallback = (progress: { percentage: number; status: string }) => {
-        addLog(`Upload progress: ${progress.percentage}%, Status: ${progress.status}`);
-      };
+      // Step 4: Execute server-side upload
+      addLog('Starting server-side upload...');
       
-      // Step 5: Execute upload
-      addLog('Starting upload to S3...');
-      const result = await uploadFileToS3(file, metadata, progressCallback);
+      const uploadResponse = await fetch('/api/documents/upload', {
+        method: 'POST',
+        body: formData,
+      });
       
-      // Step 6: Handle the result
+      // Step 5: Handle the response
+      if (!uploadResponse.ok) {
+        const errorData = await uploadResponse.json();
+        throw new Error(errorData.message || 'Upload failed');
+      }
+      
+      const result = await uploadResponse.json();
+      
+      // Step 6: Process result
       if (result.success) {
         addLog('Upload successful!');
+        addLog(`Document ID: ${result.document.id}`);
+        
+        // Invalidate queries to refresh document list
+        queryClient.invalidateQueries({ queryKey: ['/api/documents'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/stats'] });
+        
         toast({
           title: "Test Upload Success",
           description: "The sample file was uploaded successfully with metadata: UploadedBy = 'Yousuf M'",
