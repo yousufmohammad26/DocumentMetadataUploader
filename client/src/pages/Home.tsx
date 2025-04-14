@@ -135,6 +135,7 @@ export default function Home() {
       // Invalidate documents query to refresh the list
       queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
       toast({
         title: "Success",
         description: "Document successfully deleted",
@@ -197,9 +198,10 @@ export default function Home() {
           variant: "default",
         });
         
-        // Refresh document list and stats
+        // Refresh document list, stats and AWS account info
         queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
         queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
       } else {
         toast({
           title: "Error",
@@ -228,9 +230,10 @@ export default function Home() {
       const result = await response.json();
       
       if (result.success) {
-        // Refresh document list and stats
+        // Refresh document list, stats and AWS account info
         queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
         queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
         
         // Show success toast
         toast({
@@ -280,9 +283,11 @@ export default function Home() {
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-semibold text-gray-800">Document Metadata Uploader</h1>
             <div>
-              <span className="text-sm text-gray-600">Connected to AWS S3</span>
+              <span className="text-sm text-gray-600">
+                Connected to AWS Account {isLoadingAwsAccount ? '...' : awsAccount.accountIdentifier}
+              </span>
               <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                Active
+                {isLoadingAwsAccount ? 'Loading...' : awsAccount.active ? 'Active' : 'Inactive'}
               </span>
             </div>
           </div>
