@@ -94,7 +94,7 @@ export async function uploadFileToS3(
       
       // Add document metadata as x-amz-meta-* headers
       if (metadata.metadata && Array.isArray(metadata.metadata)) {
-        metadata.metadata.forEach(item => {
+        metadata.metadata.forEach((item: { key: string; value: string }) => {
           if (item.key && item.value) {
             // S3 metadata headers must be prefixed with x-amz-meta-
             // Keys must be lowercase and use hyphens instead of spaces

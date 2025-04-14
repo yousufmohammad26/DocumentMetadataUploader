@@ -70,20 +70,40 @@ export default function Home() {
     control: form.control,
   });
 
+  // Define document type
+  interface DocumentData {
+    id: number;
+    fileName: string;
+    fileKey: string;
+    fileSize: number;
+    fileType: string;
+    name: string;
+    metadata: Record<string, string>;
+    accessLevel: string;
+    uploadedAt: string;
+  }
+
   // Query for retrieving documents
   const {
-    data: documents = [],
+    data: documents = [] as DocumentData[],
     isLoading: isLoadingDocs,
     error: docsError,
-  } = useQuery({
+  } = useQuery<DocumentData[]>({
     queryKey: ["/api/documents"],
   });
 
   // Query for stats
+  interface StatsData {
+    totalUploads: number;
+    todayUploads: number;
+    storageUsed: number;
+    bucketName: string;
+  }
+  
   const {
-    data: stats,
+    data: stats = { totalUploads: 0, todayUploads: 0, storageUsed: 0, bucketName: "" } as StatsData,
     isLoading: isLoadingStats,
-  } = useQuery({
+  } = useQuery<StatsData>({
     queryKey: ["/api/stats"],
   });
 
@@ -186,7 +206,7 @@ export default function Home() {
 
   // Filter documents based on search term
   const filteredDocuments = searchTerm && Array.isArray(documents)
-    ? documents.filter((doc: any) =>
+    ? documents.filter((doc: DocumentData) =>
         doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (doc.metadata && Object.entries(doc.metadata).some(([key, value]) => 
           key.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -490,7 +510,7 @@ export default function Home() {
                 <div className="p-6 text-center text-red-500">Error loading documents</div>
               ) : Array.isArray(filteredDocuments) && filteredDocuments.length > 0 ? (
                 <ul className="divide-y divide-gray-200">
-                  {filteredDocuments.map((doc: any) => (
+                  {filteredDocuments.map((doc: DocumentData) => (
                     <li key={doc.id}>
                       <div className="px-4 py-4 sm:px-6">
                         <div className="flex items-center justify-between">
