@@ -36,6 +36,8 @@ import {
   Plus,
   X,
   Eye,
+  RefreshCw,
+  RotateCw,
 } from "lucide-react";
 import {
   AlertDialog,
@@ -531,7 +533,7 @@ export default function Home() {
                   A list of all the documents you've uploaded to your S3 bucket with their metadata.
                 </p>
               </div>
-              <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+              <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none flex items-center space-x-3">
                 <motion.div 
                   className="relative rounded-md shadow-sm"
                   initial={{ opacity: 0, y: -10 }}
@@ -555,6 +557,34 @@ export default function Home() {
                   >
                     <Search className={`h-5 w-5 ${searchTerm ? "text-primary" : "text-gray-400"}`} />
                   </motion.div>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: 0.2 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="default"
+                    onClick={syncFromS3}
+                    disabled={isSyncing}
+                    className="flex items-center"
+                  >
+                    {isSyncing ? (
+                      <>
+                        <RotateCw className="h-4 w-4 mr-2 animate-spin" />
+                        Syncing...
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Sync from S3
+                      </>
+                    )}
+                  </Button>
                 </motion.div>
               </div>
             </div>
