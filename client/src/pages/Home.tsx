@@ -8,6 +8,7 @@ import { DocumentMetadata, documentMetadataSchema, MetadataKeyValue } from "@sha
 import { FileUpload } from "@/components/ui/file-upload";
 import { uploadFileToS3, formatFileSize, formatDate, UploadProgress } from "@/lib/s3";
 import TestUpload from "@/components/TestUpload";
+import { motion, AnimatePresence } from "framer-motion";
 
 import {
   Form,
@@ -492,7 +493,13 @@ export default function Home() {
                 </p>
               </div>
               <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-                <div className="relative rounded-md shadow-sm">
+                <motion.div 
+                  className="relative rounded-md shadow-sm"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  whileHover={{ scale: 1.02 }}
+                >
                   <Input
                     type="text"
                     placeholder="Search documents..."
@@ -500,126 +507,225 @@ export default function Home() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pr-10"
                   />
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <Search className="h-5 w-5 text-gray-400" />
-                  </div>
-                </div>
+                  <motion.div 
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+                    animate={{ 
+                      scale: searchTerm ? 1.2 : 1
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Search className={`h-5 w-5 ${searchTerm ? "text-primary" : "text-gray-400"}`} />
+                  </motion.div>
+                </motion.div>
               </div>
             </div>
 
             <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-md">
               {isLoadingDocs ? (
-                <div className="p-6 text-center">Loading documents...</div>
+                <motion.div 
+                  className="p-6 text-center"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="flex flex-col items-center justify-center">
+                    <svg className="animate-spin h-8 w-8 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p className="mt-3 text-sm text-gray-600">Loading documents...</p>
+                  </div>
+                </motion.div>
               ) : docsError ? (
-                <div className="p-6 text-center text-red-500">Error loading documents</div>
+                <motion.div 
+                  className="p-6 text-center text-red-500"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <AlertCircle className="mx-auto h-10 w-10 mb-2" />
+                  Error loading documents
+                </motion.div>
               ) : Array.isArray(filteredDocuments) && filteredDocuments.length > 0 ? (
-                <ul className="divide-y divide-gray-200">
-                  {filteredDocuments.map((doc: DocumentData) => (
-                    <li key={doc.id}>
-                      <div className="px-4 py-4 sm:px-6">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-md bg-blue-100 text-primary">
-                              <FileText className="h-6 w-6" />
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-primary-dark">{doc.fileName}</div>
-                              <div className="text-sm text-gray-500">
-                                {formatFileSize(doc.fileSize)} • Uploaded on {formatDate(doc.uploadedAt)}
+                <motion.ul
+                  className="divide-y divide-gray-200"
+                  layout
+                  initial={{ opacity: 1 }}
+                  transition={{
+                    layout: { type: "spring", bounce: 0.2, duration: 0.6 }
+                  }}
+                >
+                  <AnimatePresence initial={false}>
+                    {filteredDocuments.map((doc: DocumentData) => (
+                      <motion.li 
+                        key={doc.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                        layout
+                        transition={{
+                          type: "spring",
+                          stiffness: 300, 
+                          damping: 30,
+                          opacity: { duration: 0.2 }
+                        }}
+                        className="bg-white hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="px-4 py-4 sm:px-6">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <motion.div 
+                                className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-md bg-blue-100 text-primary"
+                                whileHover={{ scale: 1.1 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                              >
+                                <FileText className="h-6 w-6" />
+                              </motion.div>
+                              <div className="ml-4">
+                                <div className="text-sm font-medium text-primary-dark">{doc.fileName}</div>
+                                <div className="text-sm text-gray-500">
+                                  {formatFileSize(doc.fileSize)} • Uploaded on {formatDate(doc.uploadedAt)}
+                                </div>
                               </div>
                             </div>
+                            <motion.div
+                              whileHover={{ scale: 1.05 }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${doc.accessLevel === 'public' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                                {doc.accessLevel}
+                              </span>
+                            </motion.div>
                           </div>
-                          <div>
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${doc.accessLevel === 'public' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                              {doc.accessLevel}
-                            </span>
-                          </div>
-                        </div>
-                        
-                        {/* Display metadata key-value pairs */}
-                        {doc.metadata && Object.keys(doc.metadata).length > 0 && (
-                          <div className="mt-2">
-                            <h4 className="text-xs font-medium text-gray-500 mb-1">Metadata:</h4>
-                            <div className="flex flex-wrap gap-1">
-                              {Object.entries(doc.metadata).map(([key, value], idx) => (
-                                <span key={idx} className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-800">
-                                  {key}: {String(value)}
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        
-                        <div className="mt-2 flex">
-                          <Button 
-                            variant="link" 
-                            size="sm" 
-                            className="text-primary hover:text-primary-dark"
-                            onClick={() => handleDownload(doc.id)}
+                          
+                          {/* Display metadata key-value pairs */}
+                          {doc.metadata && Object.keys(doc.metadata).length > 0 && (
+                            <motion.div 
+                              className="mt-2"
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <h4 className="text-xs font-medium text-gray-500 mb-1">Metadata:</h4>
+                              <div className="flex flex-wrap gap-1">
+                                {Object.entries(doc.metadata).map(([key, value], idx) => (
+                                  <motion.span 
+                                    key={idx}
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{ duration: 0.2, delay: idx * 0.05 }}
+                                    className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-800"
+                                    whileHover={{ scale: 1.05, backgroundColor: "#dbeafe" }}
+                                  >
+                                    {key}: {String(value)}
+                                  </motion.span>
+                                ))}
+                              </div>
+                            </motion.div>
+                          )}
+                          
+                          <motion.div 
+                            className="mt-2 flex"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
                           >
-                            <Eye className="h-4 w-4 mr-1" /> View
-                          </Button>
-                          <Separator orientation="vertical" className="mx-2 h-4 self-center" />
-                          <Button 
-                            variant="link" 
-                            size="sm" 
-                            className="text-primary hover:text-primary-dark"
-                            onClick={() => handleDownload(doc.id)}
-                          >
-                            <Download className="h-4 w-4 mr-1" /> Download
-                          </Button>
-                          <Separator orientation="vertical" className="mx-2 h-4 self-center" />
-                          <Button 
-                            variant="link" 
-                            size="sm" 
-                            className="text-primary hover:text-primary-dark"
-                          >
-                            <Edit className="h-4 w-4 mr-1" /> Edit Metadata
-                          </Button>
-                          <Separator orientation="vertical" className="mx-2 h-4 self-center" />
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                              <Button 
-                                variant="link" 
-                                size="sm" 
-                                className="text-red-500 hover:text-red-700"
-                              >
-                                <Trash2 className="h-4 w-4 mr-1" /> Delete
-                              </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  This action cannot be undone. This will permanently delete the document
-                                  and remove the data from the server.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => deleteMutation.mutate(doc.id)}
+                            <Button 
+                              variant="link" 
+                              size="sm" 
+                              className="text-primary hover:text-primary-dark"
+                              onClick={() => handleDownload(doc.id)}
+                            >
+                              <Eye className="h-4 w-4 mr-1" /> View
+                            </Button>
+                            <Separator orientation="vertical" className="mx-2 h-4 self-center" />
+                            <Button 
+                              variant="link" 
+                              size="sm" 
+                              className="text-primary hover:text-primary-dark"
+                              onClick={() => handleDownload(doc.id)}
+                            >
+                              <Download className="h-4 w-4 mr-1" /> Download
+                            </Button>
+                            <Separator orientation="vertical" className="mx-2 h-4 self-center" />
+                            <Button 
+                              variant="link" 
+                              size="sm" 
+                              className="text-primary hover:text-primary-dark"
+                            >
+                              <Edit className="h-4 w-4 mr-1" /> Edit Metadata
+                            </Button>
+                            <Separator orientation="vertical" className="mx-2 h-4 self-center" />
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button 
+                                  variant="link" 
+                                  size="sm" 
+                                  className="text-red-500 hover:text-red-700"
                                 >
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                                  <Trash2 className="h-4 w-4 mr-1" /> Delete
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete the document
+                                    and remove the data from the server.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => deleteMutation.mutate(doc.id)}
+                                  >
+                                    Delete
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </motion.div>
                         </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                      </motion.li>
+                    ))}
+                  </AnimatePresence>
+                </motion.ul>
               ) : (
-                <div id="no-documents" className="px-4 py-6 sm:px-6 text-center">
-                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <motion.div 
+                  id="no-documents" 
+                  className="px-4 py-6 sm:px-6 text-center"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <motion.svg 
+                    className="mx-auto h-12 w-12 text-gray-400" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                  </svg>
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No documents</h3>
-                  <p className="mt-1 text-sm text-gray-500">
+                  </motion.svg>
+                  <motion.h3 
+                    className="mt-2 text-sm font-medium text-gray-900"
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    No documents
+                  </motion.h3>
+                  <motion.p 
+                    className="mt-1 text-sm text-gray-500"
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                  >
                     {searchTerm ? 'No documents match your search criteria.' : 'Get started by uploading your first document.'}
-                  </p>
-                </div>
+                  </motion.p>
+                </motion.div>
               )}
             </div>
           </div>
