@@ -814,7 +814,7 @@ export default function Home() {
               &copy; {new Date().getFullYear()} DocumentMetadata App
             </div>
             <div className="text-sm text-gray-500">
-              <span>Powered by AWS S3</span>
+              <span>Powered by AWS S3 Tables and Yousuf Mohammad</span>
             </div>
           </div>
         </div>
