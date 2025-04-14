@@ -163,9 +163,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // Extract custom metadata
           const metadata: Record<string, string> = {};
+          
+          // Log raw metadata object for debugging
+          console.log(`Raw metadata for ${object.Key}:`, objectDetails.Metadata);
+          
+          // Process each metadata entry
           Object.entries(objectDetails.Metadata || {}).forEach(([key, value]) => {
-            if (key.startsWith('x-amz-meta-') && value) {
-              const metaKey = key.replace('x-amz-meta-', '');
+            if (value) {
+              // AWS S3 might be lowercasing the keys, so normalize here
+              let metaKey = key;
+              
+              // If the prefix exists, remove it
+              if (metaKey.startsWith('x-amz-meta-')) {
+                metaKey = metaKey.replace('x-amz-meta-', '');
+              }
+              
               metadata[metaKey] = value;
             }
           });
@@ -354,10 +366,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (Array.isArray(metadataArr)) {
         metadataArr.forEach((item: { key: string; value: string }) => {
           if (item.key && item.value) {
-            metadataObject[item.key] = item.value;
+            // Store with the same prefix (or lack thereof) as we'll retrieve it
+            // This ensures consistency between upload and retrieval
+            const sanitizedKey = item.key.toLowerCase().replace(/\s+/g, '-');
+            metadataObject[sanitizedKey] = item.value;
           }
         });
       }
+      
+      // Log metadata object for debugging
+      console.log('Stored metadata object:', metadataObject);
       
       // Store document metadata in storage
       const document = await storage.createDocument({
