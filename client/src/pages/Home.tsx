@@ -677,18 +677,23 @@ export default function Home() {
                             >
                               <h4 className="text-xs font-medium text-gray-500 mb-1">Metadata:</h4>
                               <div className="flex flex-wrap gap-1">
-                                {Object.entries(doc.metadata).map(([key, value], idx) => (
-                                  <motion.span 
-                                    key={idx}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.2, delay: idx * 0.05 }}
-                                    className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-800"
-                                    whileHover={{ scale: 1.05, backgroundColor: "#dbeafe" }}
-                                  >
-                                    {key}: {String(value)}
-                                  </motion.span>
-                                ))}
+                                {Object.entries(doc.metadata).map(([key, value], idx) => {
+                                  // Remove any 'x-amz-meta-' prefix that might still be present
+                                  const displayKey = key.startsWith('x-amz-meta-') ? key.replace('x-amz-meta-', '') : key;
+                                  
+                                  return (
+                                    <motion.span 
+                                      key={idx}
+                                      initial={{ opacity: 0, scale: 0.8 }}
+                                      animate={{ opacity: 1, scale: 1 }}
+                                      transition={{ duration: 0.2, delay: idx * 0.05 }}
+                                      className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-800"
+                                      whileHover={{ scale: 1.05, backgroundColor: "#dbeafe" }}
+                                    >
+                                      {displayKey}: {String(value)}
+                                    </motion.span>
+                                  );
+                                })}
                               </div>
                             </motion.div>
                           )}
