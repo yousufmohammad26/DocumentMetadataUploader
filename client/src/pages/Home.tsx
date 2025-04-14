@@ -111,6 +111,20 @@ export default function Home() {
   } = useQuery<StatsData>({
     queryKey: ["/api/stats"],
   });
+  
+  // Query for AWS account info
+  interface AwsAccountData {
+    accountIdentifier: string;
+    region: string;
+    active: boolean;
+  }
+  
+  const {
+    data: awsAccount = { accountIdentifier: "", region: "", active: false } as AwsAccountData,
+    isLoading: isLoadingAwsAccount,
+  } = useQuery<AwsAccountData>({
+    queryKey: ["/api/aws-account"],
+  });
 
   // Mutation for deleting documents
   const deleteMutation = useMutation({
