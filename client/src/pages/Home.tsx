@@ -6,7 +6,7 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { DocumentMetadata, documentMetadataSchema, MetadataKeyValue } from "@shared/schema";
 import { FileUpload } from "@/components/ui/file-upload";
-import { uploadFileToS3, formatFileSize, formatDate, UploadProgress, getMetadataTagColors } from "@/lib/s3";
+import { uploadFileToS3, formatFileSize, formatDate, UploadProgress, getMetadataTagColors, getDocumentThumbnail } from "@/lib/s3";
 import { DocumentPreview } from "@/components/DocumentPreview";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -45,7 +45,22 @@ import {
   Eye,
   RefreshCw,
   RotateCw,
+  Image as ImageIcon,
+  Archive,
+  Table,
+  Calendar,
+  FileCode,
+  Info,
+  ClipboardList,
+  Presentation,
 } from "lucide-react";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function Home() {
   const { toast } = useToast();

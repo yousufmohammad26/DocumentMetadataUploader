@@ -149,6 +149,108 @@ export function getCategoryColor(category: string): string {
   return categoryColors[category.toLowerCase()] || 'bg-gray-100 text-gray-800';
 }
 
+export function getDocumentThumbnail(fileType: string): { 
+  icon: string, 
+  color: string,
+  extension: string,
+  bgColor: string,
+  iconColor: string
+} {
+  // Default
+  let result = { 
+    icon: "file-text", 
+    color: "blue",
+    extension: "DOC",
+    bgColor: "bg-blue-50",
+    iconColor: "text-blue-600"
+  };
+  
+  // PDF
+  if (fileType.includes('pdf')) {
+    return { 
+      icon: "file-text", 
+      color: "red",
+      extension: "PDF",
+      bgColor: "bg-red-50",
+      iconColor: "text-red-600"
+    };
+  }
+  
+  // Images
+  if (fileType.includes('image')) {
+    let extension = "IMG";
+    if (fileType.includes('png')) extension = "PNG";
+    if (fileType.includes('jpg') || fileType.includes('jpeg')) extension = "JPG";
+    if (fileType.includes('gif')) extension = "GIF";
+    if (fileType.includes('svg')) extension = "SVG";
+    
+    return { 
+      icon: "image", 
+      color: "emerald",
+      extension: extension,
+      bgColor: "bg-emerald-50",
+      iconColor: "text-emerald-600"
+    };
+  }
+  
+  // Word documents
+  if (fileType.includes('word') || fileType.includes('doc')) {
+    return { 
+      icon: "file-text", 
+      color: "blue",
+      extension: "DOC",
+      bgColor: "bg-blue-50",
+      iconColor: "text-blue-600"
+    };
+  }
+  
+  // Excel
+  if (fileType.includes('excel') || fileType.includes('sheet') || fileType.includes('xls')) {
+    return { 
+      icon: "table", 
+      color: "green",
+      extension: "XLS",
+      bgColor: "bg-green-50",
+      iconColor: "text-green-600"
+    };
+  }
+  
+  // PowerPoint
+  if (fileType.includes('powerpoint') || fileType.includes('presentation') || fileType.includes('ppt')) {
+    return { 
+      icon: "presentation", 
+      color: "orange",
+      extension: "PPT",
+      bgColor: "bg-orange-50",
+      iconColor: "text-orange-600"
+    };
+  }
+  
+  // Text
+  if (fileType.includes('text') || fileType.includes('txt')) {
+    return { 
+      icon: "file-text", 
+      color: "gray",
+      extension: "TXT",
+      bgColor: "bg-gray-50",
+      iconColor: "text-gray-600"
+    };
+  }
+  
+  // ZIP/Archives
+  if (fileType.includes('zip') || fileType.includes('archive') || fileType.includes('compressed')) {
+    return { 
+      icon: "archive", 
+      color: "purple",
+      extension: "ZIP",
+      bgColor: "bg-purple-50",
+      iconColor: "text-purple-600"
+    };
+  }
+  
+  return result;
+}
+
 export function getMetadataTagColors(key: string): { bg: string, text: string, hoverBg: string } {
   // Convert key to lowercase for consistent matching
   const lowerKey = key.toLowerCase();
