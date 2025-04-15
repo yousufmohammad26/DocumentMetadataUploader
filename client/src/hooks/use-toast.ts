@@ -5,9 +5,9 @@ import type {
   ToastProps,
 } from "@/components/ui/toast"
 
-const TOAST_LIMIT = 1
-// Set this to Infinity to keep toasts visible until manually closed
-const TOAST_REMOVE_DELAY = Infinity
+const TOAST_LIMIT = 3
+// Set this to a value in milliseconds for auto-disappearing toasts
+const TOAST_REMOVE_DELAY = 5000 // 5 seconds
 
 type ToasterToast = ToastProps & {
   id: string
@@ -157,8 +157,8 @@ function toast({ ...props }: Toast) {
       ...props,
       id,
       open: true,
-      // Setting duration to null will make the toast stay until manually dismissed
-      duration: null,
+      // Set a duration in milliseconds for auto-dismissal
+      duration: 5000,
       onOpenChange: (open) => {
         if (!open) dismiss()
       },

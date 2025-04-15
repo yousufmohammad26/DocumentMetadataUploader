@@ -16,20 +16,7 @@ function Router() {
 }
 
 function App() {
-  // Show a welcome toast on app load
-  useEffect(() => {
-    // Import directly to avoid hook issues
-    import("@/hooks/use-toast").then(module => {
-      const { toast } = module;
-      setTimeout(() => {
-        toast({
-          title: "App Loaded",
-          description: "Document Metadata Uploader is ready",
-          variant: "default",
-        });
-      }, 1000);
-    });
-  }, []);
+  // No welcome toast on app load
 
   return (
     <QueryClientProvider client={queryClient}>

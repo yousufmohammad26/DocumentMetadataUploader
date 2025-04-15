@@ -501,24 +501,6 @@ export default function Home() {
                         </div>
                         <h3 className="text-lg font-semibold text-gray-800">Upload New Document</h3>
                       </div>
-                      <div className="flex items-center ml-auto">
-                        <Button
-                          type="button"
-                          onClick={() => {
-                            console.log('Test toast button clicked');
-                            toast({
-                              title: "TEST TOAST",
-                              description: "This is a test notification",
-                              variant: "default",
-                            });
-                          }}
-                          className="bg-purple-600 text-white hover:bg-purple-700"
-                          size="sm"
-                        >
-                          <Bell className="h-4 w-4 mr-2" />
-                          Test Toast
-                        </Button>
-                      </div>
                     </div>
                     <div className="px-6 py-6 bg-white space-y-6">
                       {/* File Upload */}
