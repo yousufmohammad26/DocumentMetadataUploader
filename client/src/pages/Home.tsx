@@ -302,7 +302,9 @@ export default function Home() {
     setUploadProgress({ percentage: 0, status: "Starting upload..." });
 
     try {
+      console.log('Starting file upload to S3...');
       const result = await uploadFileToS3(selectedFile, data, setUploadProgress);
+      console.log('Upload complete with result:', result);
 
       if (result.success) {
         // Reset form state completely, including isSubmitted flag
@@ -342,9 +344,10 @@ export default function Home() {
         });
       }
     } catch (error) {
+      console.error('Error in handleUpload function:', error);
       toast({
         title: "Error",
-        description: "An error occurred during upload",
+        description: error instanceof Error ? error.message : "An error occurred during upload",
         variant: "destructive",
       });
     } finally {

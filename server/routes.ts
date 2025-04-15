@@ -60,7 +60,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { fileName, fileType, fileSize } = validatedData;
       
       // Create a unique file key
-      const fileKey = `${Date.now()}-${fileName}`;
+      const fileKey = `${uuidv4()}-${fileName}`;
       
       // Basic metadata that will be available on presigned URL creation
       // Full metadata will be passed from the client during actual upload
@@ -468,7 +468,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       
       // Store document metadata in storage
-      const document = await storage.createDocument({
+      console.log('Creating document in storage with data:', JSON.stringify({
         name: docName,
         fileName: fileName,
         fileKey: fileKey,
@@ -476,7 +476,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         fileType: req.file.mimetype,
         metadata: metadataObject,
         accessLevel: accessLevel
-      });
+      }));
+      
+      let document;
+      try {
+        document = await storage.createDocument({
+          name: docName,
+          fileName: fileName,
+          fileKey: fileKey,
+          fileSize: req.file.size,
+          fileType: req.file.mimetype,
+          metadata: metadataObject,
+          accessLevel: accessLevel
+        });
+        console.log('Document created successfully:', document.id);
+      } catch (storageError) {
+        console.error('Error creating document in storage:', storageError);
+        throw storageError;
+      }
       
       res.status(201).json({
         success: true,
