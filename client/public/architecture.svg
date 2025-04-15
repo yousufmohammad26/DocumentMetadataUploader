@@ -37,19 +37,5 @@
   <line x1="380" y1="190" x2="430" y2="190" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
   <line x1="570" y1="190" x2="620" y2="190" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
   
-  <!-- Descriptions -->
-  <text x="120" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#475569">User Interface</text>
-  <text x="120" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#475569">Document Upload</text>
-  
-  <text x="310" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#475569">AWS S3 Storage</text>
-  <text x="310" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#475569">with Metadata Headers</text>
-  
-  <text x="500" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#475569">Document Listing</text>
-  <text x="500" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#475569">and Management</text>
-  
-  <text x="690" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#475569">Searchable Index</text>
-  <text x="690" y="290" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#475569">of Document Info</text>
-
-  <!-- Flow summary -->
-  <text x="400" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-style="italic" fill="#64748b">Document flow: User uploads documents with metadata → S3 storage → Table management → Searchable index</text>
+  <!-- Removed all descriptions and flow summary -->
 </svg>
