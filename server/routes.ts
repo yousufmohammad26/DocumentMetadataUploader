@@ -385,7 +385,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Extract base filename without extension for use as topology
       const fileBaseName = fileName.replace(/\.[^/.]+$/, ""); // Remove file extension
       
-      // Get metadata from request body - use filename as default document name if none provided
+      // Get metadata from request body - use filename as default topology if none provided
       const docName = req.body.name || fileBaseName;
       let metadataArr = [];
       

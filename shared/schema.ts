@@ -46,7 +46,7 @@ export type MetadataKeyValue = z.infer<typeof metadataKeyValueSchema>;
 
 // Schema for form validation
 export const documentMetadataSchema = z.object({
-  name: z.string().min(1, "Document name is required"),
+  name: z.string().min(1, "Topology is required"),
   metadata: z.array(metadataKeyValueSchema).default([]),
   accessLevel: z.enum(["public", "private"]).default("private"),
 });
