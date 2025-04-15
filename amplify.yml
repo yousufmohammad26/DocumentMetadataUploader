@@ -3,14 +3,7 @@ backend:
   phases:
     build:
       commands:
-        - npm install
-frontend:
-  phases:
-    preBuild:
-      commands:
         - npm ci
-    build:
-      commands:
         - npm run build
   artifacts:
     baseDirectory: dist
@@ -19,3 +12,20 @@ frontend:
   cache:
     paths:
       - node_modules/**/*
+
+frontend:
+  phases:
+    build:
+      commands:
+        - echo "Frontend build is included in the backend build"
+  artifacts:
+    baseDirectory: dist
+    files:
+      - '**/*'
+
+appRoot: .
+customHeaders:
+  - pattern: '**/*'
+    headers:
+      - key: 'Cache-Control'
+        value: 'public, max-age=0, must-revalidate'
