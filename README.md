@@ -16,7 +16,7 @@ A lightweight document management platform designed for efficient file organizat
 - **Frontend**: React, Tailwind CSS, Shadcn UI, React Query, Framer Motion
 - **Backend**: Express.js, Node.js
 - **Storage**: AWS S3, In-memory JavaScript storage
-- **Deployment**: AWS Amplify
+- **Deployment**: AWS Elastic Beanstalk, AWS App Runner, or Docker
 
 ## Getting Started
 
@@ -40,8 +40,8 @@ The following environment variables are required:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/docway-360.git
-   cd docway-360
+   git clone https://github.com/yousufmohammad26/DocumentMetadataUploader.git
+   cd DocumentMetadataUploader
    ```
 
 2. Install dependencies:
@@ -56,7 +56,7 @@ The following environment variables are required:
 
 ## Deployment
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for AWS Amplify deployment instructions.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions for AWS Elastic Beanstalk, AWS App Runner, and Docker.
 
 ## Architecture
 
