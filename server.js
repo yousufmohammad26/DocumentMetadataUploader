@@ -1,32 +1,34 @@
-// This is a simple Express server that will serve our built files
-// and also handle API requests
-import express from 'express';
-import { createServer } from 'http';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import fs from 'fs';
-
-// ES modules compatibility
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// This is a production server that will serve our built files
+// and also handle API requests with proper error handling
+const express = require('express');
+const { createServer } = require('http');
+const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Check if we're running the compiled server or the source server
-let serverModule;
+let serverPath;
+if (fs.existsSync('./dist/index.js')) {
+  console.log('Loading compiled server module...');
+  serverPath = './dist/index.js';
+} else if (fs.existsSync('./server/index.js')) {
+  console.log('Loading source server module...');
+  serverPath = './server/index.js';
+} else {
+  console.error('Could not find server module!');
+  process.exit(1);
+}
+
+// Load the API routes
 try {
-  // First try to import the compiled server
-  if (fs.existsSync('./dist/index.js')) {
-    console.log('Loading compiled server module...');
-    serverModule = await import('./dist/index.js');
-  } else {
-    console.log('Loading source server module...');
-    serverModule = await import('./server/index.js');
+  const apiRoutes = require(serverPath);
+  if (typeof apiRoutes === 'function') {
+    apiRoutes(app);
   }
 } catch (error) {
-  console.error('Failed to import server module:', error);
-  process.exit(1);
+  console.error('Failed to load API routes:', error);
 }
 
 // Serve static files from the React app
