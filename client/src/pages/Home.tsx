@@ -389,10 +389,25 @@ export default function Home() {
   
 
   
+  // Handle refresh for all document-related data
+  const refreshData = () => {
+    // Refresh all related data
+    queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+    queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
+    
+    // Show toast for confirmation
+    toast({
+      title: "Refreshed",
+      description: "Document list and stats have been refreshed",
+      variant: "default",
+    });
+  };
+  
   // Handle metadata update completion
   const handleMetadataUpdateComplete = () => {
-    // Refresh document list after update
-    queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+    // Refresh all data after update
+    refreshData();
   };
 
   // Sort documents by upload date (oldest first)
@@ -428,9 +443,14 @@ export default function Home() {
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Uploader</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                <Cloud className="h-3 w-3 mr-1 text-green-600" />
-                Connected to S3 {stats.bucketName && `bucket: ${stats.bucketName}`}
+              <div className="flex flex-col items-center px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                <div className="flex items-center">
+                  <Cloud className="h-3 w-3 mr-1 text-green-600" />
+                  <span>Connected to S3</span>
+                </div>
+                {stats.bucketName && (
+                  <div className="text-xs text-green-700 mt-0.5">{stats.bucketName}</div>
+                )}
               </div>
               
               {/* User Profile with Dropdown */}
@@ -765,7 +785,18 @@ export default function Home() {
           <div className="mt-12">
             <div className="sm:flex sm:items-center">
               <div className="sm:flex-auto">
-                <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Uploaded Documents</h2>
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Uploaded Documents</h2>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={refreshData}
+                    className="flex items-center text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                  >
+                    <RefreshCw className="h-4 w-4 mr-1.5" />
+                    <span>Refresh</span>
+                  </Button>
+                </div>
                 <p className="mt-2 text-sm text-gray-600">
                   A list of all the documents you've uploaded to your S3 bucket with their metadata.
                 </p>
