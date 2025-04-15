@@ -371,13 +371,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Server-side upload endpoint to bypass CORS issues
   app.post('/api/documents/upload', upload.single('file'), async (req: Request, res: Response) => {
+    console.log('Upload request received');
     try {
       if (!req.file) {
+        console.log('No file in request');
         return res.status(400).json({ 
           success: false,
           message: 'No file uploaded' 
         });
       }
+      console.log('File received:', req.file.originalname);
 
       // Get the original filename
       const fileName = req.file.originalname;
@@ -423,6 +426,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Upload to S3
+      console.log('Preparing S3 upload with metadata:', JSON.stringify(s3Metadata));
       const command = new PutObjectCommand({
         Bucket: bucketName,
         Key: fileKey,
@@ -431,7 +435,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         Metadata: s3Metadata
       });
       
-      await s3.send(command);
+      console.log('Uploading to S3 bucket:', bucketName, 'with key:', fileKey);
+      try {
+        await s3.send(command);
+        console.log('S3 upload successful');
+      } catch (s3Error) {
+        console.error('S3 upload error:', s3Error);
+        throw s3Error;
+      }
       
       // Convert metadata array to object for storage
       const metadataObject: Record<string, string> = {};
