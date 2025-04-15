@@ -17,13 +17,13 @@
   <text x="120" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#0c4a6e">Browser</text>
   
   <!-- S3 Bucket -->
-  <rect x="240" y="100" width="140" height="100" rx="5" ry="5" fill="#f5eee9" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#f97316" stroke-width="2"/>
-  <text x="310" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#7c2d12">S3 Bucket</text>
+  <rect x="240" y="100" width="140" height="100" rx="5" ry="5" fill="#fff1e7" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#f97316" stroke-width="2"/>
+  <text x="310" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#9a3412">S3 Bucket</text>
   
   <!-- S3 Table Bucket -->
-  <rect x="430" y="100" width="140" height="100" rx="5" ry="5" fill="#e9eef5" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#4f46e5" stroke-width="2"/>
-  <text x="500" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#312e81">S3 Table</text>
-  <text x="500" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#312e81">Bucket</text>
+  <rect x="430" y="100" width="140" height="100" rx="5" ry="5" fill="#fef2e3" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#ea580c" stroke-width="2"/>
+  <text x="500" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#9a3412">S3 Table</text>
+  <text x="500" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#9a3412">Bucket</text>
   
   <!-- Metadata Table -->
   <rect x="620" y="100" width="140" height="100" rx="5" ry="5" fill="#e9f5ef" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#10b981" stroke-width="2"/>
