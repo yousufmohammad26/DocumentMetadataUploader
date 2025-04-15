@@ -450,7 +450,7 @@ export default function Home() {
           <div className="flex justify-between items-center">
             <div className="flex items-center">
               <img src="/logo.svg" alt="Logo" className="h-10 w-10 mr-3" />
-              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Uploader</h1>
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Topology Metadata Uploader</h1>
             </div>
             <div className="flex items-center space-x-4">
               <div className="flex flex-col items-start px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-100 text-green-800 border border-green-200">
@@ -555,12 +555,12 @@ export default function Home() {
                         </div>
                       )}
 
-                      {/* Document Metadata */}
+                      {/* Topology Metadata */}
                       <div>
                         <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-md border border-emerald-100 mb-5">
                           <h3 className="text-sm font-semibold text-green-800 flex items-center">
                             <Tag className="h-4 w-4 mr-2 text-emerald-600" />
-                            Document Metadata
+                            Topology Metadata
                             <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Searchable</span>
                           </h3>
                           <p className="text-xs text-green-700 mt-1">Add custom metadata to make your document more searchable and organized</p>
@@ -1094,7 +1094,7 @@ export default function Home() {
             <div className="text-center md:text-left mb-4 md:mb-0 flex items-center">
               <img src="/logo.svg" alt="Logo" className="h-8 w-8 mr-2 hidden md:block" />
               <div>
-                <h3 className="text-lg font-medium bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Manager</h3>
+                <h3 className="text-lg font-medium bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Topology Metadata Manager</h3>
                 <p className="text-sm text-gray-600 mt-1">© Powered by AWS S3 Tables and Yousuf Mohammad</p>
               </div>
             </div>
