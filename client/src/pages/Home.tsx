@@ -898,6 +898,7 @@ export default function Home() {
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Document</th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Metadata</th>
                             <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Type</th>
+                            <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Last Updated</th>
                             <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                           </tr>
                         </thead>
@@ -943,7 +944,7 @@ export default function Home() {
                                           {doc.name}
                                         </div>
                                         <div className="text-xs text-gray-500">
-                                          {formatDate(doc.uploadedAt)} • {formatFileSize(doc.fileSize)}
+                                          {formatFileSize(doc.fileSize)}
                                         </div>
                                       </div>
                                     </div>
@@ -976,6 +977,13 @@ export default function Home() {
                                   <td className="px-6 py-4 whitespace-nowrap text-center">
                                     <span className={`text-xs uppercase font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200`}>
                                       {doc.fileType.split('/')[1] || doc.fileType}
+                                    </span>
+                                  </td>
+                                  
+                                  {/* Last Updated column */}
+                                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                                    <span className="text-sm text-gray-600">
+                                      {formatDate(doc.uploadedAt, true)}
                                     </span>
                                   </td>
                                   
@@ -1020,7 +1028,7 @@ export default function Home() {
                           ) : (
                           /* Empty state when filtered documents return nothing */
                           <tr>
-                            <td colSpan={4} className="px-6 py-12 text-center">
+                            <td colSpan={5} className="px-6 py-12 text-center">
                               <motion.div 
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
