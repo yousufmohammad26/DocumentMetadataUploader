@@ -91,6 +91,7 @@ import {
 export default function Home() {
   const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileUploadRef = React.useRef<HTMLInputElement>(null);
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -302,10 +303,15 @@ export default function Home() {
         setSelectedFile(null);
         setUploadProgress(null);
         
-        // Reset file input by finding and clearing it
-        const fileInput = document.getElementById('file-upload') as HTMLInputElement;
-        if (fileInput) {
-          fileInput.value = '';
+        // Reset file input using the reference
+        if (fileUploadRef.current) {
+          fileUploadRef.current.value = '';
+        }
+        
+        // This triggers a UI reset in the FileUpload component
+        const clearEvent = new Event('change', { bubbles: true });
+        if (fileUploadRef.current) {
+          fileUploadRef.current.dispatchEvent(clearEvent);
         }
         
         // Show success toast
@@ -503,6 +509,8 @@ export default function Home() {
                     <div className="px-6 py-6 bg-white space-y-6">
                       {/* File Upload */}
                       <FileUpload 
+                        ref={fileUploadRef}
+                        id="file-upload"
                         label="Document File"
                         onFileChange={setSelectedFile}
                         error={selectedFile ? undefined : form.formState.isSubmitted ? "Please select a file" : undefined}
