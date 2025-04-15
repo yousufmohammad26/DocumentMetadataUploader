@@ -391,14 +391,14 @@ export default function Home() {
     queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
   };
 
-  // Sort documents by upload date (newest first)
+  // Sort documents by upload date (oldest first)
   const sortedDocuments = Array.isArray(documents) 
     ? [...documents].sort((a, b) => {
         // Convert dates to timestamps for comparison
         const dateA = new Date(a.uploadedAt).getTime();
         const dateB = new Date(b.uploadedAt).getTime();
-        // Sort in descending order (newest first)
-        return dateB - dateA;
+        // Sort in ascending order (oldest first)
+        return dateA - dateB;
       })
     : [];
   
@@ -897,9 +897,7 @@ export default function Home() {
                           <tr>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Document</th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Metadata</th>
-                            <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Type</th>
-                            <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Last Updated</th>
-                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                            <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
@@ -973,27 +971,13 @@ export default function Home() {
                                     )}
                                   </td>
                                   
-                                  {/* File type column */}
-                                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                                    <span className={`text-xs uppercase font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200`}>
-                                      {doc.fileType.split('/')[1] || doc.fileType}
-                                    </span>
-                                  </td>
-                                  
-                                  {/* Last Updated column */}
-                                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                                    <span className="text-sm text-gray-600">
-                                      {formatDate(doc.uploadedAt, true)}
-                                    </span>
-                                  </td>
-                                  
                                   {/* Actions column */}
-                                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                                    <div className="flex justify-end space-x-2">
+                                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                                    <div className="flex flex-col space-y-2 items-center">
                                       <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="flex items-center hover:bg-gray-100"
+                                        className="flex items-center hover:bg-gray-100 w-full justify-center"
                                         onClick={() => handleViewInPreview(doc.id)}
                                       >
                                         <Eye className="h-4 w-4 mr-1" />
@@ -1003,7 +987,7 @@ export default function Home() {
                                       <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="flex items-center hover:bg-gray-100"
+                                        className="flex items-center hover:bg-gray-100 w-full justify-center"
                                         onClick={() => handleDownload(doc.id)}
                                       >
                                         <Download className="h-4 w-4 mr-1" />
@@ -1013,7 +997,7 @@ export default function Home() {
                                       <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="flex items-center hover:bg-gray-100"
+                                        className="flex items-center hover:bg-gray-100 w-full justify-center"
                                         onClick={() => handleEditMetadata(doc)}
                                       >
                                         <Edit className="h-4 w-4 mr-1" />
@@ -1028,7 +1012,7 @@ export default function Home() {
                           ) : (
                           /* Empty state when filtered documents return nothing */
                           <tr>
-                            <td colSpan={5} className="px-6 py-12 text-center">
+                            <td colSpan={3} className="px-6 py-12 text-center">
                               <motion.div 
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
