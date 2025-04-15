@@ -372,6 +372,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Server-side upload endpoint to bypass CORS issues
   app.post('/api/documents/upload', upload.single('file'), async (req: Request, res: Response) => {
     console.log('Upload request received');
+    console.log('Request body:', JSON.stringify(req.body));
+    console.log('Request headers:', JSON.stringify(req.headers));
+    console.log('Request file details:', req.file ? JSON.stringify({
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size
+    }) : 'No file');
+    
     try {
       if (!req.file) {
         console.log('No file in request');
