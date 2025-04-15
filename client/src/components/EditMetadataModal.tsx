@@ -256,11 +256,11 @@ export function EditMetadataModal({
               </div>
 
               <div className="space-y-6 max-h-[300px] overflow-y-auto pr-2">
-                {/* System Defined Fields Section */}
+                {/* Fields Section */}
                 <div className="space-y-3">
                   <h3 className="text-sm font-medium text-blue-700 flex items-center border-b pb-1 border-blue-100">
                     <Lock className="h-3.5 w-3.5 mr-1.5" />
-                    System Defined Fields
+                    Fields
                   </h3>
                   
                   <div className="grid grid-cols-2 gap-4 mt-3">
@@ -315,7 +315,7 @@ export function EditMetadataModal({
                   </div>
                 </div>
                 
-                {/* User Defined Fields Section */}
+                {/* User Defined Section */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center border-b pb-1 border-gray-200">
                     <h3 className="text-sm font-medium text-gray-700 flex items-center">
