@@ -294,6 +294,12 @@ export default function Home() {
         setSelectedFile(null);
         setUploadProgress(null);
         
+        // Reset file input by finding and clearing it
+        const fileInput = document.getElementById('file-upload') as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = '';
+        }
+        
         // Show success toast
         toast({
           title: "Success",
