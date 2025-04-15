@@ -417,7 +417,7 @@ export default function Home() {
               <img src="/logo.svg" alt="Logo" className="h-10 w-10 mr-3" />
               <div>
                 <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Docway 360</h1>
-                <p className="text-xs text-gray-600">Simplified document metadata tracker application</p>
+                <p className="text-xs text-gray-600">simplified document metadata tracker application</p>
                 <p className="text-xs italic mt-0.5 bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-600">Powered by AWS & Yousuf Mohammad</p>
               </div>
             </div>

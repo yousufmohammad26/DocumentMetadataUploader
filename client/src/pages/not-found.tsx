@@ -28,7 +28,7 @@ export default function NotFound() {
           
           <div className="text-center mt-6">
             <p className="text-xs text-gray-500">
-              Docway 360 - Simplified document metadata tracker application
+              Docway 360 - simplified document metadata tracker application
             </p>
           </div>
         </CardContent>
