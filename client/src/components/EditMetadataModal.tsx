@@ -201,10 +201,13 @@ export function EditMetadataModal({
         <DialogHeader>
           <DialogTitle>Edit Document Metadata</DialogTitle>
           <DialogDescription>
-            {documentMetadata && documentMetadata['original-filename'] ? 
-              `Update the metadata for "${documentMetadata['original-filename']}". Changes will be saved to the document properties.` : 
-              `Update document metadata. Changes will be saved to the document properties.`
-            }
+            {documentMetadata && documentMetadata['original-filename'] ? (
+              <span>
+                Update the metadata for <span className="font-bold bg-yellow-100 px-1 rounded">{documentMetadata['original-filename']}</span>. Changes will be saved to the document properties.
+              </span>
+            ) : (
+              <span>Update document metadata. Changes will be saved to the document properties.</span>
+            )}
           </DialogDescription>
         </DialogHeader>
 
