@@ -382,21 +382,11 @@ export default function Home() {
       const result = await response.json();
       
       if (result.success) {
-        // Get the latest documents after sync
-        const docsResponse = await apiRequest("GET", "/api/documents");
-        const fetchedDocs = await docsResponse.json();
+        // Simply invalidate the documents query to refresh the list
+        console.log('Synchronization complete, refreshing document list...');
+        queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
         
-        // Our server now returns documents sorted by lastUpdated in descending order by default
-        if (Array.isArray(fetchedDocs)) {
-          console.log('Fetched documents, using server-side sorting by lastUpdated...');
-          // Just update the query data with the documents from the server
-          queryClient.setQueryData(["/api/documents"], fetchedDocs);
-        } else {
-          console.log('Document response is not an array, using invalidation instead');
-          queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
-        }
-        
-        // Only refresh stats and account info
+        // Also refresh stats and account info
         queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
         queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
         
@@ -475,14 +465,14 @@ export default function Home() {
     ? [...documents]
     : [];
   
-  // Filter documents based on search term
+  // Filter documents based on search term - only search in metadata
   const filteredDocuments = searchTerm && Array.isArray(sortedDocuments)
     ? sortedDocuments.filter((doc: DocumentData) =>
-        doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (doc.metadata && Object.entries(doc.metadata).some(([key, value]) => 
+        // Only search within metadata keys and values
+        doc.metadata && Object.entries(doc.metadata).some(([key, value]) => 
           key.toLowerCase().includes(searchTerm.toLowerCase()) || 
           String(value).toLowerCase().includes(searchTerm.toLowerCase())
-        ))
+        )
       )
     : sortedDocuments;
 
@@ -1001,10 +991,6 @@ export default function Home() {
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           Size
                         </th>
-                          
-                        <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
-                          Last Updated
-                        </th>
 
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           Access Level
@@ -1126,23 +1112,6 @@ export default function Home() {
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {formatFileSize(doc.fileSize)}
-                              </td>
-                              
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {doc.lastUpdated ? (
-                                  <div className="flex flex-col">
-                                    <span className="font-medium text-indigo-600">
-                                      {formatDate(doc.lastUpdated, true)}
-                                    </span>
-                                    <span className="text-xs text-gray-400 mt-1">
-                                      {new Date(doc.lastUpdated).toLocaleTimeString()}
-                                    </span>
-                                  </div>
-                                ) : (
-                                  <span className="text-gray-400">
-                                    {formatDate(doc.uploadedAt, true)}
-                                  </span>
-                                )}
                               </td>
 
                               <td className="px-6 py-4 whitespace-nowrap">

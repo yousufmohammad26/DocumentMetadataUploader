@@ -44,20 +44,8 @@ export class MemStorage implements IStorage {
   }
 
   async getAllDocuments(): Promise<Document[]> {
-    // Return documents sorted by lastUpdated in descending order (most recently updated first)
-    return Array.from(this.documents.values())
-      .sort((a, b) => {
-        // First try to get lastUpdated date
-        const dateA = a.lastUpdated instanceof Date ? a.lastUpdated : 
-                     (a.lastUpdated ? new Date(a.lastUpdated) : 
-                     (a.uploadedAt instanceof Date ? a.uploadedAt : new Date(a.uploadedAt)));
-                     
-        const dateB = b.lastUpdated instanceof Date ? b.lastUpdated : 
-                     (b.lastUpdated ? new Date(b.lastUpdated) : 
-                     (b.uploadedAt instanceof Date ? b.uploadedAt : new Date(b.uploadedAt)));
-                     
-        return dateB.getTime() - dateA.getTime();
-      });
+    // Return documents without sorting
+    return Array.from(this.documents.values());
   }
 
   async getDocument(id: number): Promise<Document | undefined> {
