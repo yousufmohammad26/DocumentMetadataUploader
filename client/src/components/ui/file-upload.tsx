@@ -12,14 +12,22 @@ interface FileUploadProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onFileChange: (file: File | null) => void;
 }
 
-export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
+// Add an interface for the file upload ref with the clearFile method
+interface FileUploadRef extends HTMLInputElement {
+  clearFile: () => void;
+}
+
+export const FileUpload = React.forwardRef<FileUploadRef, FileUploadProps>(
   ({ className, label, helperText, error, onFileChange, ...props }, ref) => {
     const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
     const [dragActive, setDragActive] = React.useState(false);
     const inputRef = React.useRef<HTMLInputElement>(null);
     
-    // Merge refs
-    React.useImperativeHandle(ref, () => inputRef.current!);
+    // Merge refs and expose methods
+    React.useImperativeHandle(ref, () => ({
+      ...inputRef.current!,
+      clearFile: () => clearSelectedFile()
+    }));
     
     // Handle file selection
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

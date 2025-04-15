@@ -91,7 +91,8 @@ import {
 export default function Home() {
   const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileUploadRef = React.useRef<HTMLInputElement>(null);
+  // Use the FileUploadRef type for our ref
+  const fileUploadRef = React.useRef<any>(null);
   const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -303,15 +304,9 @@ export default function Home() {
         setSelectedFile(null);
         setUploadProgress(null);
         
-        // Reset file input using the reference
-        if (fileUploadRef.current) {
-          fileUploadRef.current.value = '';
-        }
-        
-        // This triggers a UI reset in the FileUpload component
-        const clearEvent = new Event('change', { bubbles: true });
-        if (fileUploadRef.current) {
-          fileUploadRef.current.dispatchEvent(clearEvent);
+        // Use the custom clearFile method we defined in the FileUpload component
+        if (fileUploadRef.current && fileUploadRef.current.clearFile) {
+          fileUploadRef.current.clearFile();
         }
         
         // Show success toast
