@@ -1049,17 +1049,7 @@ export default function Home() {
                 <p className="text-sm text-gray-600 mt-1">© Powered by AWS S3 Tables and Yousuf Mohammad</p>
               </div>
             </div>
-            <div className="flex space-x-6">
-              <a href="#" className="text-blue-500 hover:text-indigo-600 transition-colors text-sm">
-                About
-              </a>
-              <a href="#" className="text-blue-500 hover:text-indigo-600 transition-colors text-sm">
-                Help
-              </a>
-              <a href="#" className="text-blue-500 hover:text-indigo-600 transition-colors text-sm">
-                Terms
-              </a>
-            </div>
+
           </div>
         </div>
       </footer>
