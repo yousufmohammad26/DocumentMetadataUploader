@@ -11,7 +11,7 @@ import { getDocumentColorScheme } from "@/lib/documentColors";
 
 import { EditMetadataModal } from "@/components/EditMetadataModal";
 
-import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
+
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -179,45 +179,7 @@ export default function Home() {
 
 
 
-  // View document in preview modal
-  const handleViewInPreview = async (id: number) => {
-    try {
-      // Find the document details
-      const document = documents.find(doc => doc.id === id);
-      if (!document) {
-        throw new Error("Document not found");
-      }
-      
-      const response = await apiRequest("GET", `/api/documents/${id}/download`);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to get download URL: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      
-      if (!data.presignedUrl) {
-        throw new Error("No presigned URL returned from server");
-      }
-      
-      
-      // Set the preview document and open the preview modal
-      setPreviewDocument({
-        url: data.presignedUrl,
-        name: document.name || document.fileName,
-        type: document.fileType,
-        id: document.id
-      });
-      setPreviewOpen(true);
-    } catch (error) {
-      console.error("Error opening document preview:", error);
-      toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to preview document",
-        variant: "destructive",
-      });
-    }
-  };
+
   
   // View document in new tab (fallback option)
   const handleView = async (id: number) => {
@@ -789,20 +751,7 @@ export default function Home() {
             {/* Sidebar */}
             <div className="md:col-span-1 ml-auto order-last">
               <div className="px-4 sm:px-0 space-y-6">
-                {/* Architecture Diagram */}
-                <div className="bg-white shadow-md rounded-lg overflow-hidden border border-indigo-100 hover:shadow-lg transition-shadow duration-300">
-                  <div className="px-5 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-indigo-100">
-                    <div className="flex items-center">
-                      <div className="bg-indigo-500 rounded-full p-1 mr-2">
-                        <PieChart className="h-3.5 w-3.5 text-white" />
-                      </div>
-                      <h3 className="text-sm font-semibold text-gray-900">Architecture</h3>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <ArchitectureDiagram />
-                  </div>
-                </div>
+
 
                 {/* Logs */}
                 <div className="bg-white shadow-md rounded-lg overflow-hidden border border-emerald-100 hover:shadow-lg transition-shadow duration-300">
@@ -1030,7 +979,7 @@ export default function Home() {
                                               variant="ghost" 
                                               size="sm" 
                                               className="flex items-center text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-2 py-0 h-6"
-                                              onClick={() => handleViewInPreview(doc.id)}
+                                              onClick={() => handleView(doc.id)}
                                             >
                                               <Eye className="h-3 w-3 mr-1" />
                                               <span className="text-xs">View</span>
