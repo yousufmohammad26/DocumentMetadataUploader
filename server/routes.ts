@@ -1,5 +1,6 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import type { FileRequest } from "multer";
+import { v4 as uuidv4 } from 'uuid';
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { S3Client, GetObjectCommand, PutObjectCommand, CopyObjectCommand, DeleteObjectCommand, ListObjectsV2Command, HeadObjectCommand } from "@aws-sdk/client-s3";
@@ -172,9 +173,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
               // Skip system metadata and extract only custom metadata entries
               if (key !== 'document-name' && key !== 'access-level' && 
                   key !== 'original-filename' && key !== 'content-type') {
-                // For keys that may have x-amz-meta prefix added by S3, remove it
-                let metaKey = key.startsWith('x-amz-meta-') ? key.substring(11) : key;
-                metadata[metaKey] = value;
+                metadata[key] = value;
               }
             }
           });
@@ -393,7 +392,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Create a unique file key
       const fileName = req.file.originalname;
-      const fileKey = `${Date.now()}-${fileName}`;
+      // Create a unique file key using fileName and UUID
+      const fileKey = `${fileName}-${uuidv4()}`;
       
       // Prepare S3 metadata
       const s3Metadata: Record<string, string> = {
