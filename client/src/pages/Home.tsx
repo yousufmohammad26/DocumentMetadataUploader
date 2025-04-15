@@ -422,14 +422,9 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="flex flex-col items-start px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                <div className="flex items-center">
-                  <Cloud className="h-3 w-3 mr-1 text-green-600" />
-                  <span>Connected to S3 Bucket</span>
-                </div>
-                {stats.bucketName && (
-                  <div className="text-xs text-green-700 mt-0.5">{stats.bucketName}</div>
-                )}
+              <div className="flex items-center justify-center px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                <Cloud className="h-3 w-3 mr-1 text-green-600" />
+                <span>Connected to S3 Bucket {stats.bucketName}</span>
               </div>
               
               {/* User Profile with Dropdown */}
