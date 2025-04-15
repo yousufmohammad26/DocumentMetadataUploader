@@ -89,11 +89,11 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
         
         <div
           className={cn(
-            "mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md",
+            "mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg shadow-sm transition-all duration-300",
             {
-              "border-primary bg-primary/5": dragActive,
-              "border-destructive": error,
-              "border-gray-300 hover:border-primary focus-within:border-primary": !dragActive && !error,
+              "border-primary bg-primary/10 shadow-md scale-[1.01]": dragActive,
+              "border-destructive bg-destructive/5": error,
+              "border-gray-300 hover:border-primary hover:bg-primary/5 focus-within:border-primary hover:shadow": !dragActive && !error,
             }
           )}
           onDragEnter={handleDrag}
@@ -102,14 +102,19 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
           onDrop={handleDrop}
         >
           {!selectedFile ? (
-            <div className="space-y-1 text-center">
-              <Upload className="mx-auto h-12 w-12 text-gray-400" />
-              <div className="flex text-sm text-gray-600">
+            <div className="space-y-4 text-center w-full">
+              <div className="p-3 rounded-full bg-primary/10 mx-auto w-16 h-16 flex items-center justify-center">
+                <Upload className="h-8 w-8 text-primary" />
+              </div>
+              <div className="flex flex-col items-center text-sm text-gray-600">
                 <label
                   htmlFor={props.id || "file-upload"}
-                  className="relative cursor-pointer bg-white rounded-md font-medium text-primary hover:text-primary-600 focus-within:outline-none"
+                  className="relative cursor-pointer bg-primary text-white px-4 py-2 rounded-md font-medium hover:bg-primary/90 focus-within:outline-none shadow transition-all duration-200 hover:shadow-md mb-2"
                 >
-                  <span>Upload a file</span>
+                  <span className="flex items-center">
+                    <Upload className="h-4 w-4 mr-2" />
+                    Browse files
+                  </span>
                   <input
                     id={props.id || "file-upload"}
                     name={props.name || "file-upload"}
@@ -120,28 +125,38 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
                     {...props}
                   />
                 </label>
-                <p className="pl-1">or drag and drop</p>
+                <p className="text-sm">or drag and drop files here</p>
+              </div>
+              <div className="flex flex-wrap justify-center gap-2 max-w-md mx-auto">
+                {["PDF", "DOCX", "XLSX", "PPTX", "TXT", "JPG", "PNG"].map((type) => (
+                  <span key={type} className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
+                    {type}
+                  </span>
+                ))}
               </div>
               <p className="text-xs text-gray-500">
-                PDF, DOCX, XLSX, PPTX, TXT, JPG, PNG up to 10MB
+                Maximum file size: 10MB
               </p>
             </div>
           ) : (
-            <div className="flex items-center w-full">
+            <div className="flex items-center w-full bg-white/50 p-3 rounded-lg">
               <div className="flex-shrink-0">
-                <div className="h-10 w-10 flex items-center justify-center rounded-md bg-blue-100 text-primary">
-                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                  </svg>
+                <div className={`h-12 w-12 flex items-center justify-center rounded-md bg-primary/10 text-primary border border-primary/20`}>
+                  <FileText className="h-6 w-6" />
                 </div>
               </div>
-              <div className="ml-3 flex-1">
-                <p className="text-sm font-medium text-gray-900">{selectedFile.name}</p>
-                <p className="text-xs text-gray-500">{formatFileSize(selectedFile.size)}</p>
+              <div className="ml-4 flex-1">
+                <p className="text-sm font-medium text-gray-900 truncate max-w-xs">{selectedFile.name}</p>
+                <p className="text-xs text-gray-500 flex items-center">
+                  <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-xs font-medium mr-2">
+                    {selectedFile.type.split('/')[1]?.toUpperCase() || 'FILE'}
+                  </span>
+                  {formatFileSize(selectedFile.size)}
+                </p>
               </div>
               <button
                 type="button"
-                className="ml-2 text-gray-400 hover:text-gray-500"
+                className="ml-2 text-gray-400 hover:text-gray-500 bg-white/80 hover:bg-red-50 hover:text-red-500 p-2 rounded-full transition-colors"
                 onClick={clearSelectedFile}
               >
                 <span className="sr-only">Remove file</span>
