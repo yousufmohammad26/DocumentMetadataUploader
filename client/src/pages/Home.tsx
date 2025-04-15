@@ -467,10 +467,10 @@ export default function Home() {
                   Add files to your S3 bucket with metadata information for better organization.
                 </p>
                 
-                <div className="mt-6 bg-white shadow-md rounded-lg overflow-hidden border border-primary/10 hover:shadow-lg transition-shadow duration-300">
-                  <div className="px-5 py-4 bg-gradient-to-br from-primary/5 to-primary/10 border-b border-primary/10">
+                <div className="mt-6 bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:shadow transition-shadow duration-300">
+                  <div className="px-5 py-4 bg-gray-100 border-b border-gray-200">
                     <div className="flex items-center">
-                      <FileText className="h-4 w-4 text-primary mr-2" />
+                      <FileText className="h-4 w-4 text-gray-600 mr-2" />
                       <h3 className="text-sm font-semibold text-gray-900">Supported File Types</h3>
                     </div>
                   </div>
@@ -504,10 +504,10 @@ export default function Home() {
                   </div>
                 </div>
                 
-                <div className="mt-6 bg-white shadow-md rounded-lg overflow-hidden border border-primary/10 hover:shadow-lg transition-shadow duration-300">
-                  <div className="px-5 py-4 bg-gradient-to-br from-primary/5 to-primary/10 border-b border-primary/10">
+                <div className="mt-6 bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:shadow transition-shadow duration-300">
+                  <div className="px-5 py-4 bg-gray-100 border-b border-gray-200">
                     <div className="flex items-center">
-                      <Info className="h-4 w-4 text-primary mr-2" />
+                      <Info className="h-4 w-4 text-gray-600 mr-2" />
                       <h3 className="text-sm font-semibold text-gray-900">Upload Stats</h3>
                     </div>
                   </div>
@@ -549,11 +549,11 @@ export default function Home() {
             <div className="mt-5 md:mt-0 md:col-span-2">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleUpload)}>
-                  <div className="shadow-lg sm:rounded-md sm:overflow-hidden border border-primary/20">
-                    <div className="bg-gradient-to-br from-primary/5 to-primary/10 px-6 py-3 border-b border-primary/20">
+                  <div className="shadow-sm sm:rounded-md sm:overflow-hidden border border-gray-200">
+                    <div className="bg-gray-100 px-6 py-3 border-b border-gray-200">
                       <div className="flex items-center">
-                        <Upload className="h-5 w-5 text-primary mr-2" />
-                        <h3 className="text-lg font-semibold text-primary">Upload New Document</h3>
+                        <Upload className="h-5 w-5 text-gray-600 mr-2" />
+                        <h3 className="text-lg font-semibold text-gray-700">Upload New Document</h3>
                       </div>
                     </div>
                     <div className="px-6 py-6 bg-white space-y-6">
@@ -742,7 +742,7 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="px-6 py-4 bg-gradient-to-br from-primary/5 to-primary/10 border-t border-primary/20 sm:px-6 flex justify-between items-center">
+                    <div className="px-6 py-4 bg-gray-100 border-t border-gray-200 sm:px-6 flex justify-between items-center">
                       {form.formState.errors.root && (
                         <span className="text-sm text-error">
                           {form.formState.errors.root.message}
@@ -882,12 +882,11 @@ export default function Home() {
                   >
                     <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
                       {/* Table header */}
-                      <div className="bg-white border-b border-gray-200 py-3 px-4 grid grid-cols-20 gap-4 font-medium text-sm text-gray-700">
-                        <div className="col-span-4">Document</div>
-                        <div className="col-span-1 text-center">Type</div>
-                        <div className="col-span-1 text-center">Size</div>
-                        <div className="col-span-10">Metadata</div>
-                        <div className="col-span-4 text-right">Actions</div>
+                      <div className="bg-white border-b border-gray-200 py-3 px-4 grid grid-cols-12 gap-4 font-medium text-sm text-gray-700">
+                        <div className="col-span-5">Document</div>
+                        <div className="col-span-2 text-center">Type</div>
+                        <div className="col-span-2 text-center">Metadata</div>
+                        <div className="col-span-3 text-right">Actions</div>
                       </div>
                       
                       {/* Document rows */}
@@ -919,12 +918,12 @@ export default function Home() {
                               }}
                               className="border border-gray-200 rounded-lg mb-4 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200"
                             >
-                              {/* Main document row - display all information in a single row */}
-                              <div className={`py-4 px-4 grid grid-cols-20 gap-4 items-center ${colorScheme.headerBg}`}>
+                              {/* Main document row */}
+                              <div className={`py-4 px-4 grid grid-cols-12 gap-4 items-center ${colorScheme.headerBg}`}>
                                 {/* Document info column */}
-                                <div className="col-span-4">
+                                <div className="col-span-5">
                                   <div className="flex items-center space-x-3">
-                                    <div className={`flex-shrink-0 w-10 h-10 bg-white ${colorScheme.borderColor} border-2 rounded-lg flex items-center justify-center shadow-sm`}>
+                                    <div className={`flex-shrink-0 w-10 h-10 bg-white ${colorScheme.borderColor} border border-gray-200 rounded-lg flex items-center justify-center`}>
                                       <IconComponent className={`h-5 w-5 ${colorScheme.accentColor}`} />
                                     </div>
                                     <div className="flex flex-col min-w-0">
@@ -932,43 +931,25 @@ export default function Home() {
                                         {doc.name}
                                       </h3>
                                       <p className="text-xs text-gray-500 mt-1">
-                                        {formatDate(doc.uploadedAt)}
+                                        {formatDate(doc.uploadedAt)} • {formatFileSize(doc.fileSize)}
                                       </p>
                                     </div>
                                   </div>
                                 </div>
                                 
                                 {/* File type column */}
-                                <div className="col-span-1 text-center">
-                                  <span className={`text-xs uppercase font-medium px-2 py-1 rounded-full ${colorScheme.headerBg} ${colorScheme.accentColor} border ${colorScheme.borderColor}`}>
+                                <div className="col-span-2 text-center">
+                                  <span className={`text-xs uppercase font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200`}>
                                     {doc.fileType.split('/')[1] || doc.fileType}
                                   </span>
                                 </div>
                                 
-                                {/* File size column */}
-                                <div className="col-span-1 text-center">
-                                  <span className="text-xs font-medium text-gray-600">
-                                    {formatFileSize(doc.fileSize)}
-                                  </span>
-                                </div>
-                                
-                                {/* Metadata column */}
-                                <div className="col-span-10">
+                                {/* Metadata count */}
+                                <div className="col-span-2 text-center">
                                   {doc.metadata && Object.keys(doc.metadata).length > 0 ? (
-                                    <div className="flex flex-wrap gap-2">
-                                      {Object.entries(doc.metadata).map(([key, value], idx) => {
-                                        const { bg, text } = getMetadataTagColors(key);
-                                        return (
-                                          <div key={idx} className="flex items-center">
-                                            <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${bg} ${text}`}>
-                                              {key}
-                                            </span>
-                                            <span className="text-xs text-gray-700 ml-1 mr-2">
-                                              {value}
-                                            </span>
-                                          </div>
-                                        );
-                                      })}
+                                    <div className="flex flex-col items-center">
+                                      <span className="text-sm font-medium text-gray-700">{Object.keys(doc.metadata).length}</span>
+                                      <span className="text-xs text-gray-500">metadata fields</span>
                                     </div>
                                   ) : (
                                     <span className="text-xs text-gray-400 italic">No metadata</span>
@@ -976,11 +957,11 @@ export default function Home() {
                                 </div>
                                 
                                 {/* Actions column */}
-                                <div className="col-span-4 flex justify-end gap-2">
+                                <div className="col-span-3 flex justify-end gap-2">
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="flex items-center hover:bg-white/50"
+                                    className="flex items-center hover:bg-gray-100"
                                     onClick={() => handleViewInPreview(doc.id)}
                                   >
                                     <Eye className="h-4 w-4 mr-1" />
@@ -990,7 +971,7 @@ export default function Home() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="flex items-center hover:bg-white/50"
+                                    className="flex items-center hover:bg-gray-100"
                                     onClick={() => handleDownload(doc.id)}
                                   >
                                     <Download className="h-4 w-4 mr-1" />
@@ -1000,7 +981,7 @@ export default function Home() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="flex items-center hover:bg-white/50"
+                                    className="flex items-center hover:bg-gray-100"
                                     onClick={() => handleEditMetadata(doc)}
                                   >
                                     <Edit className="h-4 w-4 mr-1" />
@@ -1008,6 +989,31 @@ export default function Home() {
                                   </Button>
                                 </div>
                               </div>
+                              
+                              {/* Metadata section - always visible */}
+                              {doc.metadata && Object.keys(doc.metadata).length > 0 && (
+                                <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
+                                  <div className="flex items-center mb-2">
+                                    <ClipboardList className="h-4 w-4 text-gray-500 mr-2" />
+                                    <span className="text-sm font-medium text-gray-700">Metadata</span>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {Object.entries(doc.metadata).map(([key, value], idx) => {
+                                      const { bg, text } = getMetadataTagColors(key);
+                                      return (
+                                        <div key={idx} className="flex items-start bg-white rounded-md p-2 shadow-sm">
+                                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${bg} ${text} mr-2`}>
+                                            {key}
+                                          </span>
+                                          <span className="text-sm text-gray-800 flex-1">
+                                            {value}
+                                          </span>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              )}
                             </motion.div>
                           );
                         })}
@@ -1071,15 +1077,15 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg mt-12">
-        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gray-100 border-t border-gray-200 mt-12">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
-              <FileText className="h-6 w-6 mr-2" />
-              <span className="text-lg font-bold">Document Metadata Manager</span>
+              <FileText className="h-5 w-5 mr-2 text-gray-600" />
+              <span className="text-base font-medium text-gray-700">Document Metadata Manager</span>
             </div>
-            <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
-              <span className="text-sm">Powered by AWS S3 and built by Yousuf Mohammad</span>
+            <div>
+              <span className="text-sm text-gray-500">Powered by AWS S3 and built by Yousuf Mohammad</span>
             </div>
           </div>
         </div>
