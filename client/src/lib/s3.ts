@@ -111,7 +111,6 @@ export async function uploadFileToS3(
       message: 'Document successfully uploaded!'
     };
   } catch (error) {
-    console.error('Upload error:', error);
     return {
       success: false,
       message: error instanceof Error ? error.message : 'Upload failed'

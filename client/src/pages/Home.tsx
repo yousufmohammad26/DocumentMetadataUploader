@@ -10,7 +10,7 @@ import { uploadFileToS3, formatFileSize, formatDate, UploadProgress, getMetadata
 import { getDocumentColorScheme } from "@/lib/documentColors";
 import { DocumentPreview } from "@/components/DocumentPreview";
 import { EditMetadataModal } from "@/components/EditMetadataModal";
-import { QuickPreviewModal } from "@/components/QuickPreviewModal";
+
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -109,9 +109,7 @@ export default function Home() {
   const [editMetadataOpen, setEditMetadataOpen] = useState(false);
   const [editingDocument, setEditingDocument] = useState<DocumentData | null>(null);
   
-  // Quick preview states
-  const [quickPreviewOpen, setQuickPreviewOpen] = useState(false);
-  const [quickPreviewDocument, setQuickPreviewDocument] = useState<DocumentData | null>(null);
+
 
   // Form for metadata
   const form = useForm<DocumentMetadata>({
@@ -203,11 +201,6 @@ export default function Home() {
         throw new Error("No presigned URL returned from server");
       }
       
-      console.log("Opening document preview:", {
-        name: document.name || document.fileName,
-        type: document.fileType,
-        url: data.presignedUrl.substring(0, 100) + '...' // Log partial URL for debugging
-      });
       
       // Set the preview document and open the preview modal
       setPreviewDocument({
@@ -394,11 +387,7 @@ export default function Home() {
     setEditMetadataOpen(true);
   };
   
-  // Handle quick preview
-  const handleQuickPreview = (document: DocumentData) => {
-    setQuickPreviewDocument(document);
-    setQuickPreviewOpen(true);
-  };
+
   
   // Handle metadata update completion
   const handleMetadataUpdateComplete = () => {
@@ -1115,17 +1104,7 @@ export default function Home() {
         />
       )}
       
-      {/* Quick Preview Modal */}
-      {quickPreviewDocument && (
-        <QuickPreviewModal
-          isOpen={quickPreviewOpen}
-          onClose={() => setQuickPreviewOpen(false)}
-          document={quickPreviewDocument}
-          onView={() => handleViewInPreview(quickPreviewDocument.id)}
-          onDownload={() => handleDownload(quickPreviewDocument.id)}
-          onEdit={() => handleEditMetadata(quickPreviewDocument)}
-        />
-      )}
+
     </div>
   );
 }
