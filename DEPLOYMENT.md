@@ -1,99 +1,104 @@
-# AWS Amplify Deployment Instructions
+# Deployment Instructions for Docway 360
 
-This document outlines the steps to deploy the Docway 360 document metadata application to AWS Amplify.
+This document outlines options for deploying the Docway 360 document metadata application.
 
-## Prerequisites
+## Important Note About AWS Amplify
 
+While AWS Amplify is excellent for frontend applications, it has limitations when deploying full-stack applications with active backend servers. The Docway 360 application includes both frontend and backend components, so we recommend the following deployment options:
+
+## Option 1: AWS Elastic Beanstalk (Recommended)
+
+AWS Elastic Beanstalk is specifically designed for full-stack applications like ours.
+
+### Prerequisites
 1. AWS Account with appropriate permissions
-2. Node.js and npm installed
-3. AWS Amplify CLI installed (`npm install -g @aws-amplify/cli`)
-4. The following environment variables needed for the application:
+2. AWS Elastic Beanstalk CLI installed (`pip install awsebcli`)
+3. The following environment variables needed for the application:
    - APP_AWS_S3_BUCKET_NAME
    - APP_AWS_REGION
    - APP_AWS_ACCESS_KEY_ID
    - APP_AWS_SECRET_ACCESS_KEY
 
-## Deployment Steps
+### Deployment Steps
 
-### 1. Initialize Amplify
-
-```bash
-amplify init
-```
-
-When prompted:
-- Enter a name for the project (e.g., "docway360")
-- Choose your default editor
-- Select "JavaScript" as the programming language
-- Select "react" as the framework
-- Select "node" as the package manager
-- Choose default build settings or customize as needed
-- Select the AWS profile to use
-
-### 2. Add hosting with Amplify Console
-
-```bash
-amplify add hosting
-```
-
-Choose "Hosting with Amplify Console" when prompted, then select "Manual deployment".
-
-### 3. Configure environment variables
-
-Set the required environment variables in the Amplify Console:
-
-1. Go to the AWS Amplify Console in your browser
-2. Select your app
-3. Go to "Environment variables" under "App settings"
-4. Add the following environment variables:
-   - APP_AWS_S3_BUCKET_NAME (instead of AWS_S3_BUCKET_NAME)
-   - APP_AWS_REGION (instead of AWS_REGION)
-   - APP_AWS_ACCESS_KEY_ID (instead of AWS_ACCESS_KEY_ID)
-   - APP_AWS_SECRET_ACCESS_KEY (instead of AWS_SECRET_ACCESS_KEY)
-   - NODE_ENV (set to "production")
-
-### 4. Deploy the application
-
-```bash
-amplify publish
-```
-
-This will build the application and deploy it to Amplify hosting.
-
-### 5. Continuous Deployment (Optional)
-
-For continuous deployment from your Git repository:
-
-1. Go to the AWS Amplify Console in your browser
-2. Choose "Host a web app"
-3. Connect your code repository (GitHub, BitBucket, GitLab, or AWS CodeCommit)
-4. Configure build settings
-5. Review and save
-
-## Troubleshooting
-
-1. Check Amplify build logs:
-   - Go to the AWS Amplify Console
-   - Select your app
-   - Go to "Hosting environments"
-   - Select the environment
-   - View build logs
-
-2. Test locally before deploying:
+1. **Initialize Elastic Beanstalk**:
    ```bash
-   npm run build
+   eb init
+   ```
+   Follow the prompts to configure your application.
+
+2. **Create an environment**:
+   ```bash
+   eb create docway360-env
    ```
 
-3. Verify environment variables:
-   - Ensure all required environment variables are configured
-   - Verify they have the correct values
+3. **Configure environment variables**:
+   ```bash
+   eb setenv APP_AWS_S3_BUCKET_NAME=your-bucket-name APP_AWS_REGION=your-region APP_AWS_ACCESS_KEY_ID=your-key APP_AWS_SECRET_ACCESS_KEY=your-secret NODE_ENV=production
+   ```
+
+4. **Deploy the application**:
+   ```bash
+   eb deploy
+   ```
+
+5. **Open the application**:
+   ```bash
+   eb open
+   ```
+
+## Option 2: AWS App Runner
+
+AWS App Runner provides a simpler deployment model for containerized applications.
+
+### Deployment Steps
+
+1. Build and package your application
+2. Create a Dockerfile in your project root
+3. Push your code to a Git repository
+4. Go to AWS App Runner console
+5. Create a new service
+6. Connect to your repository
+7. Configure build settings and environment variables
+8. Deploy
+
+## Option 3: Split Deployment (Frontend/Backend)
+
+If you prefer to use AWS Amplify for the frontend, you can split the deployment:
+
+### Frontend (AWS Amplify)
+1. Modify the application to point to your backend API
+2. Deploy the frontend to AWS Amplify
+
+### Backend (AWS Lambda + API Gateway)
+1. Refactor the server code to work with Lambda functions
+2. Deploy the API routes as Lambda functions
+3. Set up API Gateway to route requests to your Lambda functions
+
+## Environment Variables
+
+Regardless of the deployment option you choose, you'll need to configure these environment variables:
+
+- APP_AWS_S3_BUCKET_NAME
+- APP_AWS_REGION
+- APP_AWS_ACCESS_KEY_ID
+- APP_AWS_SECRET_ACCESS_KEY
+- NODE_ENV (set to "production")
+
+## Local Testing
+
+Before deploying, test your application locally:
+
+```bash
+npm run build
+npm start
+```
 
 ## Cleanup
 
-To remove the Amplify project and associated resources:
+To avoid incurring charges, remember to delete your resources when they're no longer needed:
 
-```bash
-amplify delete
-```
-
-Don't forget to also delete any S3 buckets you created for this application.
+- AWS Elastic Beanstalk: `eb terminate your-environment-name`
+- AWS App Runner: Delete the service from the console
+- AWS Amplify: `amplify delete`
+- Also delete any S3 buckets or other resources you created
