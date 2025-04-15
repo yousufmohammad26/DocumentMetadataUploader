@@ -428,9 +428,14 @@ export default function Home() {
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Uploader</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                <Cloud className="h-3 w-3 mr-1 text-green-600" />
-                Connected to AWS
+              <div className="flex flex-col items-center">
+                <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                  <Cloud className="h-3 w-3 mr-1 text-green-600" />
+                  Connected to S3
+                </div>
+                {stats.bucketName && (
+                  <div className="text-xs text-gray-600 mt-1">{stats.bucketName}</div>
+                )}
               </div>
               
               {/* User Profile with Dropdown */}
