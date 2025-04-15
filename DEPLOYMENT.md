@@ -10,10 +10,10 @@ AWS Elastic Beanstalk is specifically designed for full-stack applications like 
 1. AWS Account with appropriate permissions
 2. AWS Elastic Beanstalk CLI installed (`pip install awsebcli`)
 3. The following environment variables needed for the application:
-   - APP_AWS_S3_BUCKET_NAME
-   - APP_AWS_REGION
-   - APP_AWS_ACCESS_KEY_ID
-   - APP_AWS_SECRET_ACCESS_KEY
+   - AWS_S3_BUCKET_NAME
+   - AWS_REGION
+   - AWS_ACCESS_KEY_ID
+   - AWS_SECRET_ACCESS_KEY
 
 ### Deployment Steps
 
@@ -30,7 +30,7 @@ AWS Elastic Beanstalk is specifically designed for full-stack applications like 
 
 3. **Configure environment variables**:
    ```bash
-   eb setenv APP_AWS_S3_BUCKET_NAME=your-bucket-name APP_AWS_REGION=your-region APP_AWS_ACCESS_KEY_ID=your-key APP_AWS_SECRET_ACCESS_KEY=your-secret NODE_ENV=production
+   eb setenv AWS_S3_BUCKET_NAME=your-bucket-name AWS_REGION=your-region AWS_ACCESS_KEY_ID=your-key AWS_SECRET_ACCESS_KEY=your-secret NODE_ENV=production
    ```
 
 4. **Deploy the application**:
@@ -75,10 +75,10 @@ You can split the deployment into separate frontend and backend components:
 
 Regardless of the deployment option you choose, you'll need to configure these environment variables:
 
-- APP_AWS_S3_BUCKET_NAME
-- APP_AWS_REGION
-- APP_AWS_ACCESS_KEY_ID
-- APP_AWS_SECRET_ACCESS_KEY
+- AWS_S3_BUCKET_NAME
+- AWS_REGION
+- AWS_ACCESS_KEY_ID
+- AWS_SECRET_ACCESS_KEY
 - NODE_ENV (set to "production")
 
 ## Local Testing
