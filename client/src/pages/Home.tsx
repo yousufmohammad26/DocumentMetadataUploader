@@ -1001,6 +1001,10 @@ export default function Home() {
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           Size
                         </th>
+                          
+                        <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
+                          Last Updated
+                        </th>
 
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           Access Level
@@ -1122,6 +1126,23 @@ export default function Home() {
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {formatFileSize(doc.fileSize)}
+                              </td>
+                              
+                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {doc.lastUpdated ? (
+                                  <div className="flex flex-col">
+                                    <span className="font-medium text-indigo-600">
+                                      {formatDate(doc.lastUpdated, true)}
+                                    </span>
+                                    <span className="text-xs text-gray-400 mt-1">
+                                      {new Date(doc.lastUpdated).toLocaleTimeString()}
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <span className="text-gray-400">
+                                    {formatDate(doc.uploadedAt, true)}
+                                  </span>
+                                )}
                               </td>
 
                               <td className="px-6 py-4 whitespace-nowrap">
