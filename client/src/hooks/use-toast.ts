@@ -6,7 +6,8 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 8000 // Match our toast duration
+// Set this to Infinity to keep toasts visible until manually closed
+const TOAST_REMOVE_DELAY = Infinity
 
 type ToasterToast = ToastProps & {
   id: string
@@ -56,7 +57,8 @@ interface State {
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>()
 
 const addToRemoveQueue = (toastId: string) => {
-  if (toastTimeouts.has(toastId)) {
+  // If already in timeout queue or if TOAST_REMOVE_DELAY is Infinity (permanent toast)
+  if (toastTimeouts.has(toastId) || TOAST_REMOVE_DELAY === Infinity) {
     return
   }
 
@@ -155,8 +157,8 @@ function toast({ ...props }: Toast) {
       ...props,
       id,
       open: true,
-      // Increased duration to 8 seconds (8000ms) for better visibility
-      duration: props.duration || 8000,
+      // Setting duration to null will make the toast stay until manually dismissed
+      duration: null,
       onOpenChange: (open) => {
         if (!open) dismiss()
       },
