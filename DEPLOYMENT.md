@@ -1,92 +1,113 @@
-# Deployment Guide for Docway 360
+# Deploying Docway 360 to AWS Elastic Beanstalk
 
-This document outlines the steps to deploy Docway 360 on AWS Elastic Beanstalk.
+This document outlines the steps to deploy the Docway 360 application to AWS Elastic Beanstalk.
 
 ## Prerequisites
 
-Before you start, make sure you have:
+Before deploying, ensure you have:
 
-1. An AWS account with appropriate permissions
-2. AWS CLI installed and configured on your local machine
-3. Elastic Beanstalk CLI installed (using `pip install awsebcli --upgrade --user`)
-4. AWS S3 bucket created for document storage
-5. AWS credentials (access key and secret key) with permissions for S3
+1. AWS account with appropriate permissions
+2. AWS CLI installed and configured
+3. Elastic Beanstalk CLI (eb) installed
+4. Node.js and npm installed
+5. Git installed
 
-## Option 1: Using the Deployment Script (Recommended)
+## Deployment Steps
 
-We've created deployment scripts to streamline the process:
+### Option 1: Using the Deployment Scripts
 
-### For Linux/Mac:
-1. Make sure you have the AWS CLI and Elastic Beanstalk CLI installed and configured
-2. Run the deployment script:
-   ```
-   ./deploy-eb.sh
-   ```
+**For Linux/Mac users:**
+```bash
+./deploy-eb.sh
+```
 
-### For Windows:
-1. Make sure you have the AWS CLI and Elastic Beanstalk CLI installed and configured
-2. Run the Windows batch script:
-   ```
-   deploy-eb.bat
-   ```
+**For Windows users:**
+```bash
+deploy-eb.bat
+```
 
-3. Follow the prompts to provide your AWS credentials and S3 bucket information
-4. The script will build the application, initialize Elastic Beanstalk, and deploy the application
+These scripts will guide you through:
+- Building the application
+- Initializing Elastic Beanstalk (if needed)
+- Creating a new environment (if needed)
+- Setting required environment variables
+- Deploying the application
 
-## Option 2: Manual Deployment
+### Option 2: Manual Deployment
 
-If you prefer to deploy manually, follow these steps:
-
-1. Build the application:
-   ```
+1. **Build the application**
+   ```bash
    npm run build
    ```
 
-2. Initialize Elastic Beanstalk (first time only):
-   ```
+2. **Initialize Elastic Beanstalk** (only if you haven't done this before)
+   ```bash
    eb init
    ```
-   - Select the region where you want to deploy
-   - Create a new application or select an existing one
-   - Choose Node.js as the platform
+   Follow the prompts to configure your EB application.
 
-3. Create a new environment (first time only):
-   ```
+3. **Create an Elastic Beanstalk environment** (only if you don't have one)
+   ```bash
    eb create docway360-env
    ```
 
-4. Set environment variables:
-   ```
-   eb setenv AWS_S3_BUCKET_NAME=your-bucket-name AWS_REGION=your-region AWS_ACCESS_KEY_ID=your-access-key AWS_SECRET_ACCESS_KEY=your-secret-key NODE_ENV=production
+4. **Set environment variables**
+   ```bash
+   eb setenv AWS_S3_BUCKET_NAME=your-bucket-name \
+             AWS_REGION=your-region \
+             AWS_ACCESS_KEY_ID=your-access-key \
+             AWS_SECRET_ACCESS_KEY=your-secret-key \
+             NODE_ENV=production
    ```
 
-5. Deploy the application:
-   ```
+5. **Deploy the application**
+   ```bash
    eb deploy
    ```
 
-6. Open the application in a browser:
-   ```
+6. **View the deployed application**
+   ```bash
    eb open
    ```
 
 ## Troubleshooting
 
-- If you encounter issues with deployment, check the Elastic Beanstalk logs using:
-  ```
-  eb logs
-  ```
+### Common Issues
 
-- For permission issues, ensure your AWS credentials have the necessary permissions for S3 and Elastic Beanstalk
+1. **Deployment fails with option_settings validation error**
+   - This is resolved in the latest version. If you're still experiencing this issue, make sure to pull the latest changes from the repository.
 
-- For CORS issues, verify that your S3 bucket has the appropriate CORS configuration
+2. **Application doesn't start after deployment**
+   - Check the logs with `eb logs`
+   - Verify that all environment variables are set correctly
 
-## Alternative Deployment Options
+3. **CORS issues with S3**
+   - Ensure your S3 bucket has the appropriate CORS configuration
+   - Make sure the AWS_REGION environment variable matches your S3 bucket's region
 
-### AWS App Runner
+4. **Node.js version issues**
+   - The application uses Node.js 18+. Make sure your Elastic Beanstalk environment is configured with a compatible Node.js version.
 
-For a simpler deployment that doesn't require as much configuration, you can use AWS App Runner:
+## Notes
 
-1. Push your code to a GitHub repository
-2. Set up AWS App Runner to deploy from your repository
-3. Configure environment variables for AWS credentials and S3 bucket information
+- The application uses the Node.js platform on Elastic Beanstalk
+- Static files are served from the `/dist` directory
+- The application listens on port 8080 by default
+- Environment variables are essential for proper functionality
+
+## Updating the Deployment
+
+To update an existing deployment:
+
+1. Make your changes to the code
+2. Build the application: `npm run build`
+3. Deploy: `eb deploy`
+
+## Cleanup
+
+To delete your Elastic Beanstalk environment:
+```bash
+eb terminate
+```
+
+**Warning**: This will permanently delete your environment and all associated resources.
