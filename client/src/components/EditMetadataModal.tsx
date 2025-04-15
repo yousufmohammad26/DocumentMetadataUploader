@@ -146,13 +146,13 @@ export function EditMetadataModal({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 pt-2">
-            {/* Document Name */}
+            {/* Topology */}
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Document Name</FormLabel>
+                  <FormLabel>Topology</FormLabel>
                   <FormControl>
                     <Input {...field} />
                   </FormControl>

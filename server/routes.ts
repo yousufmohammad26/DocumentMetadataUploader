@@ -159,7 +159,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const fileName = objectDetails.Metadata?.['original-filename'] || object.Key.split('-').slice(1).join('-');
           const contentType = objectDetails.Metadata?.['content-type'] || objectDetails.ContentType || 'application/octet-stream';
           
-          // If document name is not in metadata, use the filename without extension
+          // If topology is not in metadata, use the filename without extension
           const fileBaseName = fileName.replace(/\.[^/.]+$/, ""); // Remove file extension
           const docName = objectDetails.Metadata?.['document-name'] || fileBaseName;
           
@@ -382,7 +382,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get the original filename
       const fileName = req.file.originalname;
       
-      // Extract base filename without extension for use as document name
+      // Extract base filename without extension for use as topology
       const fileBaseName = fileName.replace(/\.[^/.]+$/, ""); // Remove file extension
       
       // Get metadata from request body - use filename as default document name if none provided
