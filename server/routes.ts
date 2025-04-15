@@ -395,11 +395,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get the original filename
       const fileName = req.file.originalname;
       
-      // Extract base filename without extension for use as topology
-      const fileBaseName = fileName.replace(/\.[^/.]+$/, ""); // Remove file extension
+      // Create a unique file key with UUID first, then the original filename
+      const uuid = uuidv4();
+      const fileKey = `${uuid}-${fileName}`;
       
-      // Get metadata from request body - use filename as default topology if none provided
-      const docName = req.body.topology || req.body.name || fileBaseName;
+      // Get metadata from request body - if no topology is specified, use the file key as the topology
+      const docName = req.body.topology || req.body.name || fileKey;
       let metadataArr = [];
       
       try {
@@ -412,10 +413,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const accessLevel = req.body.accessLevel || 'private';
-      
-      // Create a unique file key with UUID first, then the original filename
-      const uuid = uuidv4();
-      const fileKey = `${uuid}-${fileName}`;
       
       // Prepare S3 metadata
       const s3Metadata: Record<string, string> = {

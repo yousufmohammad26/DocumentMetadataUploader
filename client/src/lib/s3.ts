@@ -72,75 +72,88 @@ export async function uploadFileToS3(
     // Use XMLHttpRequest for upload progress tracking
     const xhr = new XMLHttpRequest();
     
-    await new Promise<void>((resolve, reject) => {
-      xhr.upload.addEventListener('progress', (event) => {
-        if (event.lengthComputable) {
-          // Calculate progress between 20% and 90%
-          const percentage = 10 + (event.loaded / event.total) * 80;
-          onProgress({ 
-            percentage: Math.round(percentage), 
-            status: 'Uploading to server...' 
-          });
-        }
-      });
-      
-      xhr.addEventListener('load', () => {
-        console.log('XHR response received');
-        console.log('XHR response status:', xhr.status);
-        console.log('XHR response headers:', xhr.getAllResponseHeaders());
-        console.log('XHR response text:', xhr.responseText);
+    console.log('Setting up XHR request and response handling...');
+    try {
+      await new Promise<void>((resolve, reject) => {
+        console.log('Inside promise executor...');
+        xhr.upload.addEventListener('progress', (event) => {
+          if (event.lengthComputable) {
+            // Calculate progress between 20% and 90%
+            const percentage = 10 + (event.loaded / event.total) * 80;
+            onProgress({ 
+              percentage: Math.round(percentage), 
+              status: 'Uploading to server...' 
+            });
+          }
+        });
         
-        if (xhr.status >= 200 && xhr.status < 300) {
-          try {
-            const response = JSON.parse(xhr.responseText);
-            console.log('Server response parsed:', response);
-            
-            if (response.success) {
-              console.log('Upload success flag received, resolving promise');
-              resolve();
-            } else {
-              console.error('Server returned success:false flag with message:', response.message);
-              reject(new Error(response.message || 'Upload failed'));
+        xhr.addEventListener('load', () => {
+          console.log('XHR load event fired');
+          console.log('XHR response status:', xhr.status);
+          console.log('XHR response headers:', xhr.getAllResponseHeaders());
+          console.log('XHR response text:', xhr.responseText);
+          
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              console.log('Server response parsed successfully:', response);
+              
+              if (response.success) {
+                console.log('Upload success flag received, resolving promise');
+                resolve();
+              } else {
+                console.error('Server returned success:false flag with message:', response.message);
+                reject(new Error(response.message || 'Upload failed'));
+              }
+            } catch (e) {
+              console.error('Failed to parse server response as JSON:', e);
+              console.error('Raw response text:', xhr.responseText);
+              reject(new Error('Invalid server response - could not parse JSON'));
             }
-          } catch (e) {
-            console.error('Failed to parse server response as JSON:', e);
-            console.error('Raw response text:', xhr.responseText);
-            reject(new Error('Invalid server response - could not parse JSON'));
+          } else {
+            console.error('HTTP error status:', xhr.status, xhr.statusText);
+            try {
+              const errorResponse = JSON.parse(xhr.responseText);
+              console.error('Error response details:', errorResponse);
+              reject(new Error(errorResponse.message || `Upload failed with status ${xhr.status}`));
+            } catch (e) {
+              console.error('Error response not JSON parseable:', e);
+              reject(new Error(`Upload failed with status ${xhr.status}`));
+            }
           }
-        } else {
-          console.error('HTTP error status:', xhr.status, xhr.statusText);
-          try {
-            const errorResponse = JSON.parse(xhr.responseText);
-            console.error('Error response details:', errorResponse);
-            reject(new Error(errorResponse.message || `Upload failed with status ${xhr.status}`));
-          } catch (e) {
-            console.error('Error response not JSON parseable:', e);
-            reject(new Error(`Upload failed with status ${xhr.status}`));
-          }
-        }
+        });
+        
+        xhr.addEventListener('error', (e) => {
+          console.error('XHR network error event:', e);
+          reject(new Error('Upload failed due to network error'));
+        });
+        
+        xhr.addEventListener('abort', () => {
+          console.warn('XHR abort event received');
+          reject(new Error('Upload aborted'));
+        });
+        
+        // Actually send the request
+        console.log('Opening XHR connection...');
+        xhr.open('POST', '/api/documents/upload');
+        console.log('Sending form data...');
+        xhr.send(formData);
+        console.log('XHR request sent');
       });
       
-      xhr.addEventListener('error', (e) => {
-        console.error('XHR network error event:', e);
-        reject(new Error('Upload failed due to network error'));
-      });
+      console.log('Promise resolved successfully');
+      onProgress({ percentage: 100, status: 'Complete' });
       
-      xhr.addEventListener('abort', () => {
-        console.warn('XHR abort event received');
-        reject(new Error('Upload aborted'));
-      });
-      
-      xhr.open('POST', '/api/documents/upload');
-      xhr.send(formData);
-    });
-    
-    onProgress({ percentage: 100, status: 'Complete' });
-    
-    // Refresh document list
-    return {
-      success: true,
-      message: 'Document successfully uploaded!'
-    };
+      // Successfully completed
+      console.log('Returning success result');
+      return {
+        success: true,
+        message: 'Document successfully uploaded!'
+      };
+    } catch (xhrError) {
+      console.error('Promise rejection caught:', xhrError);
+      throw xhrError; // Re-throw to be caught by the outer try/catch
+    }
   } catch (error) {
     console.error('Upload function error:', error);
     return {
