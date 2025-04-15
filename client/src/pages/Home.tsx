@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { DocumentMetadata, documentMetadataSchema, MetadataKeyValue } from "@shared/schema";
@@ -40,24 +40,12 @@ import {
   Search,
   Download,
   Edit,
-  Trash2,
   Plus,
   X,
   Eye,
   RefreshCw,
   RotateCw,
 } from "lucide-react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 
 export default function Home() {
   const { toast } = useToast();
@@ -143,30 +131,7 @@ export default function Home() {
     queryKey: ["/api/aws-account"],
   });
 
-  // Mutation for deleting documents
-  const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      await apiRequest("DELETE", `/api/documents/${id}`);
-    },
-    onSuccess: () => {
-      // Invalidate documents query to refresh the list
-      queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
-      toast({
-        title: "Success",
-        description: "Document successfully deleted",
-        variant: "default",
-      });
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: "Failed to delete document",
-        variant: "destructive",
-      });
-    },
-  });
+
 
   // View document in preview modal
   const handleViewInPreview = async (id: number) => {
@@ -882,35 +847,6 @@ export default function Home() {
                             >
                               <Edit className="h-4 w-4 mr-1" /> Edit Metadata
                             </Button>
-                            <Separator orientation="vertical" className="mx-2 h-4 self-center" />
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button 
-                                  variant="link" 
-                                  size="sm" 
-                                  className="text-red-500 hover:text-red-700"
-                                >
-                                  <Trash2 className="h-4 w-4 mr-1" /> Delete
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete the document
-                                    and remove the data from the server.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={() => deleteMutation.mutate(doc.id)}
-                                  >
-                                    Delete
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
                           </motion.div>
                         </div>
                       </motion.li>
