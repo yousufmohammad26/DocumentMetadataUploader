@@ -1,5 +1,9 @@
-// This is a production server that will serve our built files
-// and also handle API requests with proper error handling
+#!/usr/bin/env node
+
+/**
+ * Production server for Docway 360 Document Manager
+ * This simplified server will run on AWS Elastic Beanstalk
+ */
 const express = require('express');
 const { createServer } = require('http');
 const path = require('path');
