@@ -109,9 +109,9 @@ export function EditMetadataModal({
       });
       
       // Prepare update payload - keep metadata as array for server
-      // The server will handle the conversion to object format
+      // Since we removed the topology field from the UI, we'll use the existing document name
       const updatePayload = {
-        name: data.name,
+        name: documentName, // Keep original topology/name value
         metadata: filteredMetadata,
         accessLevel: data.accessLevel
       };
@@ -157,20 +157,6 @@ export function EditMetadataModal({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6 pt-2">
-            {/* Topology */}
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Topology</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             {/* Access Level */}
             <FormField
