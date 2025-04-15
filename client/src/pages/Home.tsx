@@ -480,7 +480,34 @@ export default function Home() {
                   Add files to your S3 bucket with metadata information for better organization.
                 </p>
                 
-
+                <div className="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:shadow transition-shadow duration-300">
+                  <div className="px-5 py-4 bg-gray-100 border-b border-gray-200">
+                    <div className="flex items-center">
+                      <ClipboardList className="h-4 w-4 text-gray-600 mr-2" />
+                      <h3 className="text-sm font-semibold text-gray-900">Upload Logs</h3>
+                    </div>
+                  </div>
+                  <div className="px-5 py-4 max-h-[200px] overflow-y-auto text-xs font-mono">
+                    <div className="space-y-2">
+                      {Array.isArray(documents) && documents.length > 0 ? (
+                        documents.map((doc, index) => (
+                          <div key={index} className="p-2 border-l-2 border-green-400 bg-gray-50">
+                            <span className="text-gray-400">[{formatDate(doc.uploadedAt, true)}]</span>{' '}
+                            <span className="text-green-600">Success:</span> Uploaded{' '}
+                            <span className="font-semibold">{doc.name}</span>{' '}
+                            ({formatFileSize(doc.fileSize)})
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-2 border-l-2 border-blue-400 bg-gray-50">
+                          <span className="text-gray-400">[{new Date().toLocaleString()}]</span>{' '}
+                          <span className="text-blue-600">Info:</span> No upload logs available.
+                          Upload your first document to see logs here.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
               </div>
             </div>
