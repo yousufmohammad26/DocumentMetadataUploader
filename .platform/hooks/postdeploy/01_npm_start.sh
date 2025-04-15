@@ -1,17 +1,24 @@
 #!/bin/bash
-# Add logging for debugging
-echo "Starting application in postdeploy hook" >> /var/log/eb-hooks.log
-cd /var/app/current
+
+# Log deployment progress
+echo "[$(date)] Starting application..." > /var/log/app-deploy.log
 
 # Set environment variables
 export NODE_ENV=production
+export PORT=8080
 
-# Start application with node server.js (matching Procfile)
-if node server.js > /var/log/app.log 2>&1 & then
-  echo "Application started successfully" >> /var/log/eb-hooks.log
+cd /var/app/current
+
+# Start application
+node server.js > /var/log/app.log 2>&1 &
+APP_PID=$!
+
+# Check if process started successfully
+if ps -p $APP_PID > /dev/null; then
+  echo "[$(date)] Application started successfully with PID: $APP_PID" >> /var/log/app-deploy.log
+  # Save PID to file
+  echo $APP_PID > /var/app/current/app.pid
 else
-  echo "Failed to start application, exit code: $?" >> /var/log/eb-hooks.log
+  echo "[$(date)] FAILED TO START APPLICATION" >> /var/log/app-deploy.log
+  exit 1
 fi
-
-# Save PID to file for reference
-echo $! > /var/app/current/app.pid
