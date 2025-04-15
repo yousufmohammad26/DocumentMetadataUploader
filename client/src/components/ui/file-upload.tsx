@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { ALLOWED_FILE_TYPES, MAX_FILE_SIZE, formatFileSize } from "@/lib/s3";
-import { AlertCircle, X, Upload } from "lucide-react";
+import { AlertCircle, FileText, X, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface FileUploadProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -103,13 +103,13 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
         >
           {!selectedFile ? (
             <div className="space-y-4 text-center w-full">
-              <div className="p-3 rounded-full bg-primary/10 mx-auto w-16 h-16 flex items-center justify-center">
-                <Upload className="h-8 w-8 text-primary" />
+              <div>
+                <Upload className="h-8 w-8 text-gray-400 mx-auto" />
               </div>
               <div className="flex flex-col items-center text-sm text-gray-600">
                 <label
                   htmlFor={props.id || "file-upload"}
-                  className="relative cursor-pointer bg-primary text-white px-4 py-2 rounded-md font-medium hover:bg-primary/90 focus-within:outline-none shadow transition-all duration-200 hover:shadow-md mb-2"
+                  className="relative cursor-pointer bg-gray-100 text-gray-700 px-4 py-2 rounded-md font-medium hover:bg-gray-200 focus-within:outline-none mb-2"
                 >
                   <span className="flex items-center">
                     <Upload className="h-4 w-4 mr-2" />
@@ -139,16 +139,16 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
               </p>
             </div>
           ) : (
-            <div className="flex items-center w-full bg-white/50 p-3 rounded-lg">
+            <div className="flex items-center w-full bg-gray-50 p-3 rounded-lg">
               <div className="flex-shrink-0">
-                <div className={`h-12 w-12 flex items-center justify-center rounded-md bg-primary/10 text-primary border border-primary/20`}>
+                <div className="h-12 w-12 flex items-center justify-center rounded-md bg-gray-100 text-gray-500 border border-gray-200">
                   <FileText className="h-6 w-6" />
                 </div>
               </div>
               <div className="ml-4 flex-1">
                 <p className="text-sm font-medium text-gray-900 truncate max-w-xs">{selectedFile.name}</p>
                 <p className="text-xs text-gray-500 flex items-center">
-                  <span className="bg-primary/10 text-primary px-2 py-0.5 rounded text-xs font-medium mr-2">
+                  <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs font-medium mr-2">
                     {selectedFile.type.split('/')[1]?.toUpperCase() || 'FILE'}
                   </span>
                   {formatFileSize(selectedFile.size)}
@@ -156,7 +156,7 @@ export const FileUpload = React.forwardRef<HTMLInputElement, FileUploadProps>(
               </div>
               <button
                 type="button"
-                className="ml-2 text-gray-400 hover:text-gray-500 bg-white/80 hover:bg-red-50 hover:text-red-500 p-2 rounded-full transition-colors"
+                className="ml-2 text-gray-400 hover:text-gray-500 bg-white p-2 rounded-full"
                 onClick={clearSelectedFile}
               >
                 <span className="sr-only">Remove file</span>

@@ -405,16 +405,15 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <header className="bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+      <header className="bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center">
-              <Upload className="h-8 w-8 mr-3" />
-              <h1 className="text-2xl font-bold tracking-tight">Document Metadata Uploader</h1>
+              <h1 className="text-xl font-semibold text-gray-800">Document Metadata Uploader</h1>
             </div>
-            <div className="flex items-center space-x-6">
-              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 shadow-sm">
-                <span className="text-sm text-white">
+            <div className="flex items-center space-x-4">
+              <div>
+                <span className="text-sm text-gray-600">
                   Connected to AWS Account {isLoadingAwsAccount ? '...' : awsAccount.accountIdentifier}
                 </span>
                 <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -425,41 +424,25 @@ export default function Home() {
               {/* User Profile with Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <motion.div 
-                    className="cursor-pointer flex items-center bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 transition-all duration-200"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  >
-                    <Avatar className="h-9 w-9 border-2 border-white shadow-sm">
+                  <div className="cursor-pointer flex items-center">
+                    <Avatar className="h-8 w-8 border border-gray-200">
                       <AvatarImage src="/assets/Profile.jpg" alt="User Profile" />
                       <AvatarFallback>YM</AvatarFallback>
                     </Avatar>
                     <div className="ml-2 text-sm hidden sm:block">
-                      <p className="font-medium text-white">Yousuf Mohammad</p>
-                      <p className="text-xs text-white/70">Administrator</p>
+                      <p className="font-medium text-gray-700">Yousuf Mohammad</p>
+                      <p className="text-xs text-gray-500">Administrator</p>
                     </div>
-                  </motion.div>
+                  </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <User className="h-4 w-4 mr-2" />
-                    Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Settings className="h-4 w-4 mr-2" />
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <FileText className="h-4 w-4 mr-2" />
-                    Documents
-                  </DropdownMenuItem>
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuItem>Settings</DropdownMenuItem>
+                  <DropdownMenuItem>Documents</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign out
-                  </DropdownMenuItem>
+                  <DropdownMenuItem>Sign out</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -478,7 +461,7 @@ export default function Home() {
                   <div className="p-2 rounded-full bg-primary/10 mr-3">
                     <Upload className="h-5 w-5 text-primary" />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Upload Document</h2>
+                  <h2 className="text-xl font-bold text-gray-900">Upload Document</h2>
                 </div>
                 <p className="mt-1 text-sm text-gray-600 mb-6 pl-10">
                   Add files to your S3 bucket with metadata information for better organization.
