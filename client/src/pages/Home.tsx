@@ -231,10 +231,7 @@ export default function Home() {
 
   // Handle file upload
   const handleUpload = async (data: DocumentMetadata) => {
-    console.log('handleUpload called with data:', data);
-    
     if (!selectedFile) {
-      console.log('No file selected');
       // Alert user to select a file but don't set form submission state
       toast({
         title: "Action Required",
@@ -244,18 +241,14 @@ export default function Home() {
       return;
     }
     
-    console.log('Selected file:', selectedFile.name, selectedFile.type, selectedFile.size);
-    
     setIsUploading(true);
     setUploadProgress({ percentage: 0, status: "Starting upload..." });
 
     try {
-      console.log('Starting file upload to S3...');
+      // Start the upload to S3
       const result = await uploadFileToS3(selectedFile, data, setUploadProgress);
-      console.log('Upload complete with result:', result);
 
       if (result.success) {
-        console.log('Upload success! Showing success toast FIRST...');
           
         // Show success toast BEFORE any form reset operations
         // This ensures the toast is displayed and not affected by form operations
@@ -265,18 +258,7 @@ export default function Home() {
           variant: "default",
         });
         
-        // Also try with direct import to ensure it works
-        import("@/hooks/use-toast").then(module => {
-          const { toast: directToast } = module;
-          directToast({
-            title: "UPLOAD COMPLETE",
-            description: "Your document has been saved to S3 successfully!",
-            variant: "default",
-          });
-        });
-          
-        console.log('Now resetting form state...');
-        
+        // Reset form state after toast is displayed
         try {
           // Reset form state completely, including isSubmitted flag
           form.reset();
@@ -286,10 +268,7 @@ export default function Home() {
           
           // Use the custom clearFile method we defined in the FileUpload component
           if (fileUploadRef.current && fileUploadRef.current.clearFile) {
-            console.log('Clearing file input via ref...');
             fileUploadRef.current.clearFile();
-          } else {
-            console.log('Warning: fileUploadRef.current or clearFile method not available');
           }
           
           // Reset form submission state by creating a new instance
@@ -298,13 +277,11 @@ export default function Home() {
             value: false,
             writable: true
           });
-          console.log('Form state reset complete.');
         } catch (resetError) {
           console.error('Error during form reset:', resetError);
         }
         
         // Refresh all data including documents list to show the new document
-        console.log('Refreshing document list and stats after successful upload...');
         queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
         queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
         queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
@@ -339,7 +316,6 @@ export default function Home() {
       
       if (result.success) {
         // Simply invalidate the documents query to refresh the list
-        console.log('Synchronization complete, refreshing document list...');
         queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
         
         // Also refresh stats and account info
