@@ -371,24 +371,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Server-side upload endpoint to bypass CORS issues
   app.post('/api/documents/upload', upload.single('file'), async (req: Request, res: Response) => {
-    console.log('Upload request received');
-    console.log('Request body:', JSON.stringify(req.body));
-    console.log('Request headers:', JSON.stringify(req.headers));
+    console.log('==== UPLOAD REQUEST START ====');
+    console.log('Request body keys:', Object.keys(req.body || {}));
+    console.log('Request body content-type:', req.get('Content-Type'));
+    console.log('Request topology value:', req.body.topology);
+    console.log('Request name value:', req.body.name);
     console.log('Request file details:', req.file ? JSON.stringify({
       originalname: req.file.originalname,
       mimetype: req.file.mimetype,
       size: req.file.size
-    }) : 'No file');
+    }, null, 2) : 'No file');
     
     try {
       if (!req.file) {
-        console.log('No file in request');
+        console.log('ERROR: No file in request');
         return res.status(400).json({ 
           success: false,
           message: 'No file uploaded' 
         });
       }
-      console.log('File received:', req.file.originalname);
+      console.log('File received successfully:', req.file.originalname);
 
       // Get the original filename
       const fileName = req.file.originalname;
@@ -501,10 +503,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         document
       });
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error('==== UPLOAD ERROR DETAILS ====');
+      console.error('Error type:', error?.constructor?.name);
+      console.error('Error message:', error instanceof Error ? error.message : 'Unknown error');
+      console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace available');
+      
+      // Return a more detailed error message to the client
+      let errorMessage = 'Failed to upload document';
+      if (error instanceof Error) {
+        errorMessage = `Upload failed: ${error.message}`;
+      }
+      
       res.status(500).json({ 
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to upload document'
+        message: errorMessage
       });
     }
   });

@@ -307,35 +307,46 @@ export default function Home() {
       console.log('Upload complete with result:', result);
 
       if (result.success) {
-        // Reset form state completely, including isSubmitted flag
-        form.reset();
-        form.clearErrors();
-        setSelectedFile(null);
-        setUploadProgress(null);
+        console.log('Upload success! Resetting form state...');
         
-        // Use the custom clearFile method we defined in the FileUpload component
-        if (fileUploadRef.current && fileUploadRef.current.clearFile) {
-          fileUploadRef.current.clearFile();
+        try {
+          // Reset form state completely, including isSubmitted flag
+          form.reset();
+          form.clearErrors();
+          setSelectedFile(null);
+          setUploadProgress(null);
+          
+          // Use the custom clearFile method we defined in the FileUpload component
+          if (fileUploadRef.current && fileUploadRef.current.clearFile) {
+            console.log('Clearing file input via ref...');
+            fileUploadRef.current.clearFile();
+          } else {
+            console.log('Warning: fileUploadRef.current or clearFile method not available');
+          }
+          
+          // Reset form submission state by creating a new instance
+          const formState = form.formState;
+          Object.defineProperty(formState, 'isSubmitted', {
+            value: false,
+            writable: true
+          });
+          console.log('Form state reset complete. Showing success toast...');
+          
+          // Show success toast
+          toast({
+            title: "Success",
+            description: "Document successfully uploaded!",
+            variant: "default",
+          });
+          
+          // Refresh document list, stats and AWS account info
+          console.log('Refreshing queries...');
+          queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+          queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
+        } catch (resetError) {
+          console.error('Error during form reset:', resetError);
         }
-        
-        // Reset form submission state by creating a new instance
-        const formState = form.formState;
-        Object.defineProperty(formState, 'isSubmitted', {
-          value: false,
-          writable: true
-        });
-        
-        // Show success toast
-        toast({
-          title: "Success",
-          description: "Document successfully uploaded!",
-          variant: "default",
-        });
-        
-        // Refresh document list, stats and AWS account info
-        queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
-        queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
-        queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
       } else {
         toast({
           title: "Error",

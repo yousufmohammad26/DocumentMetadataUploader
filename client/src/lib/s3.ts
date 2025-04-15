@@ -85,41 +85,48 @@ export async function uploadFileToS3(
       });
       
       xhr.addEventListener('load', () => {
+        console.log('XHR response received');
         console.log('XHR response status:', xhr.status);
+        console.log('XHR response headers:', xhr.getAllResponseHeaders());
         console.log('XHR response text:', xhr.responseText);
         
         if (xhr.status >= 200 && xhr.status < 300) {
           try {
             const response = JSON.parse(xhr.responseText);
-            console.log('Server response:', response);
+            console.log('Server response parsed:', response);
             
             if (response.success) {
+              console.log('Upload success flag received, resolving promise');
               resolve();
             } else {
-              console.error('Server returned error:', response.message);
+              console.error('Server returned success:false flag with message:', response.message);
               reject(new Error(response.message || 'Upload failed'));
             }
           } catch (e) {
-            console.error('Failed to parse response:', xhr.responseText, e);
-            reject(new Error('Invalid server response'));
+            console.error('Failed to parse server response as JSON:', e);
+            console.error('Raw response text:', xhr.responseText);
+            reject(new Error('Invalid server response - could not parse JSON'));
           }
         } else {
-          console.error('HTTP error:', xhr.status, xhr.statusText);
+          console.error('HTTP error status:', xhr.status, xhr.statusText);
           try {
             const errorResponse = JSON.parse(xhr.responseText);
-            console.error('Error details:', errorResponse);
+            console.error('Error response details:', errorResponse);
             reject(new Error(errorResponse.message || `Upload failed with status ${xhr.status}`));
           } catch (e) {
+            console.error('Error response not JSON parseable:', e);
             reject(new Error(`Upload failed with status ${xhr.status}`));
           }
         }
       });
       
-      xhr.addEventListener('error', () => {
+      xhr.addEventListener('error', (e) => {
+        console.error('XHR network error event:', e);
         reject(new Error('Upload failed due to network error'));
       });
       
       xhr.addEventListener('abort', () => {
+        console.warn('XHR abort event received');
         reject(new Error('Upload aborted'));
       });
       
