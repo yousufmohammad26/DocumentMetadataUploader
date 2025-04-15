@@ -8,6 +8,7 @@ import { DocumentMetadata, documentMetadataSchema, MetadataKeyValue } from "@sha
 import { FileUpload } from "@/components/ui/file-upload";
 import { uploadFileToS3, formatFileSize, formatDate, UploadProgress, getMetadataTagColors, getDocumentThumbnail } from "@/lib/s3";
 import { DocumentPreview } from "@/components/DocumentPreview";
+import { EditMetadataModal } from "@/components/EditMetadataModal";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -80,6 +81,10 @@ export default function Home() {
     type: string;
     id: number;
   } | null>(null);
+  
+  // Edit metadata states
+  const [editMetadataOpen, setEditMetadataOpen] = useState(false);
+  const [editingDocument, setEditingDocument] = useState<DocumentData | null>(null);
 
   // Form for metadata
   const form = useForm<DocumentMetadata>({
@@ -312,6 +317,18 @@ export default function Home() {
   // Add a new empty metadata field
   const addMetadataField = () => {
     append({ key: "", value: "" });
+  };
+  
+  // Handle edit metadata
+  const handleEditMetadata = (document: DocumentData) => {
+    setEditingDocument(document);
+    setEditMetadataOpen(true);
+  };
+  
+  // Handle metadata update completion
+  const handleMetadataUpdateComplete = () => {
+    // Refresh document list after update
+    queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
   };
 
   // Filter documents based on search term
