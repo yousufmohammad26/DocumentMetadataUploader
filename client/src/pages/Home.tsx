@@ -888,9 +888,7 @@ export default function Home() {
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           Size
                         </th>
-                        <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
-                          Upload Date
-                        </th>
+
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           Access Level
                         </th>
@@ -952,9 +950,7 @@ export default function Home() {
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {formatFileSize(doc.fileSize)}
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {formatDate(doc.uploadedAt)}
-                              </td>
+
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                                   doc.accessLevel === 'public' 
