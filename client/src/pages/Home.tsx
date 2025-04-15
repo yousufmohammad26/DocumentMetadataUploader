@@ -416,8 +416,8 @@ export default function Home() {
             <div className="flex items-center">
               <img src="/logo.svg" alt="Logo" className="h-10 w-10 mr-3" />
               <div>
-                <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Uploader</h1>
-                <p className="text-xs text-gray-600">Powered by AWS S3 Tables and Yousuf Mohammad</p>
+                <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Docway 360</h1>
+                <p className="text-xs text-gray-600">Simplified document metadata tracker application</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
