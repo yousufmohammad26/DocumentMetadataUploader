@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+<svg width="800" height="300" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
@@ -9,33 +9,31 @@
   <!-- Background -->
   <rect width="100%" height="100%" fill="#f8fafc" rx="10" ry="10"/>
 
-  <!-- Title -->
-  <text x="400" y="60" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="24" fill="#0f172a">Document Metadata Architecture</text>
-  <line x1="150" y1="75" x2="650" y2="75" stroke="#cbd5e1" stroke-width="1"/>
+  <!-- Title removed -->
 
-  <!-- Boxes with different colors -->
+  <!-- Boxes with different colors - Vertically centered -->
   <!-- Browser -->
-  <rect x="50" y="140" width="140" height="100" rx="5" ry="5" fill="#e9f5f8" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#0ea5e9" stroke-width="2"/>
-  <text x="120" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#0c4a6e">Browser</text>
+  <rect x="50" y="100" width="140" height="100" rx="5" ry="5" fill="#e9f5f8" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="120" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#0c4a6e">Browser</text>
   
   <!-- S3 Bucket -->
-  <rect x="240" y="140" width="140" height="100" rx="5" ry="5" fill="#f5eee9" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#f97316" stroke-width="2"/>
-  <text x="310" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#7c2d12">S3 Bucket</text>
+  <rect x="240" y="100" width="140" height="100" rx="5" ry="5" fill="#f5eee9" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#f97316" stroke-width="2"/>
+  <text x="310" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#7c2d12">S3 Bucket</text>
   
   <!-- S3 Table Bucket -->
-  <rect x="430" y="140" width="140" height="100" rx="5" ry="5" fill="#e9eef5" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#4f46e5" stroke-width="2"/>
-  <text x="500" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#312e81">S3 Table</text>
-  <text x="500" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#312e81">Bucket</text>
+  <rect x="430" y="100" width="140" height="100" rx="5" ry="5" fill="#e9eef5" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#4f46e5" stroke-width="2"/>
+  <text x="500" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#312e81">S3 Table</text>
+  <text x="500" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#312e81">Bucket</text>
   
   <!-- Metadata Table -->
-  <rect x="620" y="140" width="140" height="100" rx="5" ry="5" fill="#e9f5ef" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#10b981" stroke-width="2"/>
-  <text x="690" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Metadata</text>
-  <text x="690" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Table</text>
+  <rect x="620" y="100" width="140" height="100" rx="5" ry="5" fill="#e9f5ef" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#10b981" stroke-width="2"/>
+  <text x="690" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Metadata</text>
+  <text x="690" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Table</text>
 
   <!-- Connection Arrows -->
-  <line x1="190" y1="190" x2="240" y2="190" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <line x1="380" y1="190" x2="430" y2="190" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <line x1="570" y1="190" x2="620" y2="190" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="190" y1="150" x2="240" y2="150" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="380" y1="150" x2="430" y2="150" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="570" y1="150" x2="620" y2="150" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
   
   <!-- Removed all descriptions and flow summary -->
 </svg>
