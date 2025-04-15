@@ -2,22 +2,13 @@
 
 ## Architecture Overview
 
-```
-┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
-│                 │      │                 │      │                 │
-│  React Frontend │<────>│  Express Server │<────>│    AWS S3       │
-│                 │      │                 │      │                 │
-└─────────────────┘      └─────────────────┘      └─────────────────┘
-       │                         │                        │
-       │                         │                        │
-       ▼                         ▼                        ▼
-┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
-│                 │      │                 │      │                 │
-│ User Interface  │      │  In-Memory      │      │ Document Storage│
-│ Components      │      │  Storage        │      │ & Metadata      │
-│                 │      │                 │      │                 │
-└─────────────────┘      └─────────────────┘      └─────────────────┘
-```
+![Architecture Diagram](/client/public/architecture_diagram.png)
+
+The architecture follows a simple flow:
+1. Browser sends requests to S3
+2. Documents are stored in S3
+3. Metadata is extracted and saved to S3 Tables
+4. User can view and manage document metadata
 
 ## Component Details
 

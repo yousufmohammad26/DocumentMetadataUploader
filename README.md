@@ -18,13 +18,14 @@ Docway 360 is a powerful document management platform designed for efficient fil
 
 ## Architecture
 
-![Docway 360 Architecture](/client/public/architecture.svg)
+![Docway 360 Architecture](/client/public/architecture_diagram.png)
 
-The application follows a simple three-tier architecture:
+The application follows a simple flow architecture:
 
-- **Frontend**: React application with Tailwind CSS and Shadcn UI components
-- **Backend**: Express server providing REST API endpoints
-- **Storage**: AWS S3 for file storage, with in-memory storage for document metadata
+1. Browser sends requests to AWS S3
+2. Documents are stored in S3
+3. Metadata is extracted and saved to S3 Tables
+4. User can view and manage document metadata
 
 For more details, see the [ARCHITECTURE.md](ARCHITECTURE.md) file.
 
