@@ -29,6 +29,7 @@ export class MemStorage implements IStorage {
     const sampleDocument: Document = {
       id: 1,
       name: "2023/Apr/sample-document-1234",
+      fileName: "sample-document.pdf",
       fileKey: "2023/Apr/sample-document-1234.pdf",
       fileSize: 1024 * 1024, // 1MB
       fileType: "application/pdf",
@@ -41,7 +42,8 @@ export class MemStorage implements IStorage {
         "author": "John Doe"
       },
       accessLevel: "private",
-      uploadedAt: new Date()
+      uploadedAt: new Date(),
+      lastUpdated: new Date()
     };
     
     this.documents.set(1, sampleDocument);

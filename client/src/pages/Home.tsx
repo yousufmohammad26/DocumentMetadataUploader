@@ -10,9 +10,6 @@ import { uploadFileToS3, formatFileSize, formatDate, UploadProgress, getMetadata
 import { getDocumentColorScheme } from "@/lib/documentColors";
 
 import { EditMetadataModal } from "@/components/EditMetadataModal";
-
-
-
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
