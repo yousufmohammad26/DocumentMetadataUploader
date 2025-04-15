@@ -82,6 +82,7 @@ import {
   PieChart,
   Tag,
   Cloud,
+  Bell,
 } from "lucide-react";
 
 
@@ -865,6 +866,25 @@ export default function Home() {
                         Sync from S3
                       </>
                     )}
+                  </Button>
+                  
+                  {/* Test Toast Button */}
+                  <Button
+                    type="button"
+                    variant="default"
+                    size="sm"
+                    onClick={() => {
+                      console.log('Test toast button clicked');
+                      toast({
+                        title: "TEST NOTIFICATION",
+                        description: "This is a test toast notification",
+                        variant: "default",
+                      });
+                    }}
+                    className="ml-2 bg-purple-600 text-white hover:bg-purple-700"
+                  >
+                    <Bell className="h-4 w-4 mr-2" />
+                    Test Toast
                   </Button>
                 </motion.div>
               </div>

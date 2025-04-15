@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -15,6 +16,21 @@ function Router() {
 }
 
 function App() {
+  // Show a welcome toast on app load
+  React.useEffect(() => {
+    // Import directly to avoid hook issues
+    import("@/hooks/use-toast").then(module => {
+      const { toast } = module;
+      setTimeout(() => {
+        toast({
+          title: "App Loaded",
+          description: "Document Metadata Uploader is ready",
+          variant: "default",
+        });
+      }, 1000);
+    });
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Router />
