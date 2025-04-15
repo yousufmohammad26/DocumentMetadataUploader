@@ -8,10 +8,10 @@ This document outlines the steps to deploy the Docway 360 document metadata appl
 2. Node.js and npm installed
 3. AWS Amplify CLI installed (`npm install -g @aws-amplify/cli`)
 4. The following environment variables needed for the application:
-   - AWS_S3_BUCKET_NAME
-   - AWS_REGION
-   - AWS_ACCESS_KEY_ID
-   - AWS_SECRET_ACCESS_KEY
+   - APP_AWS_S3_BUCKET_NAME
+   - APP_AWS_REGION
+   - APP_AWS_ACCESS_KEY_ID
+   - APP_AWS_SECRET_ACCESS_KEY
 
 ## Deployment Steps
 
@@ -46,10 +46,10 @@ Set the required environment variables in the Amplify Console:
 2. Select your app
 3. Go to "Environment variables" under "App settings"
 4. Add the following environment variables:
-   - AWS_S3_BUCKET_NAME
-   - AWS_REGION
-   - AWS_ACCESS_KEY_ID
-   - AWS_SECRET_ACCESS_KEY
+   - APP_AWS_S3_BUCKET_NAME (instead of AWS_S3_BUCKET_NAME)
+   - APP_AWS_REGION (instead of AWS_REGION)
+   - APP_AWS_ACCESS_KEY_ID (instead of AWS_ACCESS_KEY_ID)
+   - APP_AWS_SECRET_ACCESS_KEY (instead of AWS_SECRET_ACCESS_KEY)
    - NODE_ENV (set to "production")
 
 ### 4. Deploy the application
