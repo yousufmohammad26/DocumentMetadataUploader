@@ -279,11 +279,22 @@ export default function Home() {
           });
           console.log('Form state reset complete. Showing success toast...');
           
-          // Show success toast
-          toast({
-            title: "Success",
-            description: "Document successfully uploaded!",
-            variant: "default",
+          // Show success toast with direct import to ensure it works
+          // This ensures the toast is displayed even if there's an issue with the hook
+          import("@/hooks/use-toast").then(module => {
+            const { toast: directToast } = module;
+            directToast({
+              title: "SUCCESS!",
+              description: "Document successfully uploaded and saved!",
+              variant: "default",
+            });
+            
+            // Also try with the hook version
+            toast({
+              title: "Upload Complete",
+              description: "Document has been saved to S3",
+              variant: "default",
+            });
           });
         } catch (resetError) {
           console.error('Error during form reset:', resetError);
