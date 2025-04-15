@@ -395,12 +395,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get the original filename
       const fileName = req.file.originalname;
       
-      // Create a unique file key with UUID first, then the original filename
-      const uuid = uuidv4();
-      const fileKey = `${uuid}-${fileName}`;
+      // Get topology path from request body
+      const topologyPath = req.body.topology || req.body.name || '';
+      console.log('Topology path:', topologyPath);
       
-      // Get metadata from request body - if no topology is specified, use the file key as the topology
-      const docName = req.body.topology || req.body.name || fileKey;
+      // Create a unique file key with topology path, UUID, and then the original filename
+      const uuid = uuidv4();
+      console.log('Generated UUID:', uuid);
+      
+      // Compute the final file key
+      const fileKey = topologyPath ? `${topologyPath}${uuid}-${fileName}` : `${uuid}-${fileName}`;
+      console.log('Final S3 file key:', fileKey);
+      
+      // Use the topology path as the document name
+      const docName = topologyPath;
       let metadataArr = [];
       
       try {

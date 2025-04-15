@@ -538,11 +538,17 @@ export default function Home() {
                         onFileChange={(file) => {
                           setSelectedFile(file);
                           
-                          // If a file is selected, update the topology field with the file name
+                          // If a file is selected, update the topology field with Year/Month/ format
                           if (file) {
-                            const fileName = file.name;
-                            // Set the topology field value to just the file name
-                            form.setValue("name", fileName);
+                            const now = new Date();
+                            const year = now.getFullYear();
+                            // Month is 0-based, so add 1 and pad with leading zero if needed
+                            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+                            // Create the topology path with Year/Month/ format
+                            const topologyPath = `${year}/${month}/`;
+                            
+                            // Set the topology field value to the path
+                            form.setValue("name", topologyPath);
                           }
                         }}
                         error={undefined} // Removed conditional error message completely
