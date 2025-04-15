@@ -24,29 +24,6 @@ export class MemStorage implements IStorage {
     this.documents = new Map();
     this.userCurrentId = 1;
     this.documentCurrentId = 1;
-    
-    // Add sample document for UI testing
-    const sampleDocument: Document = {
-      id: 1,
-      name: "2023/Apr/sample-document-1234",
-      fileName: "sample-document.pdf",
-      fileKey: "2023/Apr/sample-document-1234.pdf",
-      fileSize: 1024 * 1024, // 1MB
-      fileType: "application/pdf",
-      metadata: {
-        "original-filename": "sample-document.pdf",
-        "topology": "2023/Apr/sample-document-1234",
-        "year": "2023",
-        "month": "Apr",
-        "department": "Engineering",
-        "author": "John Doe"
-      },
-      accessLevel: "private",
-      uploadedAt: new Date(),
-      lastUpdated: new Date()
-    };
-    
-    this.documents.set(1, sampleDocument);
   }
 
   async getUser(id: number): Promise<User | undefined> {
