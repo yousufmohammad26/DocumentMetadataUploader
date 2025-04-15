@@ -80,6 +80,7 @@ import {
   Settings,
   User,
   Upload,
+  PieChart,
 } from "lucide-react";
 
 
@@ -467,20 +468,15 @@ export default function Home() {
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="md:grid md:grid-cols-3 md:gap-6">
-            {/* Upload Section */}
-            <div className="md:col-span-1">
+            {/* Main Content */}
+            <div className="mt-5 md:mt-0 md:col-span-2">
+              {/* Empty for grid layout */}
+            </div>
+
+            {/* Sidebar */}
+            <div className="md:col-span-1 ml-auto order-last">
               <div className="px-4 sm:px-0">
-                <div className="flex items-center mb-3">
-                  <div className="p-2 rounded-full bg-primary/10 mr-3">
-                    <Upload className="h-5 w-5 text-primary" />
-                  </div>
-                  <h2 className="text-xl font-bold text-gray-900">Upload Document</h2>
-                </div>
-                <p className="mt-1 text-sm text-gray-600 mb-6 pl-10">
-                  Add files to your S3 bucket with metadata information for better organization.
-                </p>
-                
-                <div className="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:shadow transition-shadow duration-300">
+                <div className="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:shadow transition-shadow duration-300 mb-6">
                   <div className="px-5 py-4 bg-gray-100 border-b border-gray-200">
                     <div className="flex items-center">
                       <ClipboardList className="h-4 w-4 text-gray-600 mr-2" />
@@ -508,12 +504,20 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-
+                
+                {/* Architecture Diagram */}
+                <div className="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:shadow transition-shadow duration-300">
+                  <div className="px-5 py-4 bg-gray-100 border-b border-gray-200">
+                    <div className="flex items-center">
+                      <PieChart className="h-4 w-4 text-gray-600 mr-2" />
+                      <h3 className="text-sm font-semibold text-gray-900">System Architecture</h3>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <ArchitectureDiagram />
+                  </div>
+                </div>
               </div>
-            </div>
-
-            {/* Upload Form */}
-            <div className="mt-5 md:mt-0 md:col-span-2">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleUpload)}>
                   <div className="shadow-sm sm:rounded-md sm:overflow-hidden border border-gray-200">
