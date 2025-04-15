@@ -325,7 +325,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             metaObj[item.key.trim()] = item.value || '';
           }
         });
-        storageUpdateData.metadata = metaObj;
+        storageUpdateData.metadata = metaObj as any; // Type assertion to avoid TS errors
       }
       
       // Update document in storage

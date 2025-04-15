@@ -62,6 +62,17 @@ import {
   Info,
   ClipboardList,
   Presentation,
+  FileQuestion,
+  Music,
+  Video,
+  Code,
+  Filter,
+  Check,
+  ChevronDown,
+  LogOut,
+  Settings,
+  User,
+  Upload,
 } from "lucide-react";
 
 
