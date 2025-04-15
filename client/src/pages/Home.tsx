@@ -10,6 +10,7 @@ import { uploadFileToS3, formatFileSize, formatDate, UploadProgress, getMetadata
 import { getDocumentColorScheme } from "@/lib/documentColors";
 import { DocumentPreview } from "@/components/DocumentPreview";
 import { EditMetadataModal } from "@/components/EditMetadataModal";
+import { QuickPreviewModal } from "@/components/QuickPreviewModal";
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 
 import { motion, AnimatePresence } from "framer-motion";
