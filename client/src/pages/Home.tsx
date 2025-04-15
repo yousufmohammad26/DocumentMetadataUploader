@@ -346,6 +346,11 @@ export default function Home() {
         console.log('Refreshing stats and AWS account info (not document list)...');
         queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
         queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
+        
+        // Call syncFromS3 in silent mode to get the updated list of documents in reverse order
+        console.log('Calling syncFromS3 silently to update document list after upload...');
+        // Add a small delay to ensure the file is registered in S3
+        setTimeout(() => syncFromS3(true), 1000);
       } else {
         toast({
           title: "Error",
@@ -366,7 +371,7 @@ export default function Home() {
   };
   
   // Synchronize documents from S3 bucket
-  const syncFromS3 = async () => {
+  const syncFromS3 = async (silent: boolean = false) => {
     if (isSyncing) return;
     
     setIsSyncing(true);
@@ -394,13 +399,16 @@ export default function Home() {
         queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
         queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
         
-        // Show success toast
-        toast({
-          title: "Synchronization Complete",
-          description: result.message,
-          variant: "default",
-        });
+        // Show success toast only if not in silent mode
+        if (!silent) {
+          toast({
+            title: "Synchronization Complete",
+            description: result.message,
+            variant: "default",
+          });
+        }
       } else {
+        // Always show error even in silent mode
         toast({
           title: "Sync Error",
           description: result.message || "Failed to sync documents from S3",
@@ -409,6 +417,7 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Error during S3 sync:', error);
+      // Always show error even in silent mode
       toast({
         title: "Sync Error",
         description: "Failed to sync documents from S3",
@@ -908,7 +917,7 @@ export default function Home() {
                     type="button"
                     variant="outline"
                     size="default"
-                    onClick={syncFromS3}
+                    onClick={() => syncFromS3()}
                     disabled={isSyncing}
                     className="flex items-center"
                   >
@@ -959,7 +968,7 @@ export default function Home() {
                   <div className="mt-6">
                     <Button
                       type="button"
-                      onClick={syncFromS3}
+                      onClick={() => syncFromS3()}
                       disabled={isSyncing}
                       className="flex items-center mx-auto"
                     >
