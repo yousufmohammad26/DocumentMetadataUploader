@@ -2,7 +2,7 @@ import type { Express, Request, Response, NextFunction } from "express";
 import type { FileRequest } from "multer";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { S3Client, GetObjectCommand, PutObjectCommand, DeleteObjectCommand, ListObjectsV2Command, HeadObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, GetObjectCommand, PutObjectCommand, CopyObjectCommand, DeleteObjectCommand, ListObjectsV2Command, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { insertDocumentSchema, documentMetadataSchema, presignedUrlRequestSchema } from "@shared/schema";
 import * as multer from "multer";
@@ -264,6 +264,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const updateData = documentMetadataSchema.parse(req.body);
+      
+      // For S3 objects, we need to update the metadata in S3 as well
+      try {
+        // Get the existing object metadata
+        const headObjectCommand = new HeadObjectCommand({
+          Bucket: bucketName,
+          Key: document.fileKey,
+        });
+        
+        const objectMeta = await s3.send(headObjectCommand);
+        
+        // Prepare metadata for S3 (must use x-amz-meta- prefix)
+        const s3Metadata: Record<string, string> = {
+          'document-name': updateData.name,
+          'access-level': updateData.accessLevel
+        };
+        
+        // Add custom metadata with x-amz-meta- prefix for consistency with upload
+        for (const [key, value] of Object.entries(updateData.metadata || {})) {
+          const sanitizedKey = key.toLowerCase().replace(/\s+/g, '-');
+          s3Metadata[`x-amz-meta-${sanitizedKey}`] = String(value);
+        }
+        
+        // Copy the object to itself with new metadata
+        // This is the way to update metadata in S3 (we need to create a new version)
+        const copySource = `${bucketName}/${encodeURIComponent(document.fileKey)}`;
+        const copyObjectCommand = new CopyObjectCommand({
+          Bucket: bucketName,
+          Key: document.fileKey,
+          CopySource: copySource,
+          Metadata: s3Metadata,
+          MetadataDirective: 'REPLACE',
+        });
+        
+        await s3.send(copyObjectCommand);
+      } catch (s3Error) {
+        console.error('Error updating S3 metadata:', s3Error);
+        // We'll continue even if S3 update fails, but log the error
+      }
+      
+      // Update document in storage
       const updatedDocument = await storage.updateDocument(id, updateData);
       
       res.json(updatedDocument);
@@ -271,7 +312,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: fromZodError(error).message });
       }
-      res.status(500).json({ message: 'Failed to update document' });
+      console.error('Error updating document metadata:', error);
+      res.status(500).json({ message: 'Failed to update document metadata' });
     }
   });
 
