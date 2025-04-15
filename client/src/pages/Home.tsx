@@ -538,14 +538,15 @@ export default function Home() {
                         onFileChange={(file) => {
                           setSelectedFile(file);
                           
-                          // If a file is selected, update the topology field with Year/Month/ format
+                          // If a file is selected, update the topology field with Year/MMM/ format
                           if (file) {
                             const now = new Date();
                             const year = now.getFullYear();
-                            // Month is 0-based, so add 1 and pad with leading zero if needed
-                            const month = (now.getMonth() + 1).toString().padStart(2, '0');
-                            // Create the topology path with Year/Month/ format
-                            const topologyPath = `${year}/${month}/`;
+                            // Get three-letter month name (e.g., Jan, Feb, Mar, etc.)
+                            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                            const monthName = monthNames[now.getMonth()];
+                            // Create the topology path with Year/MMM/ format
+                            const topologyPath = `${year}/${monthName}/`;
                             
                             // Set the topology field value to the path
                             form.setValue("name", topologyPath);
