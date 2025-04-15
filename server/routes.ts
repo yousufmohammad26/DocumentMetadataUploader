@@ -171,12 +171,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             if (value) {
               // AWS S3 might be lowercasing the keys, so normalize here
               let metaKey = key;
-              
-              // If the prefix exists, remove it
-              if (metaKey.startsWith('x-amz-meta-')) {
-                metaKey = metaKey.replace('x-amz-meta-', '');
-              }
-              
               metadata[metaKey] = value;
             }
           });
