@@ -10,7 +10,6 @@ import { uploadFileToS3, formatFileSize, formatDate, UploadProgress, getMetadata
 import { getDocumentColorScheme } from "@/lib/documentColors";
 
 import { EditMetadataModal } from "@/components/EditMetadataModal";
-import { ToastDemo } from "@/components/ToastDemo";
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { 
@@ -729,8 +728,6 @@ export default function Home() {
             {/* Sidebar */}
             <div className="md:col-span-1 ml-auto order-last">
               <div className="px-4 sm:px-0 space-y-6">
-                {/* Toast Demo */}
-                <ToastDemo />
 
                 {/* Architecture Diagram */}
                 <div className="bg-white shadow-md rounded-lg overflow-hidden border border-blue-100 hover:shadow-lg transition-shadow duration-300">
