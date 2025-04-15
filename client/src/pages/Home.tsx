@@ -8,7 +8,7 @@ import { DocumentMetadata, documentMetadataSchema, MetadataKeyValue } from "@sha
 import { FileUpload } from "@/components/ui/file-upload";
 import { uploadFileToS3, formatFileSize, formatDate, UploadProgress, getMetadataTagColors } from "@/lib/s3";
 import { getDocumentColorScheme } from "@/lib/documentColors";
-import { DocumentPreview } from "@/components/DocumentPreview";
+
 import { EditMetadataModal } from "@/components/EditMetadataModal";
 
 import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
@@ -99,44 +99,13 @@ export default function Home() {
   const [isUploading, setIsUploading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   
-  // Document preview states
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewDocument, setPreviewDocument] = useState<{
-    url: string;
-    name: string;
-    type: string;
-    id: number;
-  } | null>(null);
+
   
   // Edit metadata states
   const [editMetadataOpen, setEditMetadataOpen] = useState(false);
   const [editingDocument, setEditingDocument] = useState<DocumentData | null>(null);
   
-  // Function to test the Edit Metadata dialog with sample data
-  const openTestMetadataDialog = () => {
-    // Sample document for testing
-    const sampleDocument: DocumentData = {
-      id: 999,
-      fileName: "sample-document.pdf",
-      fileKey: "2023/Apr/sample-document-1234.pdf",
-      fileSize: 1024 * 1024,
-      fileType: "application/pdf",
-      name: "2023/Apr/sample-document-1234",
-      metadata: {
-        "original-filename": "sample-document.pdf",
-        "topology": "2023/Apr/sample-document-1234",
-        "year": "2023",
-        "month": "Apr",
-        "department": "Engineering",
-        "author": "John Doe"
-      },
-      accessLevel: "private",
-      uploadedAt: new Date().toISOString()
-    };
-    
-    setEditingDocument(sampleDocument);
-    setEditMetadataOpen(true);
-  };
+
   
 
 
@@ -1166,17 +1135,7 @@ export default function Home() {
 
 
 
-      {/* Document Preview Modal */}
-      {previewDocument && (
-        <DocumentPreview
-          isOpen={previewOpen}
-          onClose={() => setPreviewOpen(false)}
-          documentUrl={previewDocument.url}
-          documentName={previewDocument.name}
-          documentType={previewDocument.type}
-          onDownload={() => handleDownload(previewDocument.id)}
-        />
-      )}
+
       
       {/* Edit Metadata Modal */}
       {editingDocument && (
