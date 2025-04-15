@@ -44,7 +44,13 @@ export class MemStorage implements IStorage {
   }
 
   async getAllDocuments(): Promise<Document[]> {
-    return Array.from(this.documents.values());
+    // Return documents sorted by uploadedAt in descending order (newest first)
+    return Array.from(this.documents.values())
+      .sort((a, b) => {
+        const dateA = a.uploadedAt instanceof Date ? a.uploadedAt : new Date(a.uploadedAt);
+        const dateB = b.uploadedAt instanceof Date ? b.uploadedAt : new Date(b.uploadedAt);
+        return dateB.getTime() - dateA.getTime();
+      });
   }
 
   async getDocument(id: number): Promise<Document | undefined> {
