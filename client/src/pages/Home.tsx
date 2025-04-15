@@ -922,27 +922,88 @@ export default function Home() {
                                   <div className="ml-4">
                                     <div className="text-sm font-medium text-gray-900">{doc.name}</div>
                                     <div className="text-xs text-gray-500">{doc.fileName}</div>
+                                    <div className="flex mt-2 space-x-2">
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <Button 
+                                              variant="ghost" 
+                                              size="sm" 
+                                              className="flex items-center text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-2 py-0 h-6"
+                                              onClick={() => handleViewInPreview(doc.id)}
+                                            >
+                                              <Eye className="h-3 w-3 mr-1" />
+                                              <span className="text-xs">View</span>
+                                            </Button>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>Preview document</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                      
+                                      <TooltipProvider>
+                                        <Tooltip>
+                                          <TooltipTrigger asChild>
+                                            <Button 
+                                              variant="ghost" 
+                                              size="sm" 
+                                              className="flex items-center text-green-600 hover:text-green-800 hover:bg-green-50 px-2 py-0 h-6"
+                                              onClick={() => handleDownload(doc.id)}
+                                            >
+                                              <Download className="h-3 w-3 mr-1" />
+                                              <span className="text-xs">Download</span>
+                                            </Button>
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                            <p>Download document</p>
+                                          </TooltipContent>
+                                        </Tooltip>
+                                      </TooltipProvider>
+                                    </div>
                                   </div>
                                 </div>
                               </td>
                               <td className="px-6 py-4">
-                                <div className="flex flex-wrap gap-1.5 max-w-xs">
-                                  {doc.metadata && Object.entries(doc.metadata).map(([key, value], idx) => {
-                                    const { bg, text, hoverBg } = getMetadataTagColors(key);
-                                    return (
-                                      <div 
-                                        key={idx} 
-                                        className={`inline-flex items-center px-2 py-0.5 rounded text-xs ${bg} ${text} hover:${hoverBg} transition-colors cursor-default`}
-                                        title={`${key}: ${value}`}
-                                      >
-                                        <span className="font-medium mr-1">{key}:</span>
-                                        <span className="truncate max-w-[100px]">{value}</span>
-                                      </div>
-                                    );
-                                  })}
-                                  {(!doc.metadata || Object.keys(doc.metadata).length === 0) && (
-                                    <span className="text-xs text-gray-400 italic">No metadata</span>
-                                  )}
+                                <div className="flex flex-col space-y-2">
+                                  <div className="flex flex-wrap gap-1.5 max-w-xs">
+                                    {doc.metadata && Object.entries(doc.metadata).map(([key, value], idx) => {
+                                      const { bg, text, hoverBg } = getMetadataTagColors(key);
+                                      return (
+                                        <div 
+                                          key={idx} 
+                                          className={`inline-flex items-center px-2 py-0.5 rounded text-xs ${bg} ${text} hover:${hoverBg} transition-colors cursor-default`}
+                                          title={`${key}: ${value}`}
+                                        >
+                                          <span className="font-medium mr-1">{key}:</span>
+                                          <span className="truncate max-w-[100px]">{value}</span>
+                                        </div>
+                                      );
+                                    })}
+                                    {(!doc.metadata || Object.keys(doc.metadata).length === 0) && (
+                                      <span className="text-xs text-gray-400 italic">No metadata</span>
+                                    )}
+                                  </div>
+                                  <div>
+                                    <TooltipProvider>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button 
+                                            variant="ghost" 
+                                            size="sm" 
+                                            className="flex items-center text-purple-600 hover:text-purple-800 hover:bg-purple-50 px-2 py-0 h-6"
+                                            onClick={() => handleEditMetadata(doc)}
+                                          >
+                                            <Edit className="h-3 w-3 mr-1" />
+                                            <span className="text-xs">Edit</span>
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>Edit document metadata</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    </TooltipProvider>
+                                  </div>
                                 </div>
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -958,85 +1019,7 @@ export default function Home() {
                                   {doc.accessLevel}
                                 </span>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                <div className="flex flex-col items-start space-y-2">
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button 
-                                          variant="ghost" 
-                                          size="sm" 
-                                          className="flex items-center text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50"
-                                          onClick={() => handleQuickPreview(doc)}
-                                        >
-                                          <Info className="h-4 w-4 mr-1.5" />
-                                          <span>Quick Info</span>
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>View document summary & metadata</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                  
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button 
-                                          variant="ghost" 
-                                          size="sm" 
-                                          className="flex items-center text-blue-600 hover:text-blue-800 hover:bg-blue-50"
-                                          onClick={() => handleViewInPreview(doc.id)}
-                                        >
-                                          <Eye className="h-4 w-4 mr-1.5" />
-                                          <span>View</span>
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>Preview document</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                  
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button 
-                                          variant="ghost" 
-                                          size="sm" 
-                                          className="flex items-center text-green-600 hover:text-green-800 hover:bg-green-50"
-                                          onClick={() => handleDownload(doc.id)}
-                                        >
-                                          <Download className="h-4 w-4 mr-1.5" />
-                                          <span>Download</span>
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>Download document</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                  
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <Button 
-                                          variant="ghost" 
-                                          size="sm" 
-                                          className="flex items-center text-purple-600 hover:text-purple-800 hover:bg-purple-50"
-                                          onClick={() => handleEditMetadata(doc)}
-                                        >
-                                          <Edit className="h-4 w-4 mr-1.5" />
-                                          <span>Edit Metadata</span>
-                                        </Button>
-                                      </TooltipTrigger>
-                                      <TooltipContent>
-                                        <p>Edit document metadata</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                </div>
-                              </td>
+
                             </motion.tr>
                           );
                         })}
