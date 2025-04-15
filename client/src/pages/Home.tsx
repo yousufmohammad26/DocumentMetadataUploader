@@ -371,12 +371,26 @@ export default function Home() {
     
     setIsSyncing(true);
     try {
+      // Get the sync from S3 result
       const response = await apiRequest("GET", "/api/documents/sync-from-s3");
       const result = await response.json();
       
       if (result.success) {
-        // Refresh document list, stats and AWS account info
-        queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+        // Get the latest documents after sync
+        const docsResponse = await apiRequest("GET", "/api/documents");
+        const fetchedDocs = await docsResponse.json();
+        
+        // Manipulate documents - reverse the order
+        if (Array.isArray(fetchedDocs)) {
+          console.log('Fetched documents, reversing order...');
+          // Clear existing query data and set the reversed documents
+          queryClient.setQueryData(["/api/documents"], [...fetchedDocs].reverse());
+        } else {
+          console.log('Document response is not an array, using invalidation instead');
+          queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+        }
+        
+        // Only refresh stats and account info
         queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
         queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
         
@@ -394,6 +408,7 @@ export default function Home() {
         });
       }
     } catch (error) {
+      console.error('Error during S3 sync:', error);
       toast({
         title: "Sync Error",
         description: "Failed to sync documents from S3",
