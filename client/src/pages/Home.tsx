@@ -426,12 +426,6 @@ export default function Home() {
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Uploader</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="inline-flex items-center px-3 py-1.5 rounded-lg shadow-sm border border-gray-100 bg-white">
-                <FileText className="h-4 w-4 text-blue-500 mr-2" />
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  {isLoadingAwsAccount ? 'Loading...' : awsAccount.active ? 'AWS Connected' : 'AWS Inactive'}
-                </span>
-              </div>
               
               {/* User Profile with Dropdown */}
               <DropdownMenu>
