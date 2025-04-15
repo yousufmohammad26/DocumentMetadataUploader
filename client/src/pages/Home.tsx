@@ -426,14 +426,10 @@ export default function Home() {
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Uploader</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="bg-white py-1.5 px-3 rounded-lg shadow-sm border border-gray-100">
-                <span className="text-sm text-gray-600 flex items-center">
-                  <FileText className="h-4 w-4 text-blue-500 mr-2" />
-                  <span>AWS Account: </span>
-                  <span className="font-medium ml-1">{isLoadingAwsAccount ? '...' : awsAccount.accountIdentifier}</span>
-                </span>
-                <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                  {isLoadingAwsAccount ? 'Loading...' : awsAccount.active ? 'Active' : 'Inactive'}
+              <div className="inline-flex items-center px-3 py-1.5 rounded-lg shadow-sm border border-gray-100 bg-white">
+                <FileText className="h-4 w-4 text-blue-500 mr-2" />
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  {isLoadingAwsAccount ? 'Loading...' : awsAccount.active ? 'AWS Connected' : 'AWS Inactive'}
                 </span>
               </div>
               
