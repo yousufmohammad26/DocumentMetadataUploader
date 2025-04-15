@@ -971,7 +971,7 @@ export default function Home() {
                     <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
                       <tr>
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
-                          Topology
+                          File Name
                         </th>
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           Metadata
@@ -1010,8 +1010,7 @@ export default function Home() {
                                     <FileText className={`h-5 w-5 text-${colorScheme.accentColor}`} />
                                   </div>
                                   <div className="ml-4">
-                                    <div className="text-sm font-medium text-gray-900">{doc.name}</div>
-                                    <div className="text-xs text-gray-500">{doc.fileName}</div>
+                                    <div className="text-lg font-bold text-gray-900">{doc.fileName}</div>
                                     <div className="text-xs font-mono mt-1 break-all px-2 py-1 bg-gray-50 border border-gray-200 rounded-sm">
                                       <span className="font-medium text-gray-700">Key:</span> <span className="text-blue-600">{doc.fileKey}</span>
                                     </div>
