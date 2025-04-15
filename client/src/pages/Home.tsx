@@ -391,16 +391,27 @@ export default function Home() {
     queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
   };
 
+  // Sort documents by upload date (newest first)
+  const sortedDocuments = Array.isArray(documents) 
+    ? [...documents].sort((a, b) => {
+        // Convert dates to timestamps for comparison
+        const dateA = new Date(a.uploadedAt).getTime();
+        const dateB = new Date(b.uploadedAt).getTime();
+        // Sort in descending order (newest first)
+        return dateB - dateA;
+      })
+    : [];
+  
   // Filter documents based on search term
-  const filteredDocuments = searchTerm && Array.isArray(documents)
-    ? documents.filter((doc: DocumentData) =>
+  const filteredDocuments = searchTerm && Array.isArray(sortedDocuments)
+    ? sortedDocuments.filter((doc: DocumentData) =>
         doc.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (doc.metadata && Object.entries(doc.metadata).some(([key, value]) => 
           key.toLowerCase().includes(searchTerm.toLowerCase()) || 
           String(value).toLowerCase().includes(searchTerm.toLowerCase())
         ))
       )
-    : documents;
+    : sortedDocuments;
 
   return (
     <div className="flex flex-col min-h-screen">
