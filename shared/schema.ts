@@ -18,6 +18,7 @@ export const documents = pgTable("documents", {
   metadata: jsonb("metadata").default({}).notNull(), // Store metadata as key-value pairs
   accessLevel: text("access_level").notNull().default("private"),
   uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+  lastUpdated: timestamp("last_updated").defaultNow().notNull(), // Add last updated timestamp
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -28,6 +29,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
 export const insertDocumentSchema = createInsertSchema(documents).omit({
   id: true,
   uploadedAt: true,
+  lastUpdated: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

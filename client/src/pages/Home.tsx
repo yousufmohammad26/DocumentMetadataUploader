@@ -140,6 +140,7 @@ export default function Home() {
     metadata: Record<string, string>;
     accessLevel: string;
     uploadedAt: string;
+    lastUpdated?: string; // Add optional lastUpdated field
   }
 
   // Query for retrieving documents
@@ -385,11 +386,11 @@ export default function Home() {
         const docsResponse = await apiRequest("GET", "/api/documents");
         const fetchedDocs = await docsResponse.json();
         
-        // Manipulate documents - reverse the order
+        // Our server now returns documents sorted by lastUpdated in descending order by default
         if (Array.isArray(fetchedDocs)) {
-          console.log('Fetched documents, reversing order...');
-          // Clear existing query data and set the reversed documents
-          queryClient.setQueryData(["/api/documents"], [...fetchedDocs].reverse());
+          console.log('Fetched documents, using server-side sorting by lastUpdated...');
+          // Just update the query data with the documents from the server
+          queryClient.setQueryData(["/api/documents"], fetchedDocs);
         } else {
           console.log('Document response is not an array, using invalidation instead');
           queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
