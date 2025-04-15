@@ -1,0 +1,23 @@
+# Version control
+.git
+.gitignore
+
+# Node.js
+node_modules
+npm-debug.log
+
+# Development files
+*.log
+.DS_Store
+
+# Source files (since we're deploying the built version)
+client/src
+
+# Environment variables
+.env
+.env.local
+
+# Cache and temporary files
+.cache
+.parcel-cache
+.vite
