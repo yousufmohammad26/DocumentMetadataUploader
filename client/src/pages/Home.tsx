@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { DocumentMetadata, documentMetadataSchema, MetadataKeyValue } from "@shared/schema";
 import { FileUpload } from "@/components/ui/file-upload";
 import { uploadFileToS3, formatFileSize, formatDate, UploadProgress, getMetadataTagColors } from "@/lib/s3";
+import { DocumentPreview } from "@/components/DocumentPreview";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -65,6 +66,15 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  
+  // Document preview states
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewDocument, setPreviewDocument] = useState<{
+    url: string;
+    name: string;
+    type: string;
+    id: number;
+  } | null>(null);
 
   // Form for metadata
   const form = useForm<DocumentMetadata>({
@@ -158,7 +168,36 @@ export default function Home() {
     },
   });
 
-  // View document
+  // View document in preview modal
+  const handleViewInPreview = async (id: number) => {
+    try {
+      // Find the document details
+      const document = documents.find(doc => doc.id === id);
+      if (!document) {
+        throw new Error("Document not found");
+      }
+      
+      const response = await apiRequest("GET", `/api/documents/${id}/download`);
+      const { presignedUrl } = await response.json();
+      
+      // Set the preview document and open the preview modal
+      setPreviewDocument({
+        url: presignedUrl,
+        name: document.name || document.fileName,
+        type: document.fileType,
+        id: document.id
+      });
+      setPreviewOpen(true);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to preview document",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  // View document in new tab (fallback option)
   const handleView = async (id: number) => {
     try {
       const response = await apiRequest("GET", `/api/documents/${id}/download`);
@@ -822,7 +861,7 @@ export default function Home() {
                               variant="link" 
                               size="sm" 
                               className="text-primary hover:text-primary-dark"
-                              onClick={() => handleView(doc.id)}
+                              onClick={() => handleViewInPreview(doc.id)}
                             >
                               <Eye className="h-4 w-4 mr-1" /> View
                             </Button>
@@ -933,6 +972,18 @@ export default function Home() {
           </div>
         </div>
       </footer>
+      
+      {/* Document Preview Modal */}
+      {previewDocument && (
+        <DocumentPreview
+          isOpen={previewOpen}
+          onClose={() => setPreviewOpen(false)}
+          documentUrl={previewDocument.url}
+          documentName={previewDocument.name}
+          documentType={previewDocument.type}
+          onDownload={() => handleDownload(previewDocument.id)}
+        />
+      )}
     </div>
   );
 }
