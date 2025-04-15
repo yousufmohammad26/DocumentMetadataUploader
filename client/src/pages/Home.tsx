@@ -30,6 +30,12 @@ import {
 } from "@/components/ui/tooltip";
 
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from "@/components/ui/collapsible";
+
+import {
   Form,
   FormControl,
   FormField,
@@ -850,6 +856,7 @@ export default function Home() {
                           return (
                             <motion.div
                               key={doc.id}
+                              layout
                               initial={{ opacity: 0, y: 20 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
@@ -858,82 +865,110 @@ export default function Home() {
                                 stiffness: 300,
                                 damping: 25
                               }}
-                              className={`border-b border-gray-200 ${colorScheme.lightBg} ${colorScheme.hoverBg} transition-colors duration-200`}
+                              className="border border-gray-200 rounded-lg mb-4 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200"
                             >
-                              <div className="py-4 px-4 grid grid-cols-12 gap-4 items-center">
+                              {/* Main document row */}
+                              <div className={`py-4 px-4 grid grid-cols-12 gap-4 items-center ${colorScheme.headerBg}`}>
                                 {/* Document info column */}
                                 <div className="col-span-5">
                                   <div className="flex items-center space-x-3">
-                                    <div className={`flex-shrink-0 w-10 h-10 ${colorScheme.headerBg} ${colorScheme.borderColor} border rounded-lg flex items-center justify-center`}>
-                                      <IconComponent className={`h-5 w-5 ${colorScheme.accentColor}`} />
+                                    <div className={`flex-shrink-0 w-12 h-12 bg-white ${colorScheme.borderColor} border-2 rounded-lg flex items-center justify-center shadow-sm`}>
+                                      <IconComponent className={`h-6 w-6 ${colorScheme.accentColor}`} />
                                     </div>
                                     <div className="flex flex-col min-w-0">
-                                      <h3 className="text-sm font-medium text-gray-900 truncate hover:text-clip mb-1 cursor-pointer" onClick={() => handleViewInPreview(doc.id)}>
+                                      <h3 className="text-base font-semibold text-gray-900 truncate hover:text-clip cursor-pointer" onClick={() => handleViewInPreview(doc.id)}>
                                         {doc.name}
                                       </h3>
-                                      <div className="flex flex-wrap gap-2 mt-1">
-                                        {doc.metadata && Object.keys(doc.metadata).map((key, idx) => {
-                                          const { bg, text } = getMetadataTagColors(key);
-                                          return (
-                                            <span key={idx} className={`text-xs px-2 py-0.5 rounded ${bg} ${text}`}>
-                                              {key}: {doc.metadata[key]}
-                                            </span>
-                                          );
-                                        })}
-                                        {(!doc.metadata || Object.keys(doc.metadata).length === 0) && (
-                                          <span className="text-xs text-gray-500 italic">No metadata</span>
-                                        )}
-                                      </div>
+                                      <p className="text-xs text-gray-500 mt-1">
+                                        {formatDate(doc.uploadedAt)} • {formatFileSize(doc.fileSize)}
+                                      </p>
                                     </div>
                                   </div>
                                 </div>
                                 
                                 {/* File type column */}
                                 <div className="col-span-2 text-center">
-                                  <span className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${colorScheme.headerBg} ${colorScheme.accentColor}`}>
+                                  <span className={`text-xs uppercase font-medium px-3 py-1.5 rounded-full ${colorScheme.headerBg} ${colorScheme.accentColor} border ${colorScheme.borderColor}`}>
                                     {doc.fileType.split('/')[1] || doc.fileType}
                                   </span>
                                 </div>
                                 
-                                {/* File size column */}
-                                <div className="col-span-2 text-center text-sm text-gray-600">
-                                  {formatFileSize(doc.fileSize)}
-                                  <div className="text-xs text-gray-500 mt-1">
-                                    {formatDate(doc.uploadedAt)}
-                                  </div>
+                                {/* Metadata count */}
+                                <div className="col-span-2 text-center">
+                                  {doc.metadata && Object.keys(doc.metadata).length > 0 ? (
+                                    <div className="flex flex-col items-center">
+                                      <span className="text-sm font-medium text-gray-700">{Object.keys(doc.metadata).length}</span>
+                                      <span className="text-xs text-gray-500">metadata fields</span>
+                                    </div>
+                                  ) : (
+                                    <span className="text-xs text-gray-400 italic">No metadata</span>
+                                  )}
                                 </div>
                                 
                                 {/* Actions column */}
                                 <div className="col-span-3 flex justify-end gap-2">
                                   <Button
-                                    variant="outline"
+                                    variant="ghost"
                                     size="sm"
+                                    className="flex items-center hover:bg-white/50"
                                     onClick={() => handleViewInPreview(doc.id)}
-                                    className={`${colorScheme.borderColor} hover:${colorScheme.headerBg} transition-colors`}
                                   >
                                     <Eye className="h-4 w-4 mr-1" />
-                                    View
+                                    <span>View</span>
                                   </Button>
+                                  
                                   <Button
-                                    variant="outline"
+                                    variant="ghost"
                                     size="sm"
+                                    className="flex items-center hover:bg-white/50"
                                     onClick={() => handleDownload(doc.id)}
-                                    className={`${colorScheme.borderColor} hover:${colorScheme.headerBg} transition-colors`}
                                   >
                                     <Download className="h-4 w-4 mr-1" />
-                                    Download
+                                    <span>Download</span>
                                   </Button>
+                                  
                                   <Button
-                                    variant="outline"
+                                    variant="ghost"
                                     size="sm"
+                                    className="flex items-center hover:bg-white/50"
                                     onClick={() => handleEditMetadata(doc)}
-                                    className={`${colorScheme.borderColor} hover:${colorScheme.headerBg} transition-colors`}
                                   >
                                     <Edit className="h-4 w-4 mr-1" />
-                                    Edit
+                                    <span>Edit</span>
                                   </Button>
                                 </div>
                               </div>
+                              
+                              {/* Metadata section */}
+                              {doc.metadata && Object.keys(doc.metadata).length > 0 && (
+                                <Collapsible>
+                                  <CollapsibleTrigger asChild>
+                                    <div className="px-4 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-50">
+                                      <span className="text-sm font-medium text-gray-700">Metadata</span>
+                                      <ChevronDown className="h-4 w-4 text-gray-500" />
+                                    </div>
+                                  </CollapsibleTrigger>
+                                  <CollapsibleContent>
+                                    <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {Object.entries(doc.metadata).map(([key, value], idx) => {
+                                          const { bg, text } = getMetadataTagColors(key);
+                                          return (
+                                            <div key={idx} className="flex items-start">
+                                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${bg} ${text} mr-2`}>
+                                                {key}
+                                              </span>
+                                              <span className="text-sm text-gray-800 flex-1">
+                                                {value}
+                                              </span>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    </div>
+                                  </CollapsibleContent>
+                                </Collapsible>
+                              )}
                             </motion.div>
                           );
                         })}
