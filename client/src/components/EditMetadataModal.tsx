@@ -95,7 +95,7 @@ export function EditMetadataModal({
   
   // Validate that metadata keys don't use reserved names
   const validateMetadataKey = (key: string, index: number) => {
-    const reservedKeys = ['original-filename', 'topology'];
+    const reservedKeys = ['original-filename', 'topology', 'year', 'month'];
     const lowercaseKey = key.toLowerCase().trim();
     
     if (reservedKeys.includes(lowercaseKey)) {
@@ -114,13 +114,13 @@ export function EditMetadataModal({
     
     try {
       // Check if any metadata keys use reserved names
-      const reservedKeys = ['original-filename', 'topology'];
+      const reservedKeys = ['original-filename', 'topology', 'year', 'month'];
       let hasReservedKeys = false;
       
       // Validate each non-system metadata field
       data.metadata.forEach((item, index) => {
         // Skip validation for existing system fields
-        if (item.key === 'original-filename' || item.key === 'topology') {
+        if (item.key === 'original-filename' || item.key === 'topology' || item.key === 'year' || item.key === 'month') {
           return;
         }
         
@@ -146,12 +146,14 @@ export function EditMetadataModal({
         return;
       }
       
-      // Get and identify all fields including system fields (original-filename, topology)
+      // Get and identify all fields including system fields
       const filteredMetadata = data.metadata.filter(item => {
         // Keep all system fields and valid user fields (those with non-empty keys)
         return (
           item.key === 'original-filename' || 
           item.key === 'topology' || 
+          item.key === 'year' ||
+          item.key === 'month' ||
           (item.key.trim() !== "")
         );
       });
@@ -261,8 +263,8 @@ export function EditMetadataModal({
                 )}
 
                 {fields.map((field, index) => {
-                  // Check if this is a system field (original-filename or topology)
-                  const isSystemField = field.key === 'original-filename' || field.key === 'topology';
+                  // Check if this is a system field (original-filename, topology, year, month)
+                  const isSystemField = field.key === 'original-filename' || field.key === 'topology' || field.key === 'year' || field.key === 'month';
                   
                   return (
                     <div key={field.id} className="flex gap-3 items-start">

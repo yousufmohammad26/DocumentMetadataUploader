@@ -1137,21 +1137,7 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-gradient-to-r from-blue-50 to-indigo-50 border-t border-indigo-100 mt-12">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="text-center md:text-left mb-4 md:mb-0 flex items-center">
-              <img src="/logo.svg" alt="Logo" className="h-8 w-8 mr-2 hidden md:block" />
-              <div>
-                <h3 className="text-lg font-medium bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Manager</h3>
-                <p className="text-sm text-gray-600 mt-1">© Powered by AWS S3 Tables and Yousuf Mohammad</p>
-              </div>
-            </div>
 
-          </div>
-        </div>
-      </footer>
 
       {/* Document Preview Modal */}
       {previewDocument && (

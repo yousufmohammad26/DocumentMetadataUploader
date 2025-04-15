@@ -306,7 +306,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         // Add custom metadata entries - with strict validation of restricted keys
-        const reservedKeys = ['original-filename', 'topology'];
+        const reservedKeys = ['original-filename', 'topology', 'year', 'month'];
         
         for (const [key, value] of Object.entries(metadataObject)) {
           const sanitizedKey = key.toLowerCase().replace(/\s+/g, '-');
