@@ -761,8 +761,8 @@ export default function Home() {
                 </motion.div>
               ) : Array.isArray(filteredDocuments) && filteredDocuments.length > 0 ? (
                 <div className="p-4">
-                  <motion.div
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                  <motion.div 
+                    className="w-full"
                     layout
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -770,155 +770,136 @@ export default function Home() {
                       layout: { type: "spring", bounce: 0.2, duration: 0.6 }
                     }}
                   >
-                    <AnimatePresence initial={false}>
-                      {filteredDocuments.map((doc: DocumentData) => {
-                        // Determine which icon to use based on file type
-                        let IconComponent = FileText;
-                        if (doc.fileType.includes('image')) IconComponent = ImageIcon;
-                        if (doc.fileType.includes('sheet') || doc.fileType.includes('excel')) IconComponent = Table;
-                        if (doc.fileType.includes('presentation') || doc.fileType.includes('powerpoint')) IconComponent = Presentation;
-                        if (doc.fileType.includes('zip') || doc.fileType.includes('archive')) IconComponent = Archive;
-                        
-                        // Get document color scheme based on metadata
-                        const colorScheme = getDocumentColorScheme(doc.metadata);
-                        
-                        return (
-                          <motion.div
-                            key={doc.id}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                            whileHover={{ 
-                              scale: 1.03, 
-                              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-                            }}
-                            transition={{
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 30
-                            }}
-                            className={`bg-white rounded-xl overflow-hidden shadow hover:shadow-lg border ${colorScheme.borderColor}`}
-                        >
-                          {/* Document Header */}
-                          <div 
-                            className={`p-4 border-b ${colorScheme.headerBg} flex justify-between items-center cursor-pointer`}
-                            onClick={() => handleViewInPreview(doc.id)}
-                          >
-                            <div className="flex items-center">
-                              <div className="mr-3">
-                                <IconComponent className={`h-5 w-5 ${colorScheme.accentColor}`} />
-                              </div>
-                              <div>
-                                <h3 className="text-sm font-medium text-gray-900 truncate hover:text-clip">{doc.name}</h3>
-                                <p className="text-xs text-gray-500">
-                                  {doc.fileType.split('/')[1] || doc.fileType} • {formatFileSize(doc.fileSize)}
-                                </p>
-                              </div>
-                            </div>
-                            
-                            <div>
-                              <span 
-                                className={`px-2 py-1 text-xs rounded-full ${doc.accessLevel === 'public' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}
-                              >
-                                {doc.accessLevel}
-                              </span>
-                            </div>
-                          </div>
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+                      {/* Table header */}
+                      <div className="bg-white border-b border-gray-200 py-3 px-4 grid grid-cols-12 gap-4 font-medium text-sm text-gray-700">
+                        <div className="col-span-5">Document</div>
+                        <div className="col-span-2 text-center">Type</div>
+                        <div className="col-span-2 text-center">Size</div>
+                        <div className="col-span-3 text-right">Actions</div>
+                      </div>
+                      
+                      {/* Document rows */}
+                      <AnimatePresence initial={false}>
+                        {filteredDocuments.map((doc: DocumentData) => {
+                          // Determine which icon to use based on file type
+                          let IconComponent = FileText;
+                          if (doc.fileType.includes('image')) IconComponent = ImageIcon;
+                          if (doc.fileType.includes('sheet') || doc.fileType.includes('excel')) IconComponent = Table;
+                          if (doc.fileType.includes('presentation') || doc.fileType.includes('powerpoint')) IconComponent = Presentation;
+                          if (doc.fileType.includes('zip') || doc.fileType.includes('archive')) IconComponent = Archive;
+                          if (doc.fileType.includes('audio')) IconComponent = Music;
+                          if (doc.fileType.includes('video')) IconComponent = Video;
                           
-                          {/* Document Info */}
-                          <div className="p-4">
-                            <p className="text-xs text-gray-500 mb-3">Uploaded {formatDate(doc.uploadedAt)}</p>
-                            
-                            {/* Metadata Table */}
-                            <div className="mb-4">
-                              <h4 className={`text-xs font-semibold ${colorScheme.accentColor} uppercase mb-2`}>Metadata</h4>
-                              {doc.metadata && Object.keys(doc.metadata).length > 0 ? (
-                                <div className={`${colorScheme.headerBg} rounded border ${colorScheme.borderColor} overflow-hidden`}>
-                                  <table className="min-w-full divide-y divide-gray-200">
-                                    <tbody className="divide-y divide-gray-200">
-                                      {Object.entries(doc.metadata).map(([key, value], idx) => {
-                                        const { bg, text } = getMetadataTagColors(key);
-                                        return (
-                                          <tr key={idx} className="hover:bg-gray-100">
-                                            <td className="py-2 px-3 text-xs font-medium">
-                                              <span className={`inline-block px-2 py-1 rounded-md ${bg} ${text}`}>
-                                                {key}
-                                              </span>
-                                            </td>
-                                            <td className="py-2 px-3 text-xs text-gray-700 break-all">
-                                              {String(value)}
-                                            </td>
-                                          </tr>
-                                        );
-                                      })}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              ) : (
-                                <div className={`text-center py-3 ${colorScheme.headerBg} rounded border ${colorScheme.borderColor}`}>
-                                  <span className="text-xs text-gray-500">No metadata</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
+                          // Get document color scheme based on metadata and file type
+                          const colorScheme = getDocumentColorScheme(doc.metadata, doc.fileType);
                           
-                          {/* Actions */}
-                          <div className={`px-4 py-3 ${colorScheme.headerBg} border-t ${colorScheme.borderColor} flex justify-between`}>
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
+                          return (
+                            <motion.div
+                              key={doc.id}
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                              transition={{
+                                type: "spring",
+                                stiffness: 300,
+                                damping: 25
+                              }}
+                              className={`border-b border-gray-200 ${colorScheme.lightBg} ${colorScheme.hoverBg} transition-colors duration-200`}
+                            >
+                              <div className="py-4 px-4 grid grid-cols-12 gap-4 items-center">
+                                {/* Document info column */}
+                                <div className="col-span-5">
+                                  <div className="flex items-center space-x-3">
+                                    <div className={`flex-shrink-0 w-10 h-10 ${colorScheme.headerBg} ${colorScheme.borderColor} border rounded-lg flex items-center justify-center`}>
+                                      <IconComponent className={`h-5 w-5 ${colorScheme.accentColor}`} />
+                                    </div>
+                                    <div className="flex flex-col min-w-0">
+                                      <h3 className="text-sm font-medium text-gray-900 truncate hover:text-clip mb-1 cursor-pointer" onClick={() => handleViewInPreview(doc.id)}>
+                                        {doc.name}
+                                      </h3>
+                                      <div className="flex flex-wrap gap-2 mt-1">
+                                        {doc.metadata && Object.keys(doc.metadata).map((key, idx) => {
+                                          const { bg, text } = getMetadataTagColors(key);
+                                          return (
+                                            <span key={idx} className={`text-xs px-2 py-0.5 rounded ${bg} ${text}`}>
+                                              {key}: {doc.metadata[key]}
+                                            </span>
+                                          );
+                                        })}
+                                        {(!doc.metadata || Object.keys(doc.metadata).length === 0) && (
+                                          <span className="text-xs text-gray-500 italic">No metadata</span>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                
+                                {/* File type column */}
+                                <div className="col-span-2 text-center">
+                                  <span className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${colorScheme.headerBg} ${colorScheme.accentColor}`}>
+                                    {doc.fileType.split('/')[1] || doc.fileType}
+                                  </span>
+                                </div>
+                                
+                                {/* File size column */}
+                                <div className="col-span-2 text-center text-sm text-gray-600">
+                                  {formatFileSize(doc.fileSize)}
+                                  <div className="text-xs text-gray-500 mt-1">
+                                    {formatDate(doc.uploadedAt)}
+                                  </div>
+                                </div>
+                                
+                                {/* Actions column */}
+                                <div className="col-span-3 flex justify-end gap-2">
                                   <Button
-                                    variant="ghost"
+                                    variant="outline"
                                     size="sm"
                                     onClick={() => handleViewInPreview(doc.id)}
-                                    className="h-8 w-8 p-0"
+                                    className={`${colorScheme.borderColor} hover:${colorScheme.headerBg} transition-colors`}
                                   >
-                                    <Eye className="h-4 w-4" />
+                                    <Eye className="h-4 w-4 mr-1" />
+                                    View
                                   </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="bottom">
-                                  <p>View Document</p>
-                                </TooltipContent>
-                              </Tooltip>
-                              
-                              <Tooltip>
-                                <TooltipTrigger asChild>
                                   <Button
-                                    variant="ghost"
+                                    variant="outline"
                                     size="sm"
                                     onClick={() => handleDownload(doc.id)}
-                                    className="h-8 w-8 p-0"
+                                    className={`${colorScheme.borderColor} hover:${colorScheme.headerBg} transition-colors`}
                                   >
-                                    <Download className="h-4 w-4" />
+                                    <Download className="h-4 w-4 mr-1" />
+                                    Download
                                   </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="bottom">
-                                  <p>Download</p>
-                                </TooltipContent>
-                              </Tooltip>
-                              
-                              <Tooltip>
-                                <TooltipTrigger asChild>
                                   <Button
-                                    variant="ghost"
+                                    variant="outline"
                                     size="sm"
                                     onClick={() => handleEditMetadata(doc)}
-                                    className="h-8 w-8 p-0"
+                                    className={`${colorScheme.borderColor} hover:${colorScheme.headerBg} transition-colors`}
                                   >
-                                    <Edit className="h-4 w-4" />
+                                    <Edit className="h-4 w-4 mr-1" />
+                                    Edit
                                   </Button>
-                                </TooltipTrigger>
-                                <TooltipContent side="bottom">
-                                  <p>Edit Metadata</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </div>
-                          </motion.div>
-                        );
-                    })}
-                  </AnimatePresence>
-                </motion.div>
+                                </div>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                      </AnimatePresence>
+                      
+                      {/* Empty state when filtered documents return nothing */}
+                      {filteredDocuments.length === 0 && (
+                        <motion.div 
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="py-12 px-4 text-center"
+                        >
+                          <FileQuestion className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                          <h3 className="text-sm font-medium text-gray-900 mb-1">No documents match your search</h3>
+                          <p className="text-xs text-gray-500">Try adjusting your search criteria</p>
+                        </motion.div>
+                      )}
+                    </div>
+                  </motion.div>
                 </div>
               ) : (
                 <motion.div 
