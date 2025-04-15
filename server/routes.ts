@@ -314,8 +314,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // We'll continue even if S3 update fails, but log the error
       }
       
+      // Prepare data for storage update - we need the metadata as an object, not array
+      const storageUpdateData = { ...updateData };
+      
+      // If metadata is still in array format, convert it to object for storage
+      if (Array.isArray(storageUpdateData.metadata)) {
+        const metaObj: Record<string, string> = {};
+        storageUpdateData.metadata.forEach((item: { key: string; value: string }) => {
+          if (item.key && item.key.trim()) {
+            metaObj[item.key.trim()] = item.value || '';
+          }
+        });
+        storageUpdateData.metadata = metaObj;
+      }
+      
       // Update document in storage
-      const updatedDocument = await storage.updateDocument(id, updateData);
+      const updatedDocument = await storage.updateDocument(id, storageUpdateData);
       
       res.json(updatedDocument);
     } catch (error) {

@@ -97,18 +97,11 @@ export function EditMetadataModal({
     setIsSubmitting(true);
     
     try {
-      // Convert metadata array to object
-      const metadataObject: Record<string, string> = {};
-      data.metadata.forEach(item => {
-        if (item.key.trim()) {
-          metadataObject[item.key.trim()] = item.value;
-        }
-      });
-
-      // Prepare update payload
+      // Prepare update payload - keep metadata as array for server
+      // The server will handle the conversion to object format
       const updatePayload = {
         name: data.name,
-        metadata: metadataObject,
+        metadata: data.metadata.filter(item => item.key.trim() !== ""), // Remove empty keys
         accessLevel: data.accessLevel
       };
 
