@@ -939,35 +939,29 @@ export default function Home() {
                                 </div>
                               </div>
                               
-                              {/* Metadata section */}
+                              {/* Metadata section - always visible */}
                               {doc.metadata && Object.keys(doc.metadata).length > 0 && (
-                                <Collapsible>
-                                  <CollapsibleTrigger asChild>
-                                    <div className="px-4 py-2 flex items-center justify-between cursor-pointer hover:bg-gray-50">
-                                      <span className="text-sm font-medium text-gray-700">Metadata</span>
-                                      <ChevronDown className="h-4 w-4 text-gray-500" />
-                                    </div>
-                                  </CollapsibleTrigger>
-                                  <CollapsibleContent>
-                                    <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
-                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        {Object.entries(doc.metadata).map(([key, value], idx) => {
-                                          const { bg, text } = getMetadataTagColors(key);
-                                          return (
-                                            <div key={idx} className="flex items-start">
-                                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${bg} ${text} mr-2`}>
-                                                {key}
-                                              </span>
-                                              <span className="text-sm text-gray-800 flex-1">
-                                                {value}
-                                              </span>
-                                            </div>
-                                          );
-                                        })}
-                                      </div>
-                                    </div>
-                                  </CollapsibleContent>
-                                </Collapsible>
+                                <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
+                                  <div className="flex items-center mb-2">
+                                    <ClipboardList className="h-4 w-4 text-gray-500 mr-2" />
+                                    <span className="text-sm font-medium text-gray-700">Metadata</span>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {Object.entries(doc.metadata).map(([key, value], idx) => {
+                                      const { bg, text } = getMetadataTagColors(key);
+                                      return (
+                                        <div key={idx} className="flex items-start bg-white rounded-md p-2 shadow-sm">
+                                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${bg} ${text} mr-2`}>
+                                            {key}
+                                          </span>
+                                          <span className="text-sm text-gray-800 flex-1">
+                                            {value}
+                                          </span>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
                               )}
                             </motion.div>
                           );
