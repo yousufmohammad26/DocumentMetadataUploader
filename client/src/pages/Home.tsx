@@ -519,12 +519,12 @@ export default function Home() {
                         onFileChange={(file) => {
                           setSelectedFile(file);
                           
-                          // If a file is selected, update the document name field with the filename without extension
+                          // If a file is selected, update the topology field with the filename without extension
                           if (file) {
                             const fileName = file.name;
                             // Remove file extension
                             const fileBaseName = fileName.replace(/\.[^/.]+$/, "");
-                            // Set the document name field value
+                            // Set the topology field value
                             form.setValue("name", fileBaseName);
                           }
                         }}
@@ -573,9 +573,9 @@ export default function Home() {
                               name="name"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Document Name</FormLabel>
+                                  <FormLabel>Topology</FormLabel>
                                   <FormControl>
-                                    <Input placeholder="Enter document name" {...field} />
+                                    <Input placeholder="Enter topology" {...field} />
                                   </FormControl>
                                   <FormMessage />
                                 </FormItem>
@@ -935,7 +935,7 @@ export default function Home() {
                     <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
                       <tr>
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
-                          Document Name
+                          Topology
                         </th>
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           Metadata
