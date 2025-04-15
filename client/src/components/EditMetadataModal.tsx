@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { documentMetadataSchema, DocumentMetadata } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { X, Plus, Tag, Lock } from 'lucide-react';
+import { X, Plus, Tag, Lock, FileText, FolderTree, Calendar, CalendarDays } from 'lucide-react';
 
 import {
   Dialog,
@@ -263,68 +263,56 @@ export function EditMetadataModal({
                     System Defined Fields
                   </h3>
                   
-                  {fields.filter(field => 
-                    field.key === 'original-filename' || 
-                    field.key === 'topology' || 
-                    field.key === 'year' || 
-                    field.key === 'month'
-                  ).map((field, i) => {
-                    // Find the actual index in the fields array
-                    const index = fields.findIndex(f => f.id === field.id);
-                    
-                    return (
-                      <div key={field.id} className="flex gap-3 items-start bg-blue-50 p-2 rounded-md border border-blue-100">
-                        <div className="grid grid-cols-2 gap-3 flex-grow">
-                          <FormField
-                            control={form.control}
-                            name={`metadata.${index}.key`}
-                            render={({ field: fieldProps }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Input 
-                                    {...fieldProps} 
-                                    placeholder="Key" 
-                                    disabled={true}
-                                    className="bg-blue-50 border-blue-200"
-                                  />
-                                </FormControl>
-                                <p className="text-xs text-blue-600 mt-1">
-                                  System field (readonly)
-                                </p>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name={`metadata.${index}.value`}
-                            render={({ field: fieldProps }) => (
-                              <FormItem>
-                                <FormControl>
-                                  <Input 
-                                    {...fieldProps} 
-                                    placeholder="Value" 
-                                    disabled={true}
-                                    className="bg-blue-50 border-blue-200"
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                  <div className="grid grid-cols-2 gap-4 mt-3">
+                    {fields.filter(field => 
+                      field.key === 'original-filename' || 
+                      field.key === 'topology' || 
+                      field.key === 'year' || 
+                      field.key === 'month'
+                    ).map((field, i) => {
+                      // Get label and color based on key
+                      let bgColor;
+                      let textColor;
+                      let Icon;
+                      
+                      switch(field.key) {
+                        case 'original-filename':
+                          bgColor = 'bg-blue-100';
+                          textColor = 'text-blue-800';
+                          Icon = FileText;
+                          break;
+                        case 'topology':
+                          bgColor = 'bg-purple-100';
+                          textColor = 'text-purple-800';
+                          Icon = FolderTree;
+                          break;
+                        case 'year':
+                          bgColor = 'bg-green-100';
+                          textColor = 'text-green-800';
+                          Icon = Calendar;
+                          break;
+                        case 'month':
+                          bgColor = 'bg-amber-100';
+                          textColor = 'text-amber-800';
+                          Icon = CalendarDays;
+                          break;
+                        default:
+                          bgColor = 'bg-gray-100';
+                          textColor = 'text-gray-800';
+                          Icon = Tag;
+                      }
+                      
+                      return (
+                        <div key={field.id} className="flex flex-col p-2 rounded-md border border-blue-50">
+                          <div className={`px-2.5 py-1 rounded-md font-medium text-xs ${bgColor} ${textColor} mb-1.5 inline-flex items-center self-start`}>
+                            <Icon className="h-3 w-3 mr-1" />
+                            {field.key}
+                          </div>
+                          <div className="text-sm text-gray-700 font-medium break-all">{field.value}</div>
                         </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-10 w-10 rounded-full opacity-25 cursor-not-allowed"
-                          disabled={true}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
                 
                 {/* User Defined Fields Section */}
@@ -332,7 +320,7 @@ export function EditMetadataModal({
                   <div className="flex justify-between items-center border-b pb-1 border-gray-200">
                     <h3 className="text-sm font-medium text-gray-700 flex items-center">
                       <Tag className="h-3.5 w-3.5 mr-1.5" />
-                      User Defined Fields
+                      User Defined
                     </h3>
                   </div>
                   
