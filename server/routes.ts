@@ -161,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           // If topology is not in metadata, use the filename without extension
           const fileBaseName = fileName.replace(/\.[^/.]+$/, ""); // Remove file extension
-          const docName = objectDetails.Metadata?.['document-name'] || fileBaseName;
+          const docName = objectDetails.Metadata?.['topology'] || fileBaseName;
           
           const accessLevel = objectDetails.Metadata?.['access-level'] || 'private';
           const fileSize = object.Size || 0;
@@ -175,7 +175,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           Object.entries(objectDetails.Metadata || {}).forEach(([key, value]) => {
             if (value) {
               // Skip system metadata and extract only custom metadata entries
-              if (key !== 'document-name' && key !== 'access-level' && 
+              if (key !== 'topology' && key !== 'access-level' && 
                   key !== 'original-filename' && key !== 'content-type') {
                 metadata[key] = value;
               }
@@ -288,7 +288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Prepare metadata for S3
         const s3Metadata: Record<string, string> = {
-          'document-name': updateData.name,
+          'topology': updateData.name,
           'access-level': updateData.accessLevel
         };
         
@@ -408,7 +408,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const s3Metadata: Record<string, string> = {
         'original-filename': fileName,
         'content-type': req.file.mimetype,
-        'document-name': docName,
+        'topology': docName,
         'access-level': accessLevel
       };
       
