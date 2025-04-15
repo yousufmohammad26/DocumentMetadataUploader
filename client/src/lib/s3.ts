@@ -51,11 +51,17 @@ export async function uploadFileToS3(
     // Create a FormData object to send the file and metadata
     const formData = new FormData();
     formData.append('file', file);
+    
+    // Log what we're sending - using "name" as the form field name, even though backend looks for "topology" in metadata
+    console.log('Uploading file with metadata:', metadata);
+    
+    // Keep the field as "name" in the form data since that's what server code expects in req.body
     formData.append('name', metadata.name || '');
     formData.append('accessLevel', metadata.accessLevel || 'private');
     
     // Add metadata as JSON string
     if (metadata.metadata && Array.isArray(metadata.metadata)) {
+      console.log('Adding metadata array:', JSON.stringify(metadata.metadata));
       formData.append('metadata', JSON.stringify(metadata.metadata));
     }
     
@@ -75,19 +81,33 @@ export async function uploadFileToS3(
       });
       
       xhr.addEventListener('load', () => {
+        console.log('XHR response status:', xhr.status);
+        console.log('XHR response text:', xhr.responseText);
+        
         if (xhr.status >= 200 && xhr.status < 300) {
           try {
             const response = JSON.parse(xhr.responseText);
+            console.log('Server response:', response);
+            
             if (response.success) {
               resolve();
             } else {
+              console.error('Server returned error:', response.message);
               reject(new Error(response.message || 'Upload failed'));
             }
           } catch (e) {
+            console.error('Failed to parse response:', xhr.responseText, e);
             reject(new Error('Invalid server response'));
           }
         } else {
-          reject(new Error(`Upload failed with status ${xhr.status}`));
+          console.error('HTTP error:', xhr.status, xhr.statusText);
+          try {
+            const errorResponse = JSON.parse(xhr.responseText);
+            console.error('Error details:', errorResponse);
+            reject(new Error(errorResponse.message || `Upload failed with status ${xhr.status}`));
+          } catch (e) {
+            reject(new Error(`Upload failed with status ${xhr.status}`));
+          }
         }
       });
       
