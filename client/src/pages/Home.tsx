@@ -255,7 +255,27 @@ export default function Home() {
       console.log('Upload complete with result:', result);
 
       if (result.success) {
-        console.log('Upload success! Resetting form state...');
+        console.log('Upload success! Showing success toast FIRST...');
+          
+        // Show success toast BEFORE any form reset operations
+        // This ensures the toast is displayed and not affected by form operations
+        toast({
+          title: "SUCCESS!",
+          description: "Document successfully uploaded and saved!",
+          variant: "default",
+        });
+        
+        // Also try with direct import to ensure it works
+        import("@/hooks/use-toast").then(module => {
+          const { toast: directToast } = module;
+          directToast({
+            title: "UPLOAD COMPLETE",
+            description: "Your document has been saved to S3 successfully!",
+            variant: "default",
+          });
+        });
+          
+        console.log('Now resetting form state...');
         
         try {
           // Reset form state completely, including isSubmitted flag
@@ -278,25 +298,7 @@ export default function Home() {
             value: false,
             writable: true
           });
-          console.log('Form state reset complete. Showing success toast...');
-          
-          // Show success toast with direct import to ensure it works
-          // This ensures the toast is displayed even if there's an issue with the hook
-          import("@/hooks/use-toast").then(module => {
-            const { toast: directToast } = module;
-            directToast({
-              title: "SUCCESS!",
-              description: "Document successfully uploaded and saved!",
-              variant: "default",
-            });
-            
-            // Also try with the hook version
-            toast({
-              title: "Upload Complete",
-              description: "Document has been saved to S3",
-              variant: "default",
-            });
-          });
+          console.log('Form state reset complete.');
         } catch (resetError) {
           console.error('Error during form reset:', resetError);
         }
@@ -498,6 +500,24 @@ export default function Home() {
                           <Upload className="h-5 w-5 text-white" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-800">Upload New Document</h3>
+                      </div>
+                      <div className="flex items-center ml-auto">
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            console.log('Test toast button clicked');
+                            toast({
+                              title: "TEST TOAST",
+                              description: "This is a test notification",
+                              variant: "default",
+                            });
+                          }}
+                          className="bg-purple-600 text-white hover:bg-purple-700"
+                          size="sm"
+                        >
+                          <Bell className="h-4 w-4 mr-2" />
+                          Test Toast
+                        </Button>
                       </div>
                     </div>
                     <div className="px-6 py-6 bg-white space-y-6">
