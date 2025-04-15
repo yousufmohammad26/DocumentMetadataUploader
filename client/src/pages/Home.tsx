@@ -439,14 +439,14 @@ export default function Home() {
     refreshData();
   };
 
-  // Sort documents by upload date (oldest first)
+  // Sort documents by upload date (newest first)
   const sortedDocuments = Array.isArray(documents) 
     ? [...documents].sort((a, b) => {
         // Convert dates to timestamps for comparison
         const dateA = new Date(a.uploadedAt).getTime();
         const dateB = new Date(b.uploadedAt).getTime();
-        // Sort in ascending order (oldest first)
-        return dateA - dateB;
+        // Sort in descending order (newest first)
+        return dateB - dateA;
       })
     : [];
   
