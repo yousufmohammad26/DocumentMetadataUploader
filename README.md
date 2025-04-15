@@ -16,7 +16,7 @@ A lightweight document management platform designed for efficient file organizat
 - **Frontend**: React, Tailwind CSS, Shadcn UI, React Query, Framer Motion
 - **Backend**: Express.js, Node.js
 - **Storage**: AWS S3, In-memory JavaScript storage
-- **Deployment**: AWS Elastic Beanstalk, AWS App Runner, or Docker
+- **Deployment**: AWS Elastic Beanstalk, AWS App Runner
 
 ## Getting Started
 
@@ -56,7 +56,7 @@ The following environment variables are required:
 
 ## Deployment
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions for AWS Elastic Beanstalk, AWS App Runner, and Docker.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment instructions for AWS Elastic Beanstalk and AWS App Runner.
 
 ## Architecture
 
