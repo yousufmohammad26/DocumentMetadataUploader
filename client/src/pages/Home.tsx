@@ -284,10 +284,11 @@ export default function Home() {
   // Handle file upload
   const handleUpload = async (data: DocumentMetadata) => {
     if (!selectedFile) {
+      // Alert user to select a file but don't set form submission state
       toast({
-        title: "Error",
+        title: "Action Required",
         description: "Please select a file to upload",
-        variant: "destructive",
+        variant: "default",
       });
       return;
     }
@@ -299,8 +300,9 @@ export default function Home() {
       const result = await uploadFileToS3(selectedFile, data, setUploadProgress);
 
       if (result.success) {
-        // Reset form and state
+        // Reset form state completely, including isSubmitted flag
         form.reset();
+        form.clearErrors();
         setSelectedFile(null);
         setUploadProgress(null);
         
@@ -308,6 +310,13 @@ export default function Home() {
         if (fileUploadRef.current && fileUploadRef.current.clearFile) {
           fileUploadRef.current.clearFile();
         }
+        
+        // Reset form submission state by creating a new instance
+        const formState = form.formState;
+        Object.defineProperty(formState, 'isSubmitted', {
+          value: false,
+          writable: true
+        });
         
         // Show success toast
         toast({
@@ -519,7 +528,7 @@ export default function Home() {
                             form.setValue("name", fileBaseName);
                           }
                         }}
-                        error={selectedFile ? undefined : form.formState.isSubmitted ? "Please select a file" : undefined}
+                        error={undefined} // Removed conditional error message completely
                       />
 
                       {/* Upload Progress */}
