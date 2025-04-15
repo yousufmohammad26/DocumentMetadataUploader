@@ -158,7 +158,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Extract file information
           const fileName = objectDetails.Metadata?.['original-filename'] || object.Key.split('-').slice(1).join('-');
           const contentType = objectDetails.Metadata?.['content-type'] || objectDetails.ContentType || 'application/octet-stream';
-          const docName = objectDetails.Metadata?.['document-name'] || fileName;
+          
+          // If document name is not in metadata, use the filename without extension
+          const fileBaseName = fileName.replace(/\.[^/.]+$/, ""); // Remove file extension
+          const docName = objectDetails.Metadata?.['document-name'] || fileBaseName;
+          
           const accessLevel = objectDetails.Metadata?.['access-level'] || 'private';
           const fileSize = object.Size || 0;
           
@@ -375,8 +379,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Get metadata from request body
-      const docName = req.body.name || 'Untitled Document';
+      // Get the original filename
+      const fileName = req.file.originalname;
+      
+      // Extract base filename without extension for use as document name
+      const fileBaseName = fileName.replace(/\.[^/.]+$/, ""); // Remove file extension
+      
+      // Get metadata from request body - use filename as default document name if none provided
+      const docName = req.body.name || fileBaseName;
       let metadataArr = [];
       
       try {
@@ -390,10 +400,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const accessLevel = req.body.accessLevel || 'private';
       
-      // Create a unique file key
-      const fileName = req.file.originalname;
-      // Create a unique file key using fileName and UUID
-      const fileKey = `${fileName}-${uuidv4()}`;
+      // Create a unique file key with UUID first, then the original filename
+      const uuid = uuidv4();
+      const fileKey = `${uuid}-${fileName}`;
       
       // Prepare S3 metadata
       const s3Metadata: Record<string, string> = {
