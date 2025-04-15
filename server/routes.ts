@@ -13,14 +13,14 @@ import { fromZodError } from "zod-validation-error";
 export async function registerRoutes(app: Express): Promise<Server> {
   // Configure AWS S3
   const s3 = new S3Client({
-    region: process.env.APP_AWS_REGION || process.env.AWS_REGION || "us-east-1",
+    region: process.env.AWS_REGION || "us-east-1",
     credentials: {
-      accessKeyId: process.env.APP_AWS_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID || "",
-      secretAccessKey: process.env.APP_AWS_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY || "",
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
     },
   });
 
-  const bucketName = process.env.APP_AWS_S3_BUCKET_NAME || process.env.AWS_S3_BUCKET_NAME || "document-metadata-bucket";
+  const bucketName = process.env.AWS_S3_BUCKET_NAME || "document-metadata-bucket";
 
   // Use multer for file uploads with memory storage
   // @ts-ignore
@@ -581,12 +581,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Extract part of the access key to simulate showing account info
       // Typically AWS account IDs are 12 digits, and we can extract a few digits to display safely
-      const accessKeyId = process.env.APP_AWS_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID || "";
+      const accessKeyId = process.env.AWS_ACCESS_KEY_ID || "";
       const accountIdentifier = accessKeyId.length > 6 ? accessKeyId.substring(0, 4) + '...' + accessKeyId.substring(accessKeyId.length - 4) : "Not available";
       
       res.json({
         accountIdentifier,
-        region: process.env.APP_AWS_REGION || process.env.AWS_REGION || "us-east-1",
+        region: process.env.AWS_REGION || "us-east-1",
         active: true
       });
     } catch (error) {

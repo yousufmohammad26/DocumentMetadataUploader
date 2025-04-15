@@ -2,10 +2,6 @@
 
 This document outlines options for deploying the Docway 360 document metadata application.
 
-## Important Note About AWS Amplify
-
-While AWS Amplify is excellent for frontend applications, it has limitations when deploying full-stack applications with active backend servers. The Docway 360 application includes both frontend and backend components, so we recommend the following deployment options:
-
 ## Option 1: AWS Elastic Beanstalk (Recommended)
 
 AWS Elastic Beanstalk is specifically designed for full-stack applications like ours.
@@ -64,11 +60,11 @@ AWS App Runner provides a simpler deployment model for containerized application
 
 ## Option 3: Split Deployment (Frontend/Backend)
 
-If you prefer to use AWS Amplify for the frontend, you can split the deployment:
+You can split the deployment into separate frontend and backend components:
 
-### Frontend (AWS Amplify)
+### Frontend (Static Hosting)
 1. Modify the application to point to your backend API
-2. Deploy the frontend to AWS Amplify
+2. Deploy the frontend to a static hosting service (AWS S3, Vercel, Netlify)
 
 ### Backend (AWS Lambda + API Gateway)
 1. Refactor the server code to work with Lambda functions
@@ -100,5 +96,5 @@ To avoid incurring charges, remember to delete your resources when they're no lo
 
 - AWS Elastic Beanstalk: `eb terminate your-environment-name`
 - AWS App Runner: Delete the service from the console
-- AWS Amplify: `amplify delete`
+
 - Also delete any S3 buckets or other resources you created
