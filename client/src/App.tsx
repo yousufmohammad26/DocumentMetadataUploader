@@ -17,7 +17,7 @@ function Router() {
 
 function App() {
   // Show a welcome toast on app load
-  React.useEffect(() => {
+  useEffect(() => {
     // Import directly to avoid hook issues
     import("@/hooks/use-toast").then(module => {
       const { toast } = module;
