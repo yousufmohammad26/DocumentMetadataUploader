@@ -880,157 +880,150 @@ export default function Home() {
                       layout: { type: "spring", bounce: 0.2, duration: 0.6 }
                     }}
                   >
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
-                      {/* Table header */}
-                      <div className="bg-white border-b border-gray-200 py-3 px-4 grid grid-cols-12 gap-4 font-medium text-sm text-gray-700">
-                        <div className="col-span-5">Document</div>
-                        <div className="col-span-2 text-center">Type</div>
-                        <div className="col-span-2 text-center">Metadata</div>
-                        <div className="col-span-3 text-right">Actions</div>
-                      </div>
-                      
-                      {/* Document rows */}
-                      <AnimatePresence initial={false}>
-                        {filteredDocuments.map((doc: DocumentData) => {
-                          // Determine which icon to use based on file type
-                          let IconComponent = FileText;
-                          if (doc.fileType.includes('image')) IconComponent = ImageIcon;
-                          if (doc.fileType.includes('sheet') || doc.fileType.includes('excel')) IconComponent = Table;
-                          if (doc.fileType.includes('presentation') || doc.fileType.includes('powerpoint')) IconComponent = Presentation;
-                          if (doc.fileType.includes('zip') || doc.fileType.includes('archive')) IconComponent = Archive;
-                          if (doc.fileType.includes('audio')) IconComponent = Music;
-                          if (doc.fileType.includes('video')) IconComponent = Video;
-                          
-                          // Get document color scheme based on metadata and file type
-                          const colorScheme = getDocumentColorScheme(doc.metadata, doc.fileType);
-                          
-                          return (
-                            <motion.div
-                              key={doc.id}
-                              layout
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
-                              transition={{
-                                type: "spring",
-                                stiffness: 300,
-                                damping: 25
-                              }}
-                              className="border border-gray-200 rounded-lg mb-4 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200"
-                            >
-                              {/* Main document row */}
-                              <div className={`py-4 px-4 grid grid-cols-12 gap-4 items-center ${colorScheme.headerBg}`}>
-                                {/* Document info column */}
-                                <div className="col-span-5">
-                                  <div className="flex items-center space-x-3">
-                                    <div className={`flex-shrink-0 w-10 h-10 bg-white ${colorScheme.borderColor} border border-gray-200 rounded-lg flex items-center justify-center`}>
-                                      <IconComponent className={`h-5 w-5 ${colorScheme.accentColor}`} />
-                                    </div>
-                                    <div className="flex flex-col min-w-0">
-                                      <h3 className="text-sm font-semibold text-gray-900 truncate hover:text-clip cursor-pointer" onClick={() => handleViewInPreview(doc.id)}>
-                                        {doc.name}
-                                      </h3>
-                                      <p className="text-xs text-gray-500 mt-1">
-                                        {formatDate(doc.uploadedAt)} • {formatFileSize(doc.fileSize)}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                {/* File type column */}
-                                <div className="col-span-2 text-center">
-                                  <span className={`text-xs uppercase font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200`}>
-                                    {doc.fileType.split('/')[1] || doc.fileType}
-                                  </span>
-                                </div>
-                                
-                                {/* Metadata count */}
-                                <div className="col-span-2 text-center">
-                                  {doc.metadata && Object.keys(doc.metadata).length > 0 ? (
-                                    <div className="flex flex-col items-center">
-                                      <span className="text-sm font-medium text-gray-700">{Object.keys(doc.metadata).length}</span>
-                                      <span className="text-xs text-gray-500">metadata fields</span>
-                                    </div>
-                                  ) : (
-                                    <span className="text-xs text-gray-400 italic">No metadata</span>
-                                  )}
-                                </div>
-                                
-                                {/* Actions column */}
-                                <div className="col-span-3 flex justify-end gap-2">
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="flex items-center hover:bg-gray-100"
-                                    onClick={() => handleViewInPreview(doc.id)}
-                                  >
-                                    <Eye className="h-4 w-4 mr-1" />
-                                    <span>View</span>
-                                  </Button>
-                                  
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="flex items-center hover:bg-gray-100"
-                                    onClick={() => handleDownload(doc.id)}
-                                  >
-                                    <Download className="h-4 w-4 mr-1" />
-                                    <span>Download</span>
-                                  </Button>
-                                  
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="flex items-center hover:bg-gray-100"
-                                    onClick={() => handleEditMetadata(doc)}
-                                  >
-                                    <Edit className="h-4 w-4 mr-1" />
-                                    <span>Edit</span>
-                                  </Button>
-                                </div>
-                              </div>
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Document</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Metadata</th>
+                            <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Type</th>
+                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {/* Document rows */}
+                          {filteredDocuments.length > 0 ? (
+                            <AnimatePresence initial={false}>
+                              {filteredDocuments.map((doc: DocumentData) => {
+                              // Determine which icon to use based on file type
+                              let IconComponent = FileText;
+                              if (doc.fileType.includes('image')) IconComponent = ImageIcon;
+                              if (doc.fileType.includes('sheet') || doc.fileType.includes('excel')) IconComponent = Table;
+                              if (doc.fileType.includes('presentation') || doc.fileType.includes('powerpoint')) IconComponent = Presentation;
+                              if (doc.fileType.includes('zip') || doc.fileType.includes('archive')) IconComponent = Archive;
+                              if (doc.fileType.includes('audio')) IconComponent = Music;
+                              if (doc.fileType.includes('video')) IconComponent = Video;
                               
-                              {/* Metadata section - always visible */}
-                              {doc.metadata && Object.keys(doc.metadata).length > 0 && (
-                                <div className="px-4 py-3 bg-gray-50 border-t border-gray-200">
-                                  <div className="flex items-center mb-2">
-                                    <ClipboardList className="h-4 w-4 text-gray-500 mr-2" />
-                                    <span className="text-sm font-medium text-gray-700">Metadata</span>
-                                  </div>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {Object.entries(doc.metadata).map(([key, value], idx) => {
-                                      const { bg, text } = getMetadataTagColors(key);
-                                      return (
-                                        <div key={idx} className="flex items-start bg-white rounded-md p-2 shadow-sm">
-                                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${bg} ${text} mr-2`}>
-                                            {key}
-                                          </span>
-                                          <span className="text-sm text-gray-800 flex-1">
-                                            {value}
-                                          </span>
+                              // Get document color scheme based on metadata and file type
+                              const colorScheme = getDocumentColorScheme(doc.metadata, doc.fileType);
+                              
+                              return (
+                                <motion.tr
+                                  key={doc.id}
+                                  layout
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                                  transition={{
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 25
+                                  }}
+                                  className="hover:bg-gray-50"
+                                >
+                                  {/* Document info column */}
+                                  <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex items-center">
+                                      <div className={`flex-shrink-0 w-10 h-10 bg-white ${colorScheme.borderColor} border border-gray-200 rounded-lg flex items-center justify-center`}>
+                                        <IconComponent className={`h-5 w-5 ${colorScheme.accentColor}`} />
+                                      </div>
+                                      <div className="ml-4">
+                                        <div className="text-sm font-medium text-gray-900 cursor-pointer" onClick={() => handleViewInPreview(doc.id)}>
+                                          {doc.name}
                                         </div>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              )}
-                            </motion.div>
-                          );
-                        })}
-                      </AnimatePresence>
-                      
-                      {/* Empty state when filtered documents return nothing */}
-                      {filteredDocuments.length === 0 && (
-                        <motion.div 
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          className="py-12 px-4 text-center"
-                        >
-                          <FileQuestion className="h-12 w-12 mx-auto text-gray-400 mb-3" />
-                          <h3 className="text-sm font-medium text-gray-900 mb-1">No documents match your search</h3>
-                          <p className="text-xs text-gray-500">Try adjusting your search criteria</p>
-                        </motion.div>
-                      )}
+                                        <div className="text-xs text-gray-500">
+                                          {formatDate(doc.uploadedAt)} • {formatFileSize(doc.fileSize)}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  
+                                  {/* Metadata column */}
+                                  <td className="px-6 py-4">
+                                    {doc.metadata && Object.keys(doc.metadata).length > 0 ? (
+                                      <div className="flex flex-col space-y-2">
+                                        {Object.entries(doc.metadata).map(([key, value], idx) => {
+                                          const { bg, text } = getMetadataTagColors(key);
+                                          return (
+                                            <div key={idx} className="flex items-center">
+                                              <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${bg} ${text} mr-2 min-w-[80px] justify-center`}>
+                                                {key}
+                                              </span>
+                                              <span className="text-sm text-gray-800">
+                                                {value}
+                                              </span>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+                                    ) : (
+                                      <span className="text-xs text-gray-400 italic">No metadata</span>
+                                    )}
+                                  </td>
+                                  
+                                  {/* File type column */}
+                                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                                    <span className={`text-xs uppercase font-medium px-2 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200`}>
+                                      {doc.fileType.split('/')[1] || doc.fileType}
+                                    </span>
+                                  </td>
+                                  
+                                  {/* Actions column */}
+                                  <td className="px-6 py-4 whitespace-nowrap text-right">
+                                    <div className="flex justify-end space-x-2">
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="flex items-center hover:bg-gray-100"
+                                        onClick={() => handleViewInPreview(doc.id)}
+                                      >
+                                        <Eye className="h-4 w-4 mr-1" />
+                                        <span>View</span>
+                                      </Button>
+                                      
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="flex items-center hover:bg-gray-100"
+                                        onClick={() => handleDownload(doc.id)}
+                                      >
+                                        <Download className="h-4 w-4 mr-1" />
+                                        <span>Download</span>
+                                      </Button>
+                                      
+                                      <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="flex items-center hover:bg-gray-100"
+                                        onClick={() => handleEditMetadata(doc)}
+                                      >
+                                        <Edit className="h-4 w-4 mr-1" />
+                                        <span>Edit</span>
+                                      </Button>
+                                    </div>
+                                  </td>
+                                </motion.tr>
+                              );
+                            })}
+                          </AnimatePresence>
+                          ) : (
+                          /* Empty state when filtered documents return nothing */
+                          <tr>
+                            <td colSpan={4} className="px-6 py-12 text-center">
+                              <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="py-8 px-4"
+                              >
+                                <FileQuestion className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                                <h3 className="text-sm font-medium text-gray-900 mb-1">No documents match your search</h3>
+                                <p className="text-xs text-gray-500">Try adjusting your search criteria</p>
+                              </motion.div>
+                            </td>
+                          </tr>
+                          )}
+                        </tbody>
+                      </table>
                     </div>
                   </motion.div>
                 </div>
