@@ -158,14 +158,36 @@ export default function Home() {
     },
   });
 
+  // View document
+  const handleView = async (id: number) => {
+    try {
+      const response = await apiRequest("GET", `/api/documents/${id}/download`);
+      const { presignedUrl } = await response.json();
+      
+      // Open the URL in a new tab for viewing
+      window.open(presignedUrl, "_blank");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to view document",
+        variant: "destructive",
+      });
+    }
+  };
+  
   // Download document
   const handleDownload = async (id: number) => {
     try {
       const response = await apiRequest("GET", `/api/documents/${id}/download`);
       const { presignedUrl } = await response.json();
       
-      // Open the URL in a new tab
-      window.open(presignedUrl, "_blank");
+      // Create a temporary anchor element and trigger download
+      const link = document.createElement('a');
+      link.href = presignedUrl;
+      link.setAttribute('download', ''); // This will prompt download rather than open
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
       toast({
         title: "Error",
@@ -800,7 +822,7 @@ export default function Home() {
                               variant="link" 
                               size="sm" 
                               className="text-primary hover:text-primary-dark"
-                              onClick={() => handleDownload(doc.id)}
+                              onClick={() => handleView(doc.id)}
                             >
                               <Eye className="h-4 w-4 mr-1" /> View
                             </Button>
