@@ -111,6 +111,32 @@ export default function Home() {
   const [editMetadataOpen, setEditMetadataOpen] = useState(false);
   const [editingDocument, setEditingDocument] = useState<DocumentData | null>(null);
   
+  // Function to test the Edit Metadata dialog with sample data
+  const openTestMetadataDialog = () => {
+    // Sample document for testing
+    const sampleDocument: DocumentData = {
+      id: 999,
+      fileName: "sample-document.pdf",
+      fileKey: "2023/Apr/sample-document-1234.pdf",
+      fileSize: 1024 * 1024,
+      fileType: "application/pdf",
+      name: "2023/Apr/sample-document-1234",
+      metadata: {
+        "original-filename": "sample-document.pdf",
+        "topology": "2023/Apr/sample-document-1234",
+        "year": "2023",
+        "month": "Apr",
+        "department": "Engineering",
+        "author": "John Doe"
+      },
+      accessLevel: "private",
+      uploadedAt: new Date().toISOString()
+    };
+    
+    setEditingDocument(sampleDocument);
+    setEditMetadataOpen(true);
+  };
+  
 
 
   // Form for metadata
