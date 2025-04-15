@@ -45,37 +45,47 @@ export async function uploadFileToS3(
   onProgress: (progress: UploadProgress) => void
 ): Promise<UploadResult> {
   try {
-    // Step 1: Get presigned URL
-    onProgress({ percentage: 10, status: 'Getting upload URL...' });
+    // Use the server-side upload endpoint to bypass CORS restrictions
+    onProgress({ percentage: 10, status: 'Preparing upload...' });
     
-    const presignedUrlResponse = await apiRequest('POST', '/api/documents/presigned-url', {
-      fileName: file.name,
-      fileType: file.type,
-      fileSize: file.size
-    });
+    // Create a FormData object to send the file and metadata
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', metadata.name || '');
+    formData.append('accessLevel', metadata.accessLevel || 'private');
     
-    const { presignedUrl, fileKey } = await presignedUrlResponse.json();
+    // Add metadata as JSON string
+    if (metadata.metadata && Array.isArray(metadata.metadata)) {
+      formData.append('metadata', JSON.stringify(metadata.metadata));
+    }
     
-    // Step 2: Upload file directly to S3 with presigned URL
-    onProgress({ percentage: 20, status: 'Uploading to S3...' });
-    
+    // Use XMLHttpRequest for upload progress tracking
     const xhr = new XMLHttpRequest();
     
     await new Promise<void>((resolve, reject) => {
       xhr.upload.addEventListener('progress', (event) => {
         if (event.lengthComputable) {
-          // Calculate progress between 20% and 80%
-          const percentage = 20 + (event.loaded / event.total) * 60;
+          // Calculate progress between 20% and 90%
+          const percentage = 10 + (event.loaded / event.total) * 80;
           onProgress({ 
             percentage: Math.round(percentage), 
-            status: 'Uploading to S3...' 
+            status: 'Uploading to server...' 
           });
         }
       });
       
       xhr.addEventListener('load', () => {
         if (xhr.status >= 200 && xhr.status < 300) {
-          resolve();
+          try {
+            const response = JSON.parse(xhr.responseText);
+            if (response.success) {
+              resolve();
+            } else {
+              reject(new Error(response.message || 'Upload failed'));
+            }
+          } catch (e) {
+            reject(new Error('Invalid server response'));
+          }
         } else {
           reject(new Error(`Upload failed with status ${xhr.status}`));
         }
@@ -89,70 +99,16 @@ export async function uploadFileToS3(
         reject(new Error('Upload aborted'));
       });
       
-      // Prepare metadata headers for S3
-      const s3Metadata: Record<string, string> = {};
-      
-      // Add document metadata as x-amz-meta-* headers
-      if (metadata.metadata && Array.isArray(metadata.metadata)) {
-        metadata.metadata.forEach((item: { key: string; value: string }) => {
-          if (item.key && item.value) {
-            // S3 metadata headers must be prefixed with x-amz-meta-
-            // Keys must be lowercase and use hyphens instead of spaces
-            const sanitizedKey = item.key.toLowerCase().replace(/\s+/g, '-');
-            s3Metadata[`x-amz-meta-${sanitizedKey}`] = item.value;
-          }
-        });
-      }
-      
-      // Add document name to metadata
-      s3Metadata['x-amz-meta-document-name'] = metadata.name || '';
-      
-      // Add access level to metadata
-      s3Metadata['x-amz-meta-access-level'] = metadata.accessLevel || 'private';
-      
-      xhr.open('PUT', presignedUrl);
-      xhr.setRequestHeader('Content-Type', file.type);
-      
-      // Add all the metadata headers
-      Object.entries(s3Metadata).forEach(([key, value]) => {
-        xhr.setRequestHeader(key, String(value));
-      });
-      
-      xhr.send(file);
+      xhr.open('POST', '/api/documents/upload');
+      xhr.send(formData);
     });
-    
-    // Step 3: Save metadata
-    onProgress({ percentage: 85, status: 'Saving metadata...' });
-    
-    // Convert metadata array to object
-    const metadataObject: Record<string, string> = {};
-    if (metadata.metadata && Array.isArray(metadata.metadata)) {
-      metadata.metadata.forEach((item: { key: string; value: string }) => {
-        if (item.key && item.value) {
-          metadataObject[item.key] = item.value;
-        }
-      });
-    }
-    
-    const documentData = {
-      name: metadata.name,
-      fileName: file.name,
-      fileKey,
-      fileSize: file.size,
-      fileType: file.type,
-      metadata: metadataObject,
-      accessLevel: metadata.accessLevel || 'private',
-    };
-    
-    const saveMetadataResponse = await apiRequest('POST', '/api/documents', documentData);
-    const document = await saveMetadataResponse.json();
     
     onProgress({ percentage: 100, status: 'Complete' });
     
+    // Refresh document list
     return {
       success: true,
-      message: 'Document successfully uploaded!',
-      document
+      message: 'Document successfully uploaded!'
     };
   } catch (error) {
     console.error('Upload error:', error);
@@ -191,4 +147,43 @@ export function getCategoryColor(category: string): string {
   };
   
   return categoryColors[category.toLowerCase()] || 'bg-gray-100 text-gray-800';
+}
+
+export function getMetadataTagColors(key: string): { bg: string, text: string, hoverBg: string } {
+  // Convert key to lowercase for consistent matching
+  const lowerKey = key.toLowerCase();
+  
+  // Common metadata categories with assigned colors
+  if (lowerKey.includes('date') || lowerKey.includes('time') || lowerKey.includes('created') || lowerKey.includes('modified')) {
+    return { bg: "bg-purple-50", text: "text-purple-800", hoverBg: "#f3e8ff" }; // Purple for dates/times
+  } else if (lowerKey.includes('author') || lowerKey.includes('creator') || lowerKey.includes('owner') || lowerKey.includes('user')) {
+    return { bg: "bg-green-50", text: "text-green-800", hoverBg: "#dcfce7" }; // Green for author/user info
+  } else if (lowerKey.includes('category') || lowerKey.includes('type') || lowerKey.includes('group')) {
+    return { bg: "bg-yellow-50", text: "text-yellow-800", hoverBg: "#fef9c3" }; // Yellow for categories
+  } else if (lowerKey.includes('status') || lowerKey.includes('state') || lowerKey.includes('priority')) {
+    return { bg: "bg-red-50", text: "text-red-800", hoverBg: "#fee2e2" }; // Red for status/priority
+  } else if (lowerKey.includes('version') || lowerKey.includes('revision')) {
+    return { bg: "bg-sky-50", text: "text-sky-800", hoverBg: "#e0f2fe" }; // Sky blue for versions
+  } else if (lowerKey.includes('tag') || lowerKey.includes('label')) {
+    return { bg: "bg-orange-50", text: "text-orange-800", hoverBg: "#ffedd5" }; // Orange for tags/labels
+  } else if (lowerKey.includes('department') || lowerKey.includes('team') || lowerKey.includes('division')) {
+    return { bg: "bg-indigo-50", text: "text-indigo-800", hoverBg: "#e0e7ff" }; // Indigo for organizational units
+  } else if (lowerKey.includes('location') || lowerKey.includes('place') || lowerKey.includes('geo')) {
+    return { bg: "bg-emerald-50", text: "text-emerald-800", hoverBg: "#d1fae5" }; // Emerald for locations
+  } else {
+    // Generate a color based on the first character of the key for consistent coloring
+    const colors = [
+      { bg: "bg-blue-50", text: "text-blue-800", hoverBg: "#dbeafe" },
+      { bg: "bg-green-50", text: "text-green-800", hoverBg: "#dcfce7" },
+      { bg: "bg-yellow-50", text: "text-yellow-800", hoverBg: "#fef9c3" },
+      { bg: "bg-red-50", text: "text-red-800", hoverBg: "#fee2e2" },
+      { bg: "bg-purple-50", text: "text-purple-800", hoverBg: "#f3e8ff" },
+      { bg: "bg-pink-50", text: "text-pink-800", hoverBg: "#fce7f3" },
+      { bg: "bg-indigo-50", text: "text-indigo-800", hoverBg: "#e0e7ff" },
+      { bg: "bg-cyan-50", text: "text-cyan-800", hoverBg: "#cffafe" },
+    ];
+    
+    const index = Math.abs(key.charCodeAt(0)) % colors.length;
+    return colors[index];
+  }
 }
