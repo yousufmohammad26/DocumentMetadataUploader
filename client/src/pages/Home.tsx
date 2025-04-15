@@ -343,15 +343,11 @@ export default function Home() {
           console.error('Error during form reset:', resetError);
         }
         
-        // Only refresh stats and AWS account info, not document list
-        console.log('Refreshing stats and AWS account info (not document list)...');
+        // Refresh all data including documents list to show the new document
+        console.log('Refreshing document list and stats after successful upload...');
+        queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
         queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
         queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
-        
-        // Call syncFromS3 in silent mode to get the updated list of documents in reverse order
-        console.log('Calling syncFromS3 silently to update document list after upload...');
-        // Add a small delay to ensure the file is registered in S3
-        setTimeout(() => syncFromS3(true), 1000);
       } else {
         toast({
           title: "Error",
@@ -449,7 +445,8 @@ export default function Home() {
   
   // Handle metadata update completion
   const handleMetadataUpdateComplete = () => {
-    // Only update stats, not document list
+    // Update both documents and stats
+    queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
     queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
     
     // Show toast for confirmation
