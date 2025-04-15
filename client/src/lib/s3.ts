@@ -45,6 +45,10 @@ export async function uploadFileToS3(
   onProgress: (progress: UploadProgress) => void
 ): Promise<UploadResult> {
   try {
+    // Debug logging
+    console.log('uploadFileToS3 called with file:', file.name, file.type, file.size);
+    console.log('metadata being sent:', JSON.stringify(metadata));
+    
     // Use the server-side upload endpoint to bypass CORS restrictions
     onProgress({ percentage: 10, status: 'Preparing upload...' });
     
@@ -131,6 +135,7 @@ export async function uploadFileToS3(
       message: 'Document successfully uploaded!'
     };
   } catch (error) {
+    console.error('Upload function error:', error);
     return {
       success: false,
       message: error instanceof Error ? error.message : 'Upload failed'

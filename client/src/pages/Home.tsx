@@ -283,7 +283,10 @@ export default function Home() {
 
   // Handle file upload
   const handleUpload = async (data: DocumentMetadata) => {
+    console.log('handleUpload called with data:', data);
+    
     if (!selectedFile) {
+      console.log('No file selected');
       // Alert user to select a file but don't set form submission state
       toast({
         title: "Action Required",
@@ -292,7 +295,9 @@ export default function Home() {
       });
       return;
     }
-
+    
+    console.log('Selected file:', selectedFile.name, selectedFile.type, selectedFile.size);
+    
     setIsUploading(true);
     setUploadProgress({ percentage: 0, status: "Starting upload..." });
 
