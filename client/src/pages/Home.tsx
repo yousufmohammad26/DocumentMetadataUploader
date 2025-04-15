@@ -342,9 +342,8 @@ export default function Home() {
           console.error('Error during form reset:', resetError);
         }
         
-        // Refresh document list, stats and AWS account info - moved outside try/catch to ensure it always runs
-        console.log('Refreshing queries to show newest documents first...');
-        queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+        // Only refresh stats and AWS account info, not document list
+        console.log('Refreshing stats and AWS account info (not document list)...');
         queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
         queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
       } else {
@@ -435,19 +434,20 @@ export default function Home() {
   
   // Handle metadata update completion
   const handleMetadataUpdateComplete = () => {
-    // Refresh all data after update
-    refreshData();
+    // Only update stats, not document list
+    queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+    
+    // Show toast for confirmation
+    toast({
+      title: "Metadata Updated",
+      description: "Document metadata has been updated",
+      variant: "default",
+    });
   };
 
-  // Sort documents by upload date (newest first)
+  // Use documents as-is without any sorting
   const sortedDocuments = Array.isArray(documents) 
-    ? [...documents].sort((a, b) => {
-        // Convert dates to timestamps for comparison
-        const dateA = new Date(a.uploadedAt).getTime();
-        const dateB = new Date(b.uploadedAt).getTime();
-        // Sort in descending order (newest first)
-        return dateB - dateA;
-      })
+    ? [...documents]
     : [];
   
   // Filter documents based on search term
