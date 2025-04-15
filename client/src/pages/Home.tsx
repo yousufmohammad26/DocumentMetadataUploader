@@ -438,10 +438,10 @@ export default function Home() {
                   <div className="cursor-pointer flex items-center bg-white p-1.5 rounded-full shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
                     <Avatar className="h-8 w-8 border border-gray-100">
                       <AvatarImage src="./attached_assets/Profile.jpg" alt="User Profile" />
-                      <AvatarFallback>DM</AvatarFallback>
+                      <AvatarFallback>YM</AvatarFallback>
                     </Avatar>
                     <div className="ml-2 mr-2 text-sm hidden sm:block">
-                      <p className="font-medium text-gray-700">Administrator</p>
+                      <p className="font-medium text-gray-700">Yousuf Mohammad</p>
                       <p className="text-xs text-gray-500">Document Manager</p>
                     </div>
                   </div>
