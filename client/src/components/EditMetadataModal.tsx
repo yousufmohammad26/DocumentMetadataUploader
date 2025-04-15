@@ -92,12 +92,60 @@ export function EditMetadataModal({
   const addMetadataField = () => {
     append({ key: "", value: "" });
   };
+  
+  // Validate that metadata keys don't use reserved names
+  const validateMetadataKey = (key: string, index: number) => {
+    const reservedKeys = ['original-filename', 'topology'];
+    const lowercaseKey = key.toLowerCase().trim();
+    
+    if (reservedKeys.includes(lowercaseKey)) {
+      form.setError(`metadata.${index}.key`, { 
+        type: 'manual', 
+        message: 'This is a reserved system field name and cannot be used' 
+      });
+      return false;
+    }
+    return true;
+  };
 
   // Handle form submission
   const handleSubmit = async (data: DocumentMetadata) => {
     setIsSubmitting(true);
     
     try {
+      // Check if any metadata keys use reserved names
+      const reservedKeys = ['original-filename', 'topology'];
+      let hasReservedKeys = false;
+      
+      // Validate each non-system metadata field
+      data.metadata.forEach((item, index) => {
+        // Skip validation for existing system fields
+        if (item.key === 'original-filename' || item.key === 'topology') {
+          return;
+        }
+        
+        // Check if user is trying to add a reserved key
+        const lowercaseKey = item.key.toLowerCase().trim();
+        if (reservedKeys.includes(lowercaseKey)) {
+          form.setError(`metadata.${index}.key`, { 
+            type: 'manual', 
+            message: 'This is a reserved system field name and cannot be used' 
+          });
+          hasReservedKeys = true;
+        }
+      });
+      
+      // If reserved keys were found, stop the submission
+      if (hasReservedKeys) {
+        toast({
+          title: "Validation Error",
+          description: "Please remove or rename the reserved metadata keys",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+      
       // Get and identify all fields including system fields (original-filename, topology)
       const filteredMetadata = data.metadata.filter(item => {
         // Keep all system fields and valid user fields (those with non-empty keys)
@@ -230,6 +278,14 @@ export function EditMetadataModal({
                                   placeholder="Key" 
                                   disabled={isSystemField}
                                   className={isSystemField ? "bg-gray-100 cursor-not-allowed" : ""}
+                                  onChange={(e) => {
+                                    // First, update the field value
+                                    fieldProps.onChange(e);
+                                    // Then validate if it's a reserved field name
+                                    if (!isSystemField) {
+                                      validateMetadataKey(e.target.value, index);
+                                    }
+                                  }}
                                 />
                               </FormControl>
                               {isSystemField && (

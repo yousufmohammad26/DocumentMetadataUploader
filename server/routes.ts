@@ -305,12 +305,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           s3Metadata['original-filename'] = objectMeta.Metadata['original-filename'];
         }
         
-        // Add custom metadata entries
+        // Add custom metadata entries - with strict validation of restricted keys
+        const reservedKeys = ['original-filename', 'topology'];
+        
         for (const [key, value] of Object.entries(metadataObject)) {
           const sanitizedKey = key.toLowerCase().replace(/\s+/g, '-');
-          // Don't allow overriding of system fields via API (extra protection)
-          if (sanitizedKey !== 'original-filename' && sanitizedKey !== 'topology') {
+          
+          // Don't allow adding any reserved keys via API (extra protection)
+          // Note: The client should prevent this, but we double-check on the server
+          if (!reservedKeys.includes(sanitizedKey)) {
             s3Metadata[sanitizedKey] = String(value);
+          } else {
+            console.warn(`Attempt to add reserved metadata key '${sanitizedKey}' was blocked by server validation`);
           }
         }
         
@@ -415,6 +421,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const topologyPath = req.body.topology || req.body.name || '';
       console.log('Topology path:', topologyPath);
       
+      // Get current date information for metadata
+      const currentDate = new Date();
+      const year = currentDate.getFullYear().toString(); // YYYY format
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const month = monthNames[currentDate.getMonth()]; // MMM format
+      console.log(`Adding date metadata - Year: ${year}, Month: ${month}`);
+      
       // Create a unique file key with topology path, UUID, and then the original filename
       const uuid = uuidv4();
       console.log('Generated UUID:', uuid);
@@ -443,15 +456,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         'original-filename': fileName,
         'content-type': req.file.mimetype,
         'topology': docName,
-        'access-level': accessLevel
+        'access-level': accessLevel,
+        'year': year,
+        'month': month
       };
       
-      // Add custom metadata entries 
+      // Add custom metadata entries with validation for reserved keys
+      const reservedKeys = ['original-filename', 'topology', 'content-type', 'access-level', 'year', 'month'];
+      
       if (Array.isArray(metadataArr)) {
         metadataArr.forEach((item: { key: string; value: string }) => {
           if (item.key && item.value) {
             const sanitizedKey = item.key.toLowerCase().replace(/\s+/g, '-');
-            s3Metadata[sanitizedKey] = item.value;
+            
+            // Don't allow adding any reserved keys via upload
+            if (!reservedKeys.includes(sanitizedKey)) {
+              s3Metadata[sanitizedKey] = item.value;
+            } else {
+              console.warn(`Attempt to add reserved metadata key '${sanitizedKey}' during upload was blocked`);
+            }
           }
         });
       }
@@ -478,18 +501,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Convert metadata array to object for storage
       const metadataObject: Record<string, string> = {};
       
-      // Add original-filename and topology as non-editable metadata fields
+      // Add original-filename, topology, year, and month as non-editable metadata fields
       metadataObject['original-filename'] = fileName;
       metadataObject['topology'] = docName;
+      metadataObject['year'] = year;
+      metadataObject['month'] = month;
       
-      // Add user-defined metadata
+      // Add user-defined metadata with reserved key validation
       if (Array.isArray(metadataArr)) {
         metadataArr.forEach((item: { key: string; value: string }) => {
           if (item.key && item.value) {
-            // Store with the same prefix (or lack thereof) as we'll retrieve it
-            // This ensures consistency between upload and retrieval
             const sanitizedKey = item.key.toLowerCase().replace(/\s+/g, '-');
-            metadataObject[sanitizedKey] = item.value;
+            
+            // Don't allow adding reserved keys to the storage object
+            if (!reservedKeys.includes(sanitizedKey)) {
+              metadataObject[sanitizedKey] = item.value;
+            }
+            // Note: We don't need to log warnings here since we already logged them above
           }
         });
       }
