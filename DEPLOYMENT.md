@@ -1,100 +1,99 @@
-# Deployment Instructions for Docway 360
+# Deployment Guide for Docway 360
 
-This document outlines options for deploying the Docway 360 document metadata application.
+This document outlines the steps to deploy Docway 360 on AWS Elastic Beanstalk.
 
-## Option 1: AWS Elastic Beanstalk (Recommended)
+## Prerequisites
 
-AWS Elastic Beanstalk is specifically designed for full-stack applications like ours.
+Before you start, make sure you have:
 
-### Prerequisites
-1. AWS Account with appropriate permissions
-2. AWS Elastic Beanstalk CLI installed (`pip install awsebcli`)
-3. The following environment variables needed for the application:
-   - AWS_S3_BUCKET_NAME
-   - AWS_REGION
-   - AWS_ACCESS_KEY_ID
-   - AWS_SECRET_ACCESS_KEY
+1. An AWS account with appropriate permissions
+2. AWS CLI installed and configured on your local machine
+3. Elastic Beanstalk CLI installed (`npm install -g aws-elastic-beanstalk`)
+4. AWS S3 bucket created for document storage
+5. AWS credentials (access key and secret key) with permissions for S3
 
-### Deployment Steps
+## Option 1: Using the Deployment Script (Recommended)
 
-1. **Initialize Elastic Beanstalk**:
-   ```bash
+We've created a deployment script to streamline the process:
+
+1. Make sure you have the AWS CLI and Elastic Beanstalk CLI installed and configured
+2. Run the deployment script:
+   ```
+   ./deploy-eb.sh
+   ```
+3. Follow the prompts to provide your AWS credentials and S3 bucket information
+4. The script will build the application, initialize Elastic Beanstalk, and deploy the application
+
+## Option 2: Manual Deployment
+
+If you prefer to deploy manually, follow these steps:
+
+1. Build the application:
+   ```
+   npm run build
+   ```
+
+2. Initialize Elastic Beanstalk (first time only):
+   ```
    eb init
    ```
-   Follow the prompts to configure your application.
+   - Select the region where you want to deploy
+   - Create a new application or select an existing one
+   - Choose Node.js as the platform
 
-2. **Create an environment**:
-   ```bash
+3. Create a new environment (first time only):
+   ```
    eb create docway360-env
    ```
 
-3. **Configure environment variables**:
-   ```bash
-   eb setenv AWS_S3_BUCKET_NAME=your-bucket-name AWS_REGION=your-region AWS_ACCESS_KEY_ID=your-key AWS_SECRET_ACCESS_KEY=your-secret NODE_ENV=production
+4. Set environment variables:
+   ```
+   eb setenv AWS_S3_BUCKET_NAME=your-bucket-name AWS_REGION=your-region AWS_ACCESS_KEY_ID=your-access-key AWS_SECRET_ACCESS_KEY=your-secret-key NODE_ENV=production
    ```
 
-4. **Deploy the application**:
-   ```bash
+5. Deploy the application:
+   ```
    eb deploy
    ```
 
-5. **Open the application**:
-   ```bash
+6. Open the application in a browser:
+   ```
    eb open
    ```
 
-## Option 2: AWS App Runner
+## Troubleshooting
 
-AWS App Runner provides a simpler deployment model for containerized applications.
+- If you encounter issues with deployment, check the Elastic Beanstalk logs using:
+  ```
+  eb logs
+  ```
 
-### Deployment Steps
+- For permission issues, ensure your AWS credentials have the necessary permissions for S3 and Elastic Beanstalk
 
-1. Build and package your application
-2. Create a Dockerfile in your project root
-3. Push your code to a Git repository
-4. Go to AWS App Runner console
-5. Create a new service
-6. Connect to your repository
-7. Configure build settings and environment variables
-8. Deploy
+- For CORS issues, verify that your S3 bucket has the appropriate CORS configuration
 
-## Option 3: Split Deployment (Frontend/Backend)
+## Alternative Deployment Options
 
-You can split the deployment into separate frontend and backend components:
+### AWS App Runner
 
-### Frontend (Static Hosting)
-1. Modify the application to point to your backend API
-2. Deploy the frontend to a static hosting service (AWS S3, Vercel, Netlify)
+For a simpler deployment that doesn't require as much configuration, you can use AWS App Runner:
 
-### Backend (AWS Lambda + API Gateway)
-1. Refactor the server code to work with Lambda functions
-2. Deploy the API routes as Lambda functions
-3. Set up API Gateway to route requests to your Lambda functions
+1. Push your code to a GitHub repository
+2. Set up AWS App Runner to deploy from your repository
+3. Configure environment variables for AWS credentials and S3 bucket information
 
-## Environment Variables
+### Docker Deployment
 
-Regardless of the deployment option you choose, you'll need to configure these environment variables:
+We've included a Dockerfile in the repository that you can use to build and deploy a Docker container:
 
-- AWS_S3_BUCKET_NAME
-- AWS_REGION
-- AWS_ACCESS_KEY_ID
-- AWS_SECRET_ACCESS_KEY
-- NODE_ENV (set to "production")
+1. Build the Docker image:
+   ```
+   docker build -t docway360 .
+   ```
 
-## Local Testing
+2. Run the Docker container:
+   ```
+   docker run -p 8080:8080 -e AWS_S3_BUCKET_NAME=your-bucket-name -e AWS_REGION=your-region -e AWS_ACCESS_KEY_ID=your-access-key -e AWS_SECRET_ACCESS_KEY=your-secret-key -e NODE_ENV=production docway360
+   ```
 
-Before deploying, test your application locally:
-
-```bash
-npm run build
-npm start
-```
-
-## Cleanup
-
-To avoid incurring charges, remember to delete your resources when they're no longer needed:
-
-- AWS Elastic Beanstalk: `eb terminate your-environment-name`
-- AWS App Runner: Delete the service from the console
-
-- Also delete any S3 buckets or other resources you created
+3. Access the application at http://localhost:8080
