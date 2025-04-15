@@ -710,20 +710,7 @@ export default function Home() {
             {/* Sidebar */}
             <div className="md:col-span-1 ml-auto order-last">
               <div className="px-4 sm:px-0 space-y-6">
-                {/* Architecture Diagram */}
-                <div className="bg-white shadow-md rounded-lg overflow-hidden border border-indigo-100 hover:shadow-lg transition-shadow duration-300">
-                  <div className="px-5 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-indigo-100">
-                    <div className="flex items-center">
-                      <div className="bg-indigo-500 rounded-full p-1 mr-2">
-                        <PieChart className="h-3.5 w-3.5 text-white" />
-                      </div>
-                      <h3 className="text-sm font-semibold text-gray-900">Architecture</h3>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <ArchitectureDiagram />
-                  </div>
-                </div>
+
 
                 {/* Logs */}
                 <div className="bg-white shadow-md rounded-lg overflow-hidden border border-emerald-100 hover:shadow-lg transition-shadow duration-300">
