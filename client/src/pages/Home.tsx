@@ -10,6 +10,7 @@ import { uploadFileToS3, formatFileSize, formatDate, UploadProgress, getMetadata
 import { getDocumentColorScheme } from "@/lib/documentColors";
 import { DocumentPreview } from "@/components/DocumentPreview";
 import { EditMetadataModal } from "@/components/EditMetadataModal";
+import { ArchitectureDiagram } from "@/components/ArchitectureDiagram";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -423,6 +424,7 @@ export default function Home() {
               <h1 className="text-xl font-semibold text-gray-800">Document Metadata Uploader</h1>
             </div>
             <div className="flex items-center space-x-4">
+              <ArchitectureDiagram />
               <div>
                 <span className="text-sm text-gray-600">
                   Connected to AWS Account {isLoadingAwsAccount ? '...' : awsAccount.accountIdentifier}
@@ -437,7 +439,7 @@ export default function Home() {
                 <DropdownMenuTrigger asChild>
                   <div className="cursor-pointer flex items-center">
                     <Avatar className="h-8 w-8 border border-gray-200">
-                      <AvatarImage src="/assets/Profile.jpg" alt="User Profile" />
+                      <AvatarImage src="/Profile.jpg" alt="User Profile" />
                       <AvatarFallback>YM</AvatarFallback>
                     </Avatar>
                     <div className="ml-2 text-sm hidden sm:block">
