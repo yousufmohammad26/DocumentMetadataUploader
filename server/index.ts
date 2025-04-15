@@ -56,7 +56,7 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Use port 8081 for AWS Elastic Beanstalk or default to 5000
+  // Use specified port or default to 5000
   // this serves both the API and the client
   const port = process.env.PORT || 5000;
   server.listen({
