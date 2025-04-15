@@ -467,244 +467,242 @@ export default function Home() {
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="md:grid md:grid-cols-3 md:gap-6">
-            {/* Main Content */}
+            {/* Main Content - Upload Form */}
             <div className="mt-5 md:mt-0 md:col-span-2">
-              {/* Empty for grid layout */}
+              {/* Upload New Document Form */}
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleUpload)}>
+                  <div className="shadow-sm sm:rounded-md sm:overflow-hidden border border-gray-200">
+                    <div className="bg-gray-100 px-6 py-3 border-b border-gray-200">
+                      <div className="flex items-center">
+                        <Upload className="h-5 w-5 text-gray-600 mr-2" />
+                        <h3 className="text-lg font-semibold text-gray-700">Upload New Document</h3>
+                      </div>
+                    </div>
+                    <div className="px-6 py-6 bg-white space-y-6">
+                      {/* File Upload */}
+                      <FileUpload 
+                        label="Document File"
+                        onFileChange={setSelectedFile}
+                        error={selectedFile ? undefined : form.formState.isSubmitted ? "Please select a file" : undefined}
+                      />
+
+                      {/* Upload Progress */}
+                      {uploadProgress && (
+                        <div>
+                          <FormLabel>Upload Progress</FormLabel>
+                          <div className="mt-1">
+                            <div className="relative pt-1">
+                              <div className="flex mb-2 items-center justify-between">
+                                <div>
+                                  <span className="text-xs font-semibold inline-block py-1 px-2 rounded-full text-primary-dark bg-blue-200">
+                                    {uploadProgress.percentage}%
+                                  </span>
+                                </div>
+                                <div className="text-right">
+                                  <span className="text-xs font-semibold inline-block text-primary-dark">
+                                    {uploadProgress.status}
+                                  </span>
+                                </div>
+                              </div>
+                              <Progress value={uploadProgress.percentage} className="h-2" />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Document Metadata */}
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-900 mb-4">Document Metadata</h3>
+                        
+                        <div className="grid grid-cols-6 gap-6">
+                          <div className="col-span-6">
+                            <FormField
+                              control={form.control}
+                              name="name"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Document Name</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="Enter document name" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          {/* Metadata Key-Value Pairs */}
+                          <div className="col-span-6">
+                            <div className="flex items-center justify-between mb-2">
+                              <FormLabel>Metadata</FormLabel>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={addMetadataField}
+                                className="flex items-center"
+                              >
+                                <Plus className="h-4 w-4 mr-1" />
+                                Add Metadata
+                              </Button>
+                            </div>
+                            
+                            {fields.length === 0 && (
+                              <div className="text-sm text-gray-500 py-2 text-center border border-dashed rounded-md">
+                                No metadata added. Click "Add Metadata" to add key-value pairs.
+                              </div>
+                            )}
+                            
+                            {fields.map((field, index) => {
+                              // Get the current key value from the form
+                              const currentKey = form.watch(`metadata.${index}.key`);
+                              // Get tag colors based on the key (if it exists)
+                              const { bg, text } = currentKey ? getMetadataTagColors(currentKey) : { bg: "", text: "" };
+                              
+                              return (
+                                <motion.div 
+                                  key={field.id} 
+                                  className="flex items-start space-x-2 mb-2 rounded-md"
+                                  initial={{ opacity: 0, y: -10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.3 }}
+                                >
+                                  <div className="flex-1">
+                                    <FormField
+                                      control={form.control}
+                                      name={`metadata.${index}.key`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormControl>
+                                            <div className="relative">
+                                              <Input 
+                                                placeholder="Key" 
+                                                {...field} 
+                                                className={`${currentKey ? `border-l-4 ${bg.replace('bg-', 'border-').replace('-50', '-300')}` : ''}`}
+                                              />
+                                              {currentKey && (
+                                                <div 
+                                                  className={`absolute right-2 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full ${bg.replace('-50', '-300')}`}
+                                                ></div>
+                                              )}
+                                            </div>
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <div className="flex-1">
+                                    <FormField
+                                      control={form.control}
+                                      name={`metadata.${index}.value`}
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormControl>
+                                            <Input 
+                                              placeholder="Value" 
+                                              {...field} 
+                                              className={currentKey ? `border-l-4 ${bg.replace('bg-', 'border-').replace('-50', '-200')}` : ''}
+                                            />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => remove(index)}
+                                    className="mt-2"
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </motion.div>
+                              );
+                            })}
+                          </div>
+
+                          <div className="col-span-6">
+                            <FormField
+                              control={form.control}
+                              name="accessLevel"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Access Level</FormLabel>
+                                  <FormControl>
+                                    <RadioGroup 
+                                      onValueChange={field.onChange} 
+                                      defaultValue={field.value}
+                                      className="flex flex-col space-y-1"
+                                    >
+                                      <FormItem className="flex items-center space-x-3 space-y-0">
+                                        <FormControl>
+                                          <RadioGroupItem value="public" />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">
+                                          Public - Anyone with the link can access
+                                        </FormLabel>
+                                      </FormItem>
+                                      <FormItem className="flex items-center space-x-3 space-y-0">
+                                        <FormControl>
+                                          <RadioGroupItem value="private" />
+                                        </FormControl>
+                                        <FormLabel className="font-normal">
+                                          Private - Only authenticated users can access
+                                        </FormLabel>
+                                      </FormItem>
+                                    </RadioGroup>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="px-6 py-4 bg-gray-100 border-t border-gray-200 sm:px-6 flex justify-between items-center">
+                      {form.formState.errors.root && (
+                        <span className="text-sm text-error">
+                          {form.formState.errors.root.message}
+                        </span>
+                      )}
+                      {!form.formState.errors.root && (
+                        <span className="text-sm text-gray-500">
+                          Add metadata to make your document more searchable
+                        </span>
+                      )}
+                      <Button 
+                        type="submit" 
+                        disabled={isUploading}
+                        className="bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+                        size="lg"
+                      >
+                        {isUploading ? (
+                          <>
+                            <RotateCw className="h-4 w-4 animate-spin" />
+                            Uploading...
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="h-4 w-4" />
+                            Upload to S3
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </form>
+              </Form>
             </div>
 
             {/* Sidebar */}
             <div className="md:col-span-1 ml-auto order-last">
               <div className="px-4 sm:px-0 space-y-6">
-                {/* Upload New Document Form */}
-                <Form {...form}>
-                  <form onSubmit={form.handleSubmit(handleUpload)}>
-                    <div className="shadow-sm sm:rounded-md sm:overflow-hidden border border-gray-200">
-                      <div className="bg-gray-100 px-6 py-3 border-b border-gray-200">
-                        <div className="flex items-center">
-                          <Upload className="h-5 w-5 text-gray-600 mr-2" />
-                          <h3 className="text-lg font-semibold text-gray-700">Upload New Document</h3>
-                        </div>
-                      </div>
-                      <div className="px-6 py-6 bg-white space-y-6">
-                        {/* File Upload */}
-                        <FileUpload 
-                          label="Document File"
-                          onFileChange={setSelectedFile}
-                          error={selectedFile ? undefined : form.formState.isSubmitted ? "Please select a file" : undefined}
-                        />
-
-                        {/* Upload Progress */}
-                        {uploadProgress && (
-                          <div>
-                            <FormLabel>Upload Progress</FormLabel>
-                            <div className="mt-1">
-                              <div className="relative pt-1">
-                                <div className="flex mb-2 items-center justify-between">
-                                  <div>
-                                    <span className="text-xs font-semibold inline-block py-1 px-2 rounded-full text-primary-dark bg-blue-200">
-                                      {uploadProgress.percentage}%
-                                    </span>
-                                  </div>
-                                  <div className="text-right">
-                                    <span className="text-xs font-semibold inline-block text-primary-dark">
-                                      {uploadProgress.status}
-                                    </span>
-                                  </div>
-                                </div>
-                                <Progress value={uploadProgress.percentage} className="h-2" />
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Document Metadata */}
-                        <div>
-                          <h3 className="text-sm font-medium text-gray-900 mb-4">Document Metadata</h3>
-                          
-                          <div className="grid grid-cols-6 gap-6">
-                            <div className="col-span-6">
-                              <FormField
-                                control={form.control}
-                                name="name"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Document Name</FormLabel>
-                                    <FormControl>
-                                      <Input placeholder="Enter document name" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
-
-                            {/* Metadata Key-Value Pairs */}
-                            <div className="col-span-6">
-                              <div className="flex items-center justify-between mb-2">
-                                <FormLabel>Metadata</FormLabel>
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={addMetadataField}
-                                  className="flex items-center"
-                                >
-                                  <Plus className="h-4 w-4 mr-1" />
-                                  Add Metadata
-                                </Button>
-                              </div>
-                              
-                              {fields.length === 0 && (
-                                <div className="text-sm text-gray-500 py-2 text-center border border-dashed rounded-md">
-                                  No metadata added. Click "Add Metadata" to add key-value pairs.
-                                </div>
-                              )}
-                              
-                              {fields.map((field, index) => {
-                                // Get the current key value from the form
-                                const currentKey = form.watch(`metadata.${index}.key`);
-                                // Get tag colors based on the key (if it exists)
-                                const { bg, text } = currentKey ? getMetadataTagColors(currentKey) : { bg: "", text: "" };
-                                
-                                return (
-                                  <motion.div 
-                                    key={field.id} 
-                                    className="flex items-start space-x-2 mb-2 rounded-md"
-                                    initial={{ opacity: 0, y: -10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                  >
-                                    <div className="flex-1">
-                                      <FormField
-                                        control={form.control}
-                                        name={`metadata.${index}.key`}
-                                        render={({ field }) => (
-                                          <FormItem>
-                                            <FormControl>
-                                              <div className="relative">
-                                                <Input 
-                                                  placeholder="Key" 
-                                                  {...field} 
-                                                  className={`${currentKey ? `border-l-4 ${bg.replace('bg-', 'border-').replace('-50', '-300')}` : ''}`}
-                                                />
-                                                {currentKey && (
-                                                  <div 
-                                                    className={`absolute right-2 top-1/2 transform -translate-y-1/2 w-2 h-2 rounded-full ${bg.replace('-50', '-300')}`}
-                                                  ></div>
-                                                )}
-                                              </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                          </FormItem>
-                                        )}
-                                      />
-                                    </div>
-                                    <div className="flex-1">
-                                      <FormField
-                                        control={form.control}
-                                        name={`metadata.${index}.value`}
-                                        render={({ field }) => (
-                                          <FormItem>
-                                            <FormControl>
-                                              <Input 
-                                                placeholder="Value" 
-                                                {...field} 
-                                                className={currentKey ? `border-l-4 ${bg.replace('bg-', 'border-').replace('-50', '-200')}` : ''}
-                                              />
-                                            </FormControl>
-                                            <FormMessage />
-                                          </FormItem>
-                                        )}
-                                      />
-                                    </div>
-                                    <Button
-                                      type="button"
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => remove(index)}
-                                      className="mt-2"
-                                    >
-                                      <X className="h-4 w-4" />
-                                    </Button>
-                                  </motion.div>
-                                );
-                              })}
-                            </div>
-
-                            <div className="col-span-6">
-                              <FormField
-                                control={form.control}
-                                name="accessLevel"
-                                render={({ field }) => (
-                                  <FormItem>
-                                    <FormLabel>Access Level</FormLabel>
-                                    <FormControl>
-                                      <RadioGroup 
-                                        onValueChange={field.onChange} 
-                                        defaultValue={field.value}
-                                        className="flex flex-col space-y-1"
-                                      >
-                                        <FormItem className="flex items-center space-x-3 space-y-0">
-                                          <FormControl>
-                                            <RadioGroupItem value="public" />
-                                          </FormControl>
-                                          <FormLabel className="font-normal">
-                                            Public - Anyone with the link can access
-                                          </FormLabel>
-                                        </FormItem>
-                                        <FormItem className="flex items-center space-x-3 space-y-0">
-                                          <FormControl>
-                                            <RadioGroupItem value="private" />
-                                          </FormControl>
-                                          <FormLabel className="font-normal">
-                                            Private - Only authenticated users can access
-                                          </FormLabel>
-                                        </FormItem>
-                                      </RadioGroup>
-                                    </FormControl>
-                                    <FormMessage />
-                                  </FormItem>
-                                )}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="px-6 py-4 bg-gray-100 border-t border-gray-200 sm:px-6 flex justify-between items-center">
-                        {form.formState.errors.root && (
-                          <span className="text-sm text-error">
-                            {form.formState.errors.root.message}
-                          </span>
-                        )}
-                        {!form.formState.errors.root && (
-                          <span className="text-sm text-gray-500">
-                            Add metadata to make your document more searchable
-                          </span>
-                        )}
-                        <Button 
-                          type="submit" 
-                          disabled={isUploading}
-                          className="bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
-                          size="lg"
-                        >
-                          {isUploading ? (
-                            <>
-                              <RotateCw className="h-4 w-4 animate-spin" />
-                              Uploading...
-                            </>
-                          ) : (
-                            <>
-                              <Upload className="h-4 w-4" />
-                              Upload to S3
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  </form>
-                </Form>
-
                 {/* Architecture Diagram */}
                 <div className="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:shadow transition-shadow duration-300">
                   <div className="px-5 py-4 bg-gray-100 border-b border-gray-200">
