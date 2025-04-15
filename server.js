@@ -2,7 +2,7 @@
 
 /**
  * Production server for Docway 360 Document Manager
- * This simplified server will run on AWS Elastic Beanstalk
+ * This simplified server can be used for production deployments
  */
 const express = require('express');
 const { createServer } = require('http');

@@ -53,4 +53,3 @@ The architecture follows a simple flow:
 - **Frontend**: React, Tailwind CSS, Shadcn UI, React Query, Framer Motion
 - **Backend**: Express.js, Node.js
 - **Storage**: AWS S3, In-memory JavaScript storage
-- **Deployment**: AWS Elastic Beanstalk, AWS App Runner, or Docker
