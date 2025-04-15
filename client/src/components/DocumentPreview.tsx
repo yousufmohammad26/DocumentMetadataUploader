@@ -98,11 +98,15 @@ export function DocumentPreview({
     }
   }, [isOpen]);
 
-  // Determine if the document is a PDF
-  const isPdf = documentType === 'application/pdf';
+  // Determine if the document is a PDF - check both the MIME type and the filename extension
+  const isPdf = documentType === 'application/pdf' || 
+                documentName.toLowerCase().endsWith('.pdf') || 
+                documentUrl.toLowerCase().includes('.pdf');
   
-  // Determine if the document is an image
-  const isImage = documentType.startsWith('image/');
+  // Determine if the document is an image - check both the MIME type and common image extensions
+  const isImage = documentType.startsWith('image/') || 
+                  /\.(jpg|jpeg|png|gif|bmp|svg|webp)$/i.test(documentName) ||
+                  /\.(jpg|jpeg|png|gif|bmp|svg|webp)/i.test(documentUrl);
 
   // Handle document load event
   const handleDocumentLoad = () => {
@@ -192,13 +196,29 @@ export function DocumentPreview({
               >
                 {isPdf ? (
                   // PDF Viewer (using iframe with PDF.js or browser's built-in PDF viewer)
-                  <iframe
-                    ref={iframeRef}
-                    src={`${documentUrl}#page=${currentPage}`}
-                    className="w-full h-full border-0"
+                  <object
+                    ref={iframeRef as any}
+                    data={documentUrl}
+                    type="application/pdf"
+                    className="w-full h-full"
                     onLoad={handleDocumentLoad}
-                    title={documentName}
-                  />
+                  >
+                    <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                      <div className="text-center p-4">
+                        <p className="text-sm font-medium text-gray-900">Unable to display PDF</p>
+                        <p className="text-xs text-gray-500 mt-1">Your browser doesn't support PDF embedding or the file might be corrupted.</p>
+                        <a 
+                          href={documentUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="mt-3 inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
+                        >
+                          <Download className="h-3.5 w-3.5 mr-1" />
+                          Download PDF
+                        </a>
+                      </div>
+                    </div>
+                  </object>
                 ) : isImage ? (
                   // Image Viewer
                   <img
@@ -214,6 +234,8 @@ export function DocumentPreview({
                     className="w-full h-full border-0"
                     onLoad={handleDocumentLoad}
                     title={documentName}
+                    sandbox="allow-same-origin allow-scripts allow-forms"
+                    referrerPolicy="no-referrer"
                   />
                 )}
               </div>

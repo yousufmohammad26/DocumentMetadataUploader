@@ -177,20 +177,36 @@ export default function Home() {
       }
       
       const response = await apiRequest("GET", `/api/documents/${id}/download`);
-      const { presignedUrl } = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(`Failed to get download URL: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      if (!data.presignedUrl) {
+        throw new Error("No presigned URL returned from server");
+      }
+      
+      console.log("Opening document preview:", {
+        name: document.name || document.fileName,
+        type: document.fileType,
+        url: data.presignedUrl.substring(0, 100) + '...' // Log partial URL for debugging
+      });
       
       // Set the preview document and open the preview modal
       setPreviewDocument({
-        url: presignedUrl,
+        url: data.presignedUrl,
         name: document.name || document.fileName,
         type: document.fileType,
         id: document.id
       });
       setPreviewOpen(true);
     } catch (error) {
+      console.error("Error opening document preview:", error);
       toast({
         title: "Error",
-        description: "Failed to preview document",
+        description: error instanceof Error ? error.message : "Failed to preview document",
         variant: "destructive",
       });
     }
@@ -200,14 +216,24 @@ export default function Home() {
   const handleView = async (id: number) => {
     try {
       const response = await apiRequest("GET", `/api/documents/${id}/download`);
-      const { presignedUrl } = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(`Failed to get download URL: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      if (!data.presignedUrl) {
+        throw new Error("No presigned URL returned from server");
+      }
       
       // Open the URL in a new tab for viewing
-      window.open(presignedUrl, "_blank");
+      window.open(data.presignedUrl, "_blank");
     } catch (error) {
+      console.error("Error opening document in new tab:", error);
       toast({
         title: "Error",
-        description: "Failed to view document",
+        description: error instanceof Error ? error.message : "Failed to view document",
         variant: "destructive",
       });
     }
@@ -217,19 +243,29 @@ export default function Home() {
   const handleDownload = async (id: number) => {
     try {
       const response = await apiRequest("GET", `/api/documents/${id}/download`);
-      const { presignedUrl } = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(`Failed to get download URL: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      if (!data.presignedUrl) {
+        throw new Error("No presigned URL returned from server");
+      }
       
       // Create a temporary anchor element and trigger download
       const link = document.createElement('a');
-      link.href = presignedUrl;
+      link.href = data.presignedUrl;
       link.setAttribute('download', ''); // This will prompt download rather than open
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (error) {
+      console.error("Error downloading document:", error);
       toast({
         title: "Error",
-        description: "Failed to download document",
+        description: error instanceof Error ? error.message : "Failed to download document",
         variant: "destructive",
       });
     }
