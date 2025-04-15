@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { DocumentMetadata, documentMetadataSchema, MetadataKeyValue } from "@shared/schema";
 import { FileUpload } from "@/components/ui/file-upload";
 import { uploadFileToS3, formatFileSize, formatDate, UploadProgress, getMetadataTagColors } from "@/lib/s3";
+import { getDocumentColorScheme } from "@/lib/documentColors";
 import { DocumentPreview } from "@/components/DocumentPreview";
 import { EditMetadataModal } from "@/components/EditMetadataModal";
 
@@ -778,6 +779,9 @@ export default function Home() {
                         if (doc.fileType.includes('presentation') || doc.fileType.includes('powerpoint')) IconComponent = Presentation;
                         if (doc.fileType.includes('zip') || doc.fileType.includes('archive')) IconComponent = Archive;
                         
+                        // Get document color scheme based on metadata
+                        const colorScheme = getDocumentColorScheme(doc.metadata);
+                        
                         return (
                           <motion.div
                             key={doc.id}
@@ -793,16 +797,16 @@ export default function Home() {
                               stiffness: 300,
                               damping: 30
                             }}
-                            className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg border border-gray-100"
+                            className={`bg-white rounded-xl overflow-hidden shadow hover:shadow-lg border ${colorScheme.borderColor}`}
                         >
                           {/* Document Header */}
                           <div 
-                            className="p-4 border-b bg-gray-50 flex justify-between items-center cursor-pointer"
+                            className={`p-4 border-b ${colorScheme.headerBg} flex justify-between items-center cursor-pointer`}
                             onClick={() => handleViewInPreview(doc.id)}
                           >
                             <div className="flex items-center">
                               <div className="mr-3">
-                                <IconComponent className="h-5 w-5 text-gray-700" />
+                                <IconComponent className={`h-5 w-5 ${colorScheme.accentColor}`} />
                               </div>
                               <div>
                                 <h3 className="text-sm font-medium text-gray-900 truncate hover:text-clip">{doc.name}</h3>
@@ -827,9 +831,9 @@ export default function Home() {
                             
                             {/* Metadata Table */}
                             <div className="mb-4">
-                              <h4 className="text-xs font-semibold text-gray-700 uppercase mb-2">Metadata</h4>
+                              <h4 className={`text-xs font-semibold ${colorScheme.accentColor} uppercase mb-2`}>Metadata</h4>
                               {doc.metadata && Object.keys(doc.metadata).length > 0 ? (
-                                <div className="bg-gray-50 rounded border border-gray-200 overflow-hidden">
+                                <div className={`${colorScheme.headerBg} rounded border ${colorScheme.borderColor} overflow-hidden`}>
                                   <table className="min-w-full divide-y divide-gray-200">
                                     <tbody className="divide-y divide-gray-200">
                                       {Object.entries(doc.metadata).map(([key, value], idx) => {
@@ -851,7 +855,7 @@ export default function Home() {
                                   </table>
                                 </div>
                               ) : (
-                                <div className="text-center py-3 bg-gray-50 rounded border border-gray-200">
+                                <div className={`text-center py-3 ${colorScheme.headerBg} rounded border ${colorScheme.borderColor}`}>
                                   <span className="text-xs text-gray-500">No metadata</span>
                                 </div>
                               )}
@@ -859,7 +863,7 @@ export default function Home() {
                           </div>
                           
                           {/* Actions */}
-                          <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 flex justify-between">
+                          <div className={`px-4 py-3 ${colorScheme.headerBg} border-t ${colorScheme.borderColor} flex justify-between`}>
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
