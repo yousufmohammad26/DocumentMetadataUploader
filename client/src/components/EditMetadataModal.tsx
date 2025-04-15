@@ -255,81 +255,160 @@ export function EditMetadataModal({
                 </Button>
               </div>
 
-              <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
-                {fields.length === 0 && (
-                  <div className="text-sm text-gray-500 italic text-center py-4">
-                    No metadata fields. Click "Add Field" to create one.
-                  </div>
-                )}
-
-                {fields.map((field, index) => {
-                  // Check if this is a system field (original-filename, topology, year, month)
-                  const isSystemField = field.key === 'original-filename' || field.key === 'topology' || field.key === 'year' || field.key === 'month';
+              <div className="space-y-6 max-h-[300px] overflow-y-auto pr-2">
+                {/* System Defined Fields Section */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium text-blue-700 flex items-center border-b pb-1 border-blue-100">
+                    <Lock className="h-3.5 w-3.5 mr-1.5" />
+                    System Defined Fields
+                  </h3>
                   
-                  return (
-                    <div key={field.id} className="flex gap-3 items-start">
-                      <div className="grid grid-cols-2 gap-3 flex-grow">
-                        <FormField
-                          control={form.control}
-                          name={`metadata.${index}.key`}
-                          render={({ field: fieldProps }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input 
-                                  {...fieldProps} 
-                                  placeholder="Key" 
-                                  disabled={isSystemField}
-                                  className={isSystemField ? "bg-gray-100 cursor-not-allowed" : ""}
-                                  onChange={(e) => {
-                                    // First, update the field value
-                                    fieldProps.onChange(e);
-                                    // Then validate if it's a reserved field name
-                                    if (!isSystemField) {
-                                      validateMetadataKey(e.target.value, index);
-                                    }
-                                  }}
-                                />
-                              </FormControl>
-                              {isSystemField && (
-                                <p className="text-xs text-blue-500 mt-1">
+                  {fields.filter(field => 
+                    field.key === 'original-filename' || 
+                    field.key === 'topology' || 
+                    field.key === 'year' || 
+                    field.key === 'month'
+                  ).map((field, i) => {
+                    // Find the actual index in the fields array
+                    const index = fields.findIndex(f => f.id === field.id);
+                    
+                    return (
+                      <div key={field.id} className="flex gap-3 items-start bg-blue-50 p-2 rounded-md border border-blue-100">
+                        <div className="grid grid-cols-2 gap-3 flex-grow">
+                          <FormField
+                            control={form.control}
+                            name={`metadata.${index}.key`}
+                            render={({ field: fieldProps }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Input 
+                                    {...fieldProps} 
+                                    placeholder="Key" 
+                                    disabled={true}
+                                    className="bg-blue-50 border-blue-200"
+                                  />
+                                </FormControl>
+                                <p className="text-xs text-blue-600 mt-1">
                                   System field (readonly)
                                 </p>
-                              )}
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`metadata.${index}.value`}
-                          render={({ field: fieldProps }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Input 
-                                  {...fieldProps} 
-                                  placeholder="Value" 
-                                  disabled={isSystemField}
-                                  className={isSystemField ? "bg-gray-100 cursor-not-allowed" : ""}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            control={form.control}
+                            name={`metadata.${index}.value`}
+                            render={({ field: fieldProps }) => (
+                              <FormItem>
+                                <FormControl>
+                                  <Input 
+                                    {...fieldProps} 
+                                    placeholder="Value" 
+                                    disabled={true}
+                                    className="bg-blue-50 border-blue-200"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-10 w-10 rounded-full opacity-25 cursor-not-allowed"
+                          disabled={true}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
                       </div>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => remove(index)}
-                        className="h-10 w-10 rounded-full"
-                        disabled={isSystemField}
-                      >
-                        <X className="h-4 w-4" opacity={isSystemField ? 0.5 : 1} />
-                      </Button>
+                    );
+                  })}
+                </div>
+                
+                {/* User Defined Fields Section */}
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center border-b pb-1 border-gray-200">
+                    <h3 className="text-sm font-medium text-gray-700 flex items-center">
+                      <Tag className="h-3.5 w-3.5 mr-1.5" />
+                      User Defined Fields
+                    </h3>
+                  </div>
+                  
+                  {fields.filter(field => 
+                    field.key !== 'original-filename' && 
+                    field.key !== 'topology' && 
+                    field.key !== 'year' && 
+                    field.key !== 'month'
+                  ).length === 0 ? (
+                    <div className="text-sm text-gray-500 italic text-center py-4 border border-dashed rounded-md">
+                      No custom fields added. Click "Add Field" to create one.
                     </div>
-                  );
-                })}
+                  ) : (
+                    fields.filter(field => 
+                      field.key !== 'original-filename' && 
+                      field.key !== 'topology' && 
+                      field.key !== 'year' && 
+                      field.key !== 'month'
+                    ).map((field) => {
+                      // Find the actual index in the fields array
+                      const index = fields.findIndex(f => f.id === field.id);
+                      
+                      return (
+                        <div key={field.id} className="flex gap-3 items-start border border-gray-100 p-2 rounded-md hover:bg-gray-50 transition-colors">
+                          <div className="grid grid-cols-2 gap-3 flex-grow">
+                            <FormField
+                              control={form.control}
+                              name={`metadata.${index}.key`}
+                              render={({ field: fieldProps }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input 
+                                      {...fieldProps} 
+                                      placeholder="Key" 
+                                      onChange={(e) => {
+                                        // First, update the field value
+                                        fieldProps.onChange(e);
+                                        // Then validate if it's a reserved field name
+                                        validateMetadataKey(e.target.value, index);
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`metadata.${index}.value`}
+                              render={({ field: fieldProps }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input 
+                                      {...fieldProps} 
+                                      placeholder="Value" 
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => remove(index)}
+                            className="h-10 w-10 rounded-full"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
               </div>
             </div>
 
