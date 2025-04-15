@@ -729,6 +729,32 @@ export default function Home() {
             <div className="md:col-span-1 ml-auto order-last">
               <div className="px-4 sm:px-0 space-y-6">
 
+                {/* Architecture Diagram */}
+                <div className="bg-white shadow-md rounded-lg overflow-hidden border border-blue-100 hover:shadow-lg transition-shadow duration-300">
+                  <div className="px-5 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+                    <div className="flex items-center">
+                      <div className="bg-blue-500 rounded-full p-1 mr-2">
+                        <FileCode className="h-3.5 w-3.5 text-white" />
+                      </div>
+                      <h3 className="text-sm font-semibold text-gray-900">Architecture</h3>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <img 
+                      src="/architecture_diagram.png" 
+                      alt="Architecture Diagram" 
+                      className="w-full rounded-md border border-gray-200"
+                    />
+                    <div className="mt-2 text-xs text-gray-500">
+                      <ul className="space-y-1 pl-4 list-disc">
+                        <li>Browser sends requests to S3</li>
+                        <li>Documents are stored in S3</li>
+                        <li>Metadata is saved to S3 Tables</li>
+                        <li>In-memory storage for quick access</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Logs */}
                 <div className="bg-white shadow-md rounded-lg overflow-hidden border border-emerald-100 hover:shadow-lg transition-shadow duration-300">
