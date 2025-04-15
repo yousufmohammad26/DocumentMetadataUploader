@@ -338,15 +338,15 @@ export default function Home() {
             description: "Document successfully uploaded!",
             variant: "default",
           });
-          
-          // Refresh document list, stats and AWS account info
-          console.log('Refreshing queries...');
-          queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
-          queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
-          queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
         } catch (resetError) {
           console.error('Error during form reset:', resetError);
         }
+        
+        // Refresh document list, stats and AWS account info - moved outside try/catch to ensure it always runs
+        console.log('Refreshing queries to show newest documents first...');
+        queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+        queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
       } else {
         toast({
           title: "Error",
