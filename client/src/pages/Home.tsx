@@ -480,56 +480,7 @@ export default function Home() {
                   Add files to your S3 bucket with metadata information for better organization.
                 </p>
                 
-                <div className="mt-6 bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:shadow transition-shadow duration-300">
-                  <div className="px-5 py-4 bg-gray-100 border-b border-gray-200">
-                    <div className="flex items-center">
-                      <Info className="h-4 w-4 text-gray-600 mr-2" />
-                      <h3 className="text-sm font-semibold text-gray-900">Metadata Stats</h3>
-                    </div>
-                  </div>
-                  <div className="px-5 py-4">
-                    {isLoadingStats ? (
-                      <div className="flex justify-center items-center py-4">
-                        <RotateCw className="h-5 w-5 text-primary animate-spin mr-2" />
-                        <span className="text-sm text-gray-600">Loading stats...</span>
-                      </div>
-                    ) : (
-                      <div className="grid grid-cols-1 gap-4">
-                        <div className="p-3 bg-blue-50 rounded-lg">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-blue-700">Common Metadata Keys</span>
-                            <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded-full">Tips</span>
-                          </div>
-                          <ul className="mt-2 space-y-1 text-sm text-gray-600">
-                            <li className="flex items-center">
-                              <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                              <span>category, type, department</span>
-                            </li>
-                            <li className="flex items-center">
-                              <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                              <span>author, creator, owner</span>
-                            </li>
-                            <li className="flex items-center">
-                              <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2"></div>
-                              <span>status, priority, version</span>
-                            </li>
-                          </ul>
-                        </div>
-                        
-                        <div className="p-3 bg-purple-50 rounded-lg">
-                          <div className="flex justify-between items-center">
-                            <span className="text-sm font-medium text-purple-700">Searchable Values</span>
-                            <span className="text-xs text-purple-600 bg-purple-100 px-2 py-1 rounded-full">Info</span>
-                          </div>
-                          <p className="mt-2 text-sm text-gray-600">
-                            All metadata is fully searchable. Use specific values like "HR", "Finance", 
-                            "Draft", "Final" etc. for better organization.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
+
 
               </div>
             </div>
