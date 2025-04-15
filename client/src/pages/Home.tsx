@@ -507,7 +507,18 @@ export default function Home() {
                         ref={fileUploadRef}
                         id="file-upload"
                         label="Document File"
-                        onFileChange={setSelectedFile}
+                        onFileChange={(file) => {
+                          setSelectedFile(file);
+                          
+                          // If a file is selected, update the document name field with the filename without extension
+                          if (file) {
+                            const fileName = file.name;
+                            // Remove file extension
+                            const fileBaseName = fileName.replace(/\.[^/.]+$/, "");
+                            // Set the document name field value
+                            form.setValue("name", fileBaseName);
+                          }
+                        }}
                         error={selectedFile ? undefined : form.formState.isSubmitted ? "Please select a file" : undefined}
                       />
 
