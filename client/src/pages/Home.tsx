@@ -405,13 +405,16 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <header className="bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl font-semibold text-gray-800">Document Metadata Uploader</h1>
-            <div className="flex items-center space-x-4">
-              <div>
-                <span className="text-sm text-gray-600">
+            <div className="flex items-center">
+              <Upload className="h-8 w-8 mr-3" />
+              <h1 className="text-2xl font-bold tracking-tight">Document Metadata Uploader</h1>
+            </div>
+            <div className="flex items-center space-x-6">
+              <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 shadow-sm">
+                <span className="text-sm text-white">
                   Connected to AWS Account {isLoadingAwsAccount ? '...' : awsAccount.accountIdentifier}
                 </span>
                 <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -423,28 +426,40 @@ export default function Home() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <motion.div 
-                    className="cursor-pointer flex items-center"
+                    className="cursor-pointer flex items-center bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 transition-all duration-200"
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    <Avatar className="h-8 w-8 border-2 border-primary shadow-sm">
+                    <Avatar className="h-9 w-9 border-2 border-white shadow-sm">
                       <AvatarImage src="/assets/Profile.jpg" alt="User Profile" />
                       <AvatarFallback>YM</AvatarFallback>
                     </Avatar>
                     <div className="ml-2 text-sm hidden sm:block">
-                      <p className="font-medium text-gray-700">Yousuf Mohammad</p>
-                      <p className="text-xs text-gray-500">Administrator</p>
+                      <p className="font-medium text-white">Yousuf Mohammad</p>
+                      <p className="text-xs text-white/70">Administrator</p>
                     </div>
                   </motion.div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
-                  <DropdownMenuItem>Documents</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <User className="h-4 w-4 mr-2" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="h-4 w-4 mr-2" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <FileText className="h-4 w-4 mr-2" />
+                    Documents
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Sign out</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign out
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -459,58 +474,88 @@ export default function Home() {
             {/* Upload Section */}
             <div className="md:col-span-1">
               <div className="px-4 sm:px-0">
-                <h2 className="text-lg font-medium text-gray-900">Upload Document</h2>
-                <p className="mt-1 text-sm text-gray-600">
+                <div className="flex items-center mb-3">
+                  <div className="p-2 rounded-full bg-primary/10 mr-3">
+                    <Upload className="h-5 w-5 text-primary" />
+                  </div>
+                  <h2 className="text-xl font-bold text-gray-900 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">Upload Document</h2>
+                </div>
+                <p className="mt-1 text-sm text-gray-600 mb-6 pl-10">
                   Add files to your S3 bucket with metadata information for better organization.
                 </p>
                 
-                <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-sm font-medium text-gray-900">Supported File Types</h3>
-                    <div className="mt-2 max-w-xl text-sm text-gray-500">
-                      <ul className="list-disc pl-5 space-y-1">
-                        <li>PDF Documents (.pdf)</li>
-                        <li>Word Documents (.docx, .doc)</li>
-                        <li>Excel Spreadsheets (.xlsx, .xls)</li>
-                        <li>PowerPoint (.pptx, .ppt)</li>
-                        <li>Text Files (.txt)</li>
-                        <li>Images (.jpg, .png)</li>
-                      </ul>
+                <div className="mt-6 bg-white shadow-md rounded-lg overflow-hidden border border-primary/10 hover:shadow-lg transition-shadow duration-300">
+                  <div className="px-5 py-4 bg-gradient-to-br from-primary/5 to-primary/10 border-b border-primary/10">
+                    <div className="flex items-center">
+                      <FileText className="h-4 w-4 text-primary mr-2" />
+                      <h3 className="text-sm font-semibold text-gray-900">Supported File Types</h3>
+                    </div>
+                  </div>
+                  <div className="px-5 py-4">
+                    <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <span>PDF Documents</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                        <span>Word Documents</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>Excel Spreadsheets</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                        <span>PowerPoint</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+                        <span>Text Files</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
+                        <span>Images</span>
+                      </div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
-                  <div className="px-4 py-5 sm:p-6">
-                    <h3 className="text-sm font-medium text-gray-900">Upload Stats</h3>
-                    <div className="mt-2 max-w-xl text-sm text-gray-500">
-                      {isLoadingStats ? (
-                        <div className="text-center py-4">Loading stats...</div>
-                      ) : (
-                        <dl className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
-                          <div className="sm:col-span-1">
-                            <dt className="text-sm font-medium text-gray-500">Total Uploads</dt>
-                            <dd className="mt-1 text-sm text-gray-900">{stats?.totalUploads || 0}</dd>
-                          </div>
-                          <div className="sm:col-span-1">
-                            <dt className="text-sm font-medium text-gray-500">Today</dt>
-                            <dd className="mt-1 text-sm text-gray-900">{stats?.todayUploads || 0}</dd>
-                          </div>
-                          <div className="sm:col-span-1">
-                            <dt className="text-sm font-medium text-gray-500">Storage Used</dt>
-                            <dd className="mt-1 text-sm text-gray-900">
-                              {stats ? formatFileSize(stats.storageUsed) : '0 B'}
-                            </dd>
-                          </div>
-                          <div className="sm:col-span-1">
-                            <dt className="text-sm font-medium text-gray-500">Bucket</dt>
-                            <dd className="mt-1 text-sm text-gray-900 truncate">
-                              {stats?.bucketName || 'document-metadata-bucket'}
-                            </dd>
-                          </div>
-                        </dl>
-                      )}
+                <div className="mt-6 bg-white shadow-md rounded-lg overflow-hidden border border-primary/10 hover:shadow-lg transition-shadow duration-300">
+                  <div className="px-5 py-4 bg-gradient-to-br from-primary/5 to-primary/10 border-b border-primary/10">
+                    <div className="flex items-center">
+                      <Info className="h-4 w-4 text-primary mr-2" />
+                      <h3 className="text-sm font-semibold text-gray-900">Upload Stats</h3>
                     </div>
+                  </div>
+                  <div className="px-5 py-4">
+                    {isLoadingStats ? (
+                      <div className="flex justify-center items-center py-4">
+                        <RotateCw className="h-5 w-5 text-primary animate-spin mr-2" />
+                        <span className="text-sm text-gray-600">Loading stats...</span>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="flex flex-col items-center p-3 bg-blue-50 rounded-lg">
+                          <span className="text-2xl font-bold text-blue-600">{stats?.totalUploads || 0}</span>
+                          <span className="text-xs text-blue-700 mt-1">Total Uploads</span>
+                        </div>
+                        <div className="flex flex-col items-center p-3 bg-green-50 rounded-lg">
+                          <span className="text-2xl font-bold text-green-600">{stats?.todayUploads || 0}</span>
+                          <span className="text-xs text-green-700 mt-1">Today's Uploads</span>
+                        </div>
+                        <div className="flex flex-col items-center p-3 bg-purple-50 rounded-lg">
+                          <span className="text-xl font-bold text-purple-600">{stats ? formatFileSize(stats.storageUsed) : '0 B'}</span>
+                          <span className="text-xs text-purple-700 mt-1">Storage Used</span>
+                        </div>
+                        <div className="flex flex-col items-center p-3 bg-yellow-50 rounded-lg">
+                          <span className="text-sm font-medium text-yellow-700 truncate max-w-full">
+                            {stats?.bucketName || 'S3 Bucket'}
+                          </span>
+                          <span className="text-xs text-yellow-600 mt-1">Bucket Name</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -521,8 +566,14 @@ export default function Home() {
             <div className="mt-5 md:mt-0 md:col-span-2">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleUpload)}>
-                  <div className="shadow sm:rounded-md sm:overflow-hidden">
-                    <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                  <div className="shadow-lg sm:rounded-md sm:overflow-hidden border border-primary/20">
+                    <div className="bg-gradient-to-br from-primary/5 to-primary/10 px-6 py-3 border-b border-primary/20">
+                      <div className="flex items-center">
+                        <Upload className="h-5 w-5 text-primary mr-2" />
+                        <h3 className="text-lg font-semibold text-primary">Upload New Document</h3>
+                      </div>
+                    </div>
+                    <div className="px-6 py-6 bg-white space-y-6">
                       {/* File Upload */}
                       <FileUpload 
                         label="Document File"
@@ -708,17 +759,34 @@ export default function Home() {
                       </div>
                     </div>
 
-                    <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                    <div className="px-6 py-4 bg-gradient-to-br from-primary/5 to-primary/10 border-t border-primary/20 sm:px-6 flex justify-between items-center">
                       {form.formState.errors.root && (
-                        <span className="text-sm text-error mr-4">
+                        <span className="text-sm text-error">
                           {form.formState.errors.root.message}
+                        </span>
+                      )}
+                      {!form.formState.errors.root && (
+                        <span className="text-sm text-gray-500">
+                          Add metadata to make your document more searchable
                         </span>
                       )}
                       <Button 
                         type="submit" 
                         disabled={isUploading}
+                        className="bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+                        size="lg"
                       >
-                        {isUploading ? 'Uploading...' : 'Upload to S3'}
+                        {isUploading ? (
+                          <>
+                            <RotateCw className="h-4 w-4 animate-spin" />
+                            Uploading...
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="h-4 w-4" />
+                            Upload to S3
+                          </>
+                        )}
                       </Button>
                     </div>
                   </div>
@@ -1026,14 +1094,15 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center">
-            <div className="text-sm text-gray-500">
-              <span></span>
+      <footer className="bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg mt-12">
+        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-4 md:mb-0">
+              <FileText className="h-6 w-6 mr-2" />
+              <span className="text-lg font-bold">Document Metadata Manager</span>
             </div>
-            <div className="text-sm text-gray-500">
-              <span>Powered by AWS S3 Tables and Yousuf Mohammad</span>
+            <div className="flex items-center bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2">
+              <span className="text-sm">Powered by AWS S3 and built by Yousuf Mohammad</span>
             </div>
           </div>
         </div>
