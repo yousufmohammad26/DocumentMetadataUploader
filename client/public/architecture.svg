@@ -1,63 +1,68 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="800" height="300" xmlns="http://www.w3.org/2000/svg">
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="500" fill="#f9fafb" />
+  
+  <!-- Title -->
+  <text x="400" y="50" font-family="Arial" font-size="24" text-anchor="middle" font-weight="bold" fill="#111827">Docway 360 Architecture</text>
+  
+  <!-- Client Box -->
+  <rect x="50" y="100" width="200" height="150" rx="10" ry="10" fill="#eef2ff" stroke="#6366f1" stroke-width="2"/>
+  <text x="150" y="130" font-family="Arial" font-size="18" text-anchor="middle" font-weight="bold" fill="#4f46e5">React Frontend</text>
+  
+  <rect x="70" y="150" width="160" height="30" rx="5" ry="5" fill="#ffffff" stroke="#6366f1" stroke-width="1"/>
+  <text x="150" y="170" font-family="Arial" font-size="14" text-anchor="middle" fill="#4f46e5">UI Components</text>
+  
+  <rect x="70" y="190" width="160" height="30" rx="5" ry="5" fill="#ffffff" stroke="#6366f1" stroke-width="1"/>
+  <text x="150" y="210" font-family="Arial" font-size="14" text-anchor="middle" fill="#4f46e5">React Query</text>
+  
+  <!-- Server Box -->
+  <rect x="300" y="100" width="200" height="150" rx="10" ry="10" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+  <text x="400" y="130" font-family="Arial" font-size="18" text-anchor="middle" font-weight="bold" fill="#059669">Express Server</text>
+  
+  <rect x="320" y="150" width="160" height="30" rx="5" ry="5" fill="#ffffff" stroke="#10b981" stroke-width="1"/>
+  <text x="400" y="170" font-family="Arial" font-size="14" text-anchor="middle" fill="#059669">REST API</text>
+  
+  <rect x="320" y="190" width="160" height="30" rx="5" ry="5" fill="#ffffff" stroke="#10b981" stroke-width="1"/>
+  <text x="400" y="210" font-family="Arial" font-size="14" text-anchor="middle" fill="#059669">In-Memory Storage</text>
+  
+  <!-- AWS Box -->
+  <rect x="550" y="100" width="200" height="150" rx="10" ry="10" fill="#fff7ed" stroke="#f59e0b" stroke-width="2"/>
+  <text x="650" y="130" font-family="Arial" font-size="18" text-anchor="middle" font-weight="bold" fill="#d97706">AWS S3</text>
+  
+  <rect x="570" y="150" width="160" height="30" rx="5" ry="5" fill="#ffffff" stroke="#f59e0b" stroke-width="1"/>
+  <text x="650" y="170" font-family="Arial" font-size="14" text-anchor="middle" fill="#d97706">File Storage</text>
+  
+  <rect x="570" y="190" width="160" height="30" rx="5" ry="5" fill="#ffffff" stroke="#f59e0b" stroke-width="1"/>
+  <text x="650" y="210" font-family="Arial" font-size="14" text-anchor="middle" fill="#d97706">Object Metadata</text>
+  
+  <!-- Data Flow Box -->
+  <rect x="50" y="300" width="700" height="150" rx="10" ry="10" fill="#fef2f2" stroke="#ef4444" stroke-width="2"/>
+  <text x="400" y="330" font-family="Arial" font-size="18" text-anchor="middle" font-weight="bold" fill="#b91c1c">Data Flow</text>
+  
+  <!-- Data Flow Arrows -->
+  <!-- Client to Server -->
+  <line x1="250" y1="175" x2="300" y2="175" stroke="#6366f1" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <!-- Server to Client -->
+  <line x1="300" y1="185" x2="250" y2="185" stroke="#10b981" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Server to AWS -->
+  <line x1="500" y1="175" x2="550" y2="175" stroke="#10b981" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <!-- AWS to Server -->
+  <line x1="550" y1="185" x2="500" y2="185" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Data Flow Steps -->
+  <text x="75" y="360" font-family="Arial" font-size="14" fill="#b91c1c">1. User uploads file via React UI</text>
+  <text x="75" y="385" font-family="Arial" font-size="14" fill="#b91c1c">2. Express server processes file and metadata</text>
+  <text x="75" y="410" font-family="Arial" font-size="14" fill="#b91c1c">3. File and metadata stored in AWS S3</text>
+  <text x="400" y="360" font-family="Arial" font-size="14" fill="#b91c1c">4. Document reference stored in memory</text>
+  <text x="400" y="385" font-family="Arial" font-size="14" fill="#b91c1c">5. Metadata retrieved for filtering and display</text>
+  <text x="400" y="410" font-family="Arial" font-size="14" fill="#b91c1c">6. Presigned URLs generated for downloads</text>
+
+  <!-- Arrow definitions -->
   <defs>
-    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#374151" />
     </marker>
   </defs>
-  
-  <!-- Background -->
-  <rect width="100%" height="100%" fill="#f8fafc" rx="10" ry="10"/>
-
-  <!-- Title removed -->
-
-  <!-- Boxes with different colors - Vertically centered -->
-  <!-- Browser -->
-  <rect x="50" y="100" width="140" height="100" rx="5" ry="5" fill="#e9f5f8" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#0ea5e9" stroke-width="2"/>
-  <!-- Browser Icon -->
-  <path d="M110 125 h20 a3 3 0 0 1 3 3 v14 a3 3 0 0 1 -3 3 h-20 a3 3 0 0 1 -3 -3 v-14 a3 3 0 0 1 3 -3 z" fill="#0ea5e9"/>
-  <line x1="107" y1="131" x2="133" y2="131" stroke="#ffffff" stroke-width="1.5"/>
-  <circle cx="111" cy="128" r="1" fill="#ffffff"/>
-  <circle cx="115" cy="128" r="1" fill="#ffffff"/>
-  <circle cx="119" cy="128" r="1" fill="#ffffff"/>
-  <text x="120" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#0c4a6e">Browser</text>
-  
-  <!-- S3 Bucket -->
-  <rect x="240" y="100" width="140" height="100" rx="5" ry="5" fill="#e7f6ee" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#059669" stroke-width="2"/>
-  <!-- Bucket Icon -->
-  <path d="M300 123 c0 -1 10 -1 20 0 v2 c0 0 -5 1 -10 3 c-5 -2 -10 -3 -10 -3 z" fill="#059669"/>
-  <path d="M295 127 c0 0 0 13 0 15 c0 3 3 5 15 5 c12 0 15 -2 15 -5 c0 -2 0 -15 0 -15 c-5 3 -10 5 -15 5 c-5 0 -10 -2 -15 -5 z" fill="#059669"/>
-  <text x="310" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">S3 Bucket</text>
-  
-  <!-- S3 Table Bucket -->
-  <rect x="430" y="100" width="140" height="100" rx="5" ry="5" fill="#dcfce7" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#10b981" stroke-width="2"/>
-  <!-- Bucket Icon with Table -->
-  <path d="M490 123 c0 -1 10 -1 20 0 v2 c0 0 -5 1 -10 3 c-5 -2 -10 -3 -10 -3 z" fill="#10b981"/>
-  <path d="M485 127 c0 0 0 13 0 15 c0 3 3 5 15 5 c12 0 15 -2 15 -5 c0 -2 0 -15 0 -15 c-5 3 -10 5 -15 5 c-5 0 -10 -2 -15 -5 z" fill="#10b981"/>
-  <!-- Small table inside bucket -->
-  <rect x="492" y="129" width="16" height="10" fill="#ffffff" rx="1" ry="1" opacity="0.7"/>
-  <line x1="492" y1="133" x2="508" y2="133" stroke="#10b981" stroke-width="0.8"/>
-  <line x1="492" y1="136" x2="508" y2="136" stroke="#10b981" stroke-width="0.8"/>
-  <line x1="497" y1="129" x2="497" y2="139" stroke="#10b981" stroke-width="0.8"/>
-  <line x1="502" y1="129" x2="502" y2="139" stroke="#10b981" stroke-width="0.8"/>
-  <text x="500" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">S3 Table</text>
-  <text x="500" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Bucket</text>
-  
-  <!-- Metadata Table -->
-  <rect x="620" y="100" width="140" height="100" rx="5" ry="5" fill="#e9f5ef" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#10b981" stroke-width="2"/>
-  <!-- Table Icon -->
-  <rect x="675" y="115" width="30" height="25" fill="#10b981" rx="2" ry="2"/>
-  <line x1="675" y1="122" x2="705" y2="122" stroke="#ffffff" stroke-width="1.5"/>
-  <line x1="675" y1="129" x2="705" y2="129" stroke="#ffffff" stroke-width="1.5"/>
-  <line x1="685" y1="115" x2="685" y2="140" stroke="#ffffff" stroke-width="1.5"/>
-  <line x1="695" y1="115" x2="695" y2="140" stroke="#ffffff" stroke-width="1.5"/>
-  <text x="690" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Metadata</text>
-  <text x="690" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Table</text>
-
-  <!-- Connection Arrows -->
-  <line x1="190" y1="150" x2="240" y2="150" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <line x1="380" y1="150" x2="430" y2="150" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
-  <line x1="570" y1="150" x2="620" y2="150" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
-  
-  <!-- Removed all descriptions and flow summary -->
 </svg>
