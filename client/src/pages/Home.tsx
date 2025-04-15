@@ -740,134 +740,182 @@ export default function Home() {
                   Error loading documents
                 </motion.div>
               ) : Array.isArray(filteredDocuments) && filteredDocuments.length > 0 ? (
-                <motion.ul
-                  className="divide-y divide-gray-200"
-                  layout
-                  initial={{ opacity: 1 }}
-                  transition={{
-                    layout: { type: "spring", bounce: 0.2, duration: 0.6 }
-                  }}
-                >
-                  <AnimatePresence initial={false}>
-                    {filteredDocuments.map((doc: DocumentData) => (
-                      <motion.li 
-                        key={doc.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
-                        layout
-                        transition={{
-                          type: "spring",
-                          stiffness: 300, 
-                          damping: 30,
-                          opacity: { duration: 0.2 }
-                        }}
-                        className="bg-white hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="px-4 py-4 sm:px-6">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <motion.div 
-                                className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-md bg-blue-100 text-primary"
-                                whileHover={{ scale: 1.1 }}
-                                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                              >
-                                <FileText className="h-6 w-6" />
-                              </motion.div>
-                              <div className="ml-4">
-                                <div className="text-sm font-medium text-primary-dark">{doc.fileName}</div>
-                                <div className="text-sm text-gray-500">
-                                  {formatFileSize(doc.fileSize)} • Uploaded on {formatDate(doc.uploadedAt)}
-                                </div>
-                              </div>
-                            </div>
-                            <motion.div
-                              whileHover={{ scale: 1.05 }}
-                              transition={{ duration: 0.2 }}
+                <div className="p-4">
+                  <motion.div
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                    layout
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{
+                      layout: { type: "spring", bounce: 0.2, duration: 0.6 }
+                    }}
+                  >
+                    <AnimatePresence initial={false}>
+                      {filteredDocuments.map((doc: DocumentData) => {
+                        // Get appropriate thumbnail based on file type
+                        const thumbnail = getDocumentThumbnail(doc.fileType);
+                        
+                        // Determine which icon to use based on thumbnail.icon
+                        let IconComponent = FileText;
+                        if (thumbnail.icon === "image") IconComponent = ImageIcon;
+                        if (thumbnail.icon === "table") IconComponent = Table;
+                        if (thumbnail.icon === "presentation") IconComponent = Presentation;
+                        if (thumbnail.icon === "archive") IconComponent = Archive;
+                        
+                        return (
+                          <motion.div
+                            key={doc.id}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                            whileHover={{ 
+                              scale: 1.03, 
+                              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+                            }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 300,
+                              damping: 30
+                            }}
+                            className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg border border-gray-100"
+                        >
+                          {/* Document Thumbnail */}
+                          <div 
+                            className={`h-40 flex items-center justify-center ${thumbnail.bgColor} relative overflow-hidden group cursor-pointer`}
+                            onClick={() => handleViewInPreview(doc.id)}
+                          >
+                            <motion.div 
+                              className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 flex items-center justify-center"
+                              whileHover={{ opacity: 1 }}
                             >
-                              <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${doc.accessLevel === 'public' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                                {doc.accessLevel}
-                              </span>
+                              <motion.div 
+                                className="bg-white bg-opacity-90 rounded-full p-2 opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
+                                whileHover={{ scale: 1.1 }}
+                              >
+                                <Eye className="h-5 w-5 text-primary" />
+                              </motion.div>
                             </motion.div>
+                            
+                            <div className="flex flex-col items-center">
+                              <IconComponent className={`h-16 w-16 ${thumbnail.iconColor}`} />
+                              <span className="text-sm font-semibold mt-2">{thumbnail.extension}</span>
+                            </div>
+                            
+                            <div className="absolute top-2 right-2">
+                              <motion.span 
+                                className={`px-2 py-1 text-xs rounded-full ${doc.accessLevel === 'public' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}
+                                whileHover={{ scale: 1.05 }}
+                              >
+                                {doc.accessLevel}
+                              </motion.span>
+                            </div>
                           </div>
                           
-                          {/* Display metadata key-value pairs */}
-                          {doc.metadata && Object.keys(doc.metadata).length > 0 && (
-                            <motion.div 
-                              className="mt-2"
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <h4 className="text-xs font-medium text-gray-500 mb-1">Metadata:</h4>
-                              <div className="flex flex-wrap gap-1">
-                                {Object.entries(doc.metadata).map(([key, value], idx) => {
-                                  // Remove any 'x-amz-meta-' prefix that might still be present
-                                  const displayKey = key.startsWith('x-amz-meta-') ? key.replace('x-amz-meta-', '') : key;
-                                  
-                                  // Get tag colors based on the key
-                                  const { bg, text, hoverBg } = getMetadataTagColors(displayKey);
-                                  
-                                  return (
-                                    <motion.span 
-                                      key={idx}
-                                      initial={{ opacity: 0, scale: 0.8 }}
-                                      animate={{ opacity: 1, scale: 1 }}
-                                      transition={{ duration: 0.2, delay: idx * 0.05 }}
-                                      className={`inline-flex items-center px-2 py-0.5 rounded text-xs ${bg} ${text} shadow-sm border border-opacity-10`}
-                                      whileHover={{ 
-                                        scale: 1.05, 
-                                        backgroundColor: hoverBg,
-                                        boxShadow: "0 1px 3px rgba(0,0,0,0.12)" 
-                                      }}
-                                    >
-                                      <span className="font-semibold">{displayKey}</span>
-                                      <span className="mx-1">:</span>
-                                      <span>{String(value)}</span>
-                                    </motion.span>
-                                  );
-                                })}
-                              </div>
-                            </motion.div>
-                          )}
+                          {/* Document Info */}
+                          <div className="p-4">
+                            <div className="text-sm font-medium text-primary-dark truncate" title={doc.fileName}>
+                              {doc.fileName}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                              {formatFileSize(doc.fileSize)} • {formatDate(doc.uploadedAt)}
+                            </div>
+                            
+                            {/* Metadata Tags */}
+                            <div className="mt-3 flex flex-wrap gap-1">
+                              {doc.metadata && Object.entries(doc.metadata).slice(0, 3).map(([key, value], idx) => {
+                                const { bg, text, hoverBg } = getMetadataTagColors(key);
+                                return (
+                                  <motion.span 
+                                    key={idx} 
+                                    className={`px-2 py-1 rounded-full text-xs ${bg} ${text} cursor-default truncate max-w-full`}
+                                    whileHover={{ 
+                                      backgroundColor: hoverBg,
+                                      scale: 1.05
+                                    }}
+                                    transition={{ duration: 0.2 }}
+                                    title={`${key}: ${value}`}
+                                  >
+                                    {key}: {value.length > 10 ? `${value.substring(0, 10)}...` : value}
+                                  </motion.span>
+                                );
+                              })}
+                              {doc.metadata && Object.keys(doc.metadata).length > 3 && (
+                                <motion.span 
+                                  className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800 cursor-default"
+                                  whileHover={{ scale: 1.05 }}
+                                >
+                                  +{Object.keys(doc.metadata).length - 3} more
+                                </motion.span>
+                              )}
+                              {(!doc.metadata || Object.keys(doc.metadata).length === 0) && (
+                                <motion.span 
+                                  className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-500 cursor-default"
+                                  whileHover={{ scale: 1.05 }}
+                                >
+                                  No metadata
+                                </motion.span>
+                              )}
+                            </div>
+                          </div>
                           
-                          <motion.div 
-                            className="mt-2 flex"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.2 }}
-                          >
-                            <Button 
-                              variant="link" 
-                              size="sm" 
-                              className="text-primary hover:text-primary-dark"
-                              onClick={() => handleViewInPreview(doc.id)}
-                            >
-                              <Eye className="h-4 w-4 mr-1" /> View
-                            </Button>
-                            <Separator orientation="vertical" className="mx-2 h-4 self-center" />
-                            <Button 
-                              variant="link" 
-                              size="sm" 
-                              className="text-primary hover:text-primary-dark"
-                              onClick={() => handleDownload(doc.id)}
-                            >
-                              <Download className="h-4 w-4 mr-1" /> Download
-                            </Button>
-                            <Separator orientation="vertical" className="mx-2 h-4 self-center" />
-                            <Button 
-                              variant="link" 
-                              size="sm" 
-                              className="text-primary hover:text-primary-dark"
-                            >
-                              <Edit className="h-4 w-4 mr-1" /> Edit Metadata
-                            </Button>
+                          {/* Actions */}
+                          <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 flex justify-between">
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleViewInPreview(doc.id)}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <p>View Document</p>
+                                </TooltipContent>
+                              </Tooltip>
+                              
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleDownload(doc.id)}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Download className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <p>Download</p>
+                                </TooltipContent>
+                              </Tooltip>
+                              
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {}}
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom">
+                                  <p>Edit Metadata</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
                           </motion.div>
-                        </div>
-                      </motion.li>
-                    ))}
+                        );
+                    })}
                   </AnimatePresence>
-                </motion.ul>
+                </motion.div>
+                </div>
               ) : (
                 <motion.div 
                   id="no-documents" 
