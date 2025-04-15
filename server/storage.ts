@@ -66,6 +66,7 @@ export class MemStorage implements IStorage {
       ...insertDocument, 
       id,
       uploadedAt: now,
+      lastUpdated: now, // Add lastUpdated field (same as uploadedAt initially)
       metadata: insertDocument.metadata || {},
       accessLevel: insertDocument.accessLevel || 'private'
     };
@@ -92,7 +93,15 @@ export class MemStorage implements IStorage {
       processedUpdateData.metadata = metadataObject;
     }
 
-    const updatedDocument = { ...existingDocument, ...processedUpdateData };
+    // Add lastUpdated timestamp
+    const lastUpdated = new Date();
+    
+    const updatedDocument = { 
+      ...existingDocument, 
+      ...processedUpdateData,
+      lastUpdated: lastUpdated
+    };
+    
     this.documents.set(id, updatedDocument);
     return updatedDocument;
   }
