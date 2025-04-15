@@ -481,43 +481,6 @@ export default function Home() {
                 <div className="mt-6 bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:shadow transition-shadow duration-300">
                   <div className="px-5 py-4 bg-gray-100 border-b border-gray-200">
                     <div className="flex items-center">
-                      <FileText className="h-4 w-4 text-gray-600 mr-2" />
-                      <h3 className="text-sm font-semibold text-gray-900">Supported File Types</h3>
-                    </div>
-                  </div>
-                  <div className="px-5 py-4">
-                    <div className="grid grid-cols-2 gap-2 text-sm text-gray-600">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                        <span>PDF Documents</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                        <span>Word Documents</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>Excel Spreadsheets</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                        <span>PowerPoint</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                        <span>Text Files</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
-                        <span>Images</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-6 bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:shadow transition-shadow duration-300">
-                  <div className="px-5 py-4 bg-gray-100 border-b border-gray-200">
-                    <div className="flex items-center">
                       <Info className="h-4 w-4 text-gray-600 mr-2" />
                       <h3 className="text-sm font-semibold text-gray-900">Upload Stats</h3>
                     </div>
