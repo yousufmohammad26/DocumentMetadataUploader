@@ -1,6 +1,4 @@
 import { documents, type Document, type InsertDocument, users, type User, type InsertUser } from "@shared/schema";
-import { db } from "./db";
-import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -15,56 +13,69 @@ export interface IStorage {
   deleteDocument(id: number): Promise<boolean>;
 }
 
-export class DatabaseStorage implements IStorage {
+export class MemStorage implements IStorage {
+  private users: Map<number, User>;
+  private documents: Map<number, Document>;
+  private userCurrentId: number;
+  private documentCurrentId: number;
+
+  constructor() {
+    this.users = new Map();
+    this.documents = new Map();
+    this.userCurrentId = 1;
+    this.documentCurrentId = 1;
+  }
+
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user || undefined;
+    return this.users.get(id);
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+    return Array.from(this.users.values()).find(
+      (user) => user.username === username,
+    );
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db
-      .insert(users)
-      .values(insertUser)
-      .returning();
+    const id = this.userCurrentId++;
+    const user: User = { ...insertUser, id };
+    this.users.set(id, user);
     return user;
   }
 
   async getAllDocuments(): Promise<Document[]> {
-    // Return all documents without sorting
-    return await db.select().from(documents);
+    // Return documents without sorting
+    return Array.from(this.documents.values());
   }
 
   async getDocument(id: number): Promise<Document | undefined> {
-    const [document] = await db.select().from(documents).where(eq(documents.id, id));
-    return document || undefined;
+    return this.documents.get(id);
   }
 
   async createDocument(insertDocument: InsertDocument): Promise<Document> {
+    const id = this.documentCurrentId++;
     const now = new Date();
     
     // Ensure required fields are present
-    const documentWithDefaults = {
-      ...insertDocument,
+    const document: Document = { 
+      ...insertDocument, 
+      id,
       uploadedAt: now,
-      lastUpdated: now,
+      lastUpdated: now, // Add lastUpdated field (same as uploadedAt initially)
       metadata: insertDocument.metadata || {},
       accessLevel: insertDocument.accessLevel || 'private'
     };
     
-    const [document] = await db
-      .insert(documents)
-      .values(documentWithDefaults)
-      .returning();
-      
+    this.documents.set(id, document);
     return document;
   }
 
   async updateDocument(id: number, updateData: Partial<InsertDocument> & { metadata?: any }): Promise<Document | undefined> {
+    const existingDocument = this.documents.get(id);
+    if (!existingDocument) {
+      return undefined;
+    }
+
     // Handle metadata conversion - if metadata is an array of key-value pairs, convert to object
     const processedUpdateData = { ...updateData };
     if (Array.isArray(processedUpdateData.metadata)) {
@@ -77,30 +88,22 @@ export class DatabaseStorage implements IStorage {
       processedUpdateData.metadata = metadataObject;
     }
 
-    // Update with processed data and add lastUpdated timestamp
-    const updateWithTimestamp = {
+    // Add lastUpdated timestamp
+    const lastUpdated = new Date();
+    
+    const updatedDocument = { 
+      ...existingDocument, 
       ...processedUpdateData,
-      lastUpdated: new Date()
+      lastUpdated: lastUpdated
     };
     
-    const [updatedDocument] = await db
-      .update(documents)
-      .set(updateWithTimestamp)
-      .where(eq(documents.id, id))
-      .returning();
-      
-    return updatedDocument || undefined;
+    this.documents.set(id, updatedDocument);
+    return updatedDocument;
   }
 
   async deleteDocument(id: number): Promise<boolean> {
-    const result = await db
-      .delete(documents)
-      .where(eq(documents.id, id))
-      .returning({ id: documents.id });
-      
-    return result.length > 0;
+    return this.documents.delete(id);
   }
 }
 
-// Create and export the database storage implementation
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();
