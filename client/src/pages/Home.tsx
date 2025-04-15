@@ -917,7 +917,7 @@ export default function Home() {
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    onClick={() => {}}
+                                    onClick={() => handleEditMetadata(doc)}
                                     className="h-8 w-8 p-0"
                                   >
                                     <Edit className="h-4 w-4" />
@@ -1000,6 +1000,19 @@ export default function Home() {
           documentName={previewDocument.name}
           documentType={previewDocument.type}
           onDownload={() => handleDownload(previewDocument.id)}
+        />
+      )}
+      
+      {/* Edit Metadata Modal */}
+      {editingDocument && (
+        <EditMetadataModal
+          isOpen={editMetadataOpen}
+          onClose={() => setEditMetadataOpen(false)}
+          documentId={editingDocument.id}
+          documentName={editingDocument.name}
+          documentMetadata={editingDocument.metadata || {}}
+          accessLevel={editingDocument.accessLevel}
+          onUpdate={handleMetadataUpdateComplete}
         />
       )}
     </div>
