@@ -81,6 +81,7 @@ import {
   User,
   Upload,
   PieChart,
+  Tag,
 } from "lucide-react";
 
 
@@ -517,7 +518,14 @@ export default function Home() {
 
                       {/* Document Metadata */}
                       <div>
-                        <h3 className="text-sm font-medium text-gray-900 mb-4">Document Metadata</h3>
+                        <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-md border border-emerald-100 mb-5">
+                          <h3 className="text-sm font-semibold text-green-800 flex items-center">
+                            <Tag className="h-4 w-4 mr-2 text-emerald-600" />
+                            Document Metadata
+                            <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Searchable</span>
+                          </h3>
+                          <p className="text-xs text-green-700 mt-1">Add custom metadata to make your document more searchable and organized</p>
+                        </div>
                         
                         <div className="grid grid-cols-6 gap-6">
                           <div className="col-span-6">
@@ -542,10 +550,10 @@ export default function Home() {
                               <FormLabel>Metadata</FormLabel>
                               <Button
                                 type="button"
-                                variant="outline"
+                                variant="default"
                                 size="sm"
                                 onClick={addMetadataField}
-                                className="flex items-center"
+                                className="flex items-center bg-gradient-to-r from-emerald-500 to-green-500 text-white hover:from-emerald-600 hover:to-green-600 shadow-sm"
                               >
                                 <Plus className="h-4 w-4 mr-1" />
                                 Add Metadata

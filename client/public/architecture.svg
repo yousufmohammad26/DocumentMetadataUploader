@@ -14,21 +14,45 @@
   <!-- Boxes with different colors - Vertically centered -->
   <!-- Browser -->
   <rect x="50" y="100" width="140" height="100" rx="5" ry="5" fill="#e9f5f8" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#0ea5e9" stroke-width="2"/>
-  <text x="120" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#0c4a6e">Browser</text>
+  <!-- Browser Icon -->
+  <path d="M110 125 h20 a3 3 0 0 1 3 3 v14 a3 3 0 0 1 -3 3 h-20 a3 3 0 0 1 -3 -3 v-14 a3 3 0 0 1 3 -3 z" fill="#0ea5e9"/>
+  <line x1="107" y1="131" x2="133" y2="131" stroke="#ffffff" stroke-width="1.5"/>
+  <circle cx="111" cy="128" r="1" fill="#ffffff"/>
+  <circle cx="115" cy="128" r="1" fill="#ffffff"/>
+  <circle cx="119" cy="128" r="1" fill="#ffffff"/>
+  <text x="120" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#0c4a6e">Browser</text>
   
   <!-- S3 Bucket -->
-  <rect x="240" y="100" width="140" height="100" rx="5" ry="5" fill="#fff1e7" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#f97316" stroke-width="2"/>
-  <text x="310" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#9a3412">S3 Bucket</text>
+  <rect x="240" y="100" width="140" height="100" rx="5" ry="5" fill="#e7f6ee" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#059669" stroke-width="2"/>
+  <!-- Bucket Icon -->
+  <path d="M300 123 c0 -1 10 -1 20 0 v2 c0 0 -5 1 -10 3 c-5 -2 -10 -3 -10 -3 z" fill="#059669"/>
+  <path d="M295 127 c0 0 0 13 0 15 c0 3 3 5 15 5 c12 0 15 -2 15 -5 c0 -2 0 -15 0 -15 c-5 3 -10 5 -15 5 c-5 0 -10 -2 -15 -5 z" fill="#059669"/>
+  <text x="310" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">S3 Bucket</text>
   
   <!-- S3 Table Bucket -->
-  <rect x="430" y="100" width="140" height="100" rx="5" ry="5" fill="#fef2e3" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#ea580c" stroke-width="2"/>
-  <text x="500" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#9a3412">S3 Table</text>
-  <text x="500" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#9a3412">Bucket</text>
+  <rect x="430" y="100" width="140" height="100" rx="5" ry="5" fill="#dcfce7" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#10b981" stroke-width="2"/>
+  <!-- Bucket Icon with Table -->
+  <path d="M490 123 c0 -1 10 -1 20 0 v2 c0 0 -5 1 -10 3 c-5 -2 -10 -3 -10 -3 z" fill="#10b981"/>
+  <path d="M485 127 c0 0 0 13 0 15 c0 3 3 5 15 5 c12 0 15 -2 15 -5 c0 -2 0 -15 0 -15 c-5 3 -10 5 -15 5 c-5 0 -10 -2 -15 -5 z" fill="#10b981"/>
+  <!-- Small table inside bucket -->
+  <rect x="492" y="129" width="16" height="10" fill="#ffffff" rx="1" ry="1" opacity="0.7"/>
+  <line x1="492" y1="133" x2="508" y2="133" stroke="#10b981" stroke-width="0.8"/>
+  <line x1="492" y1="136" x2="508" y2="136" stroke="#10b981" stroke-width="0.8"/>
+  <line x1="497" y1="129" x2="497" y2="139" stroke="#10b981" stroke-width="0.8"/>
+  <line x1="502" y1="129" x2="502" y2="139" stroke="#10b981" stroke-width="0.8"/>
+  <text x="500" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">S3 Table</text>
+  <text x="500" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Bucket</text>
   
   <!-- Metadata Table -->
   <rect x="620" y="100" width="140" height="100" rx="5" ry="5" fill="#e9f5ef" filter="drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.1))" stroke="#10b981" stroke-width="2"/>
-  <text x="690" y="140" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Metadata</text>
-  <text x="690" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Table</text>
+  <!-- Table Icon -->
+  <rect x="675" y="115" width="30" height="25" fill="#10b981" rx="2" ry="2"/>
+  <line x1="675" y1="122" x2="705" y2="122" stroke="#ffffff" stroke-width="1.5"/>
+  <line x1="675" y1="129" x2="705" y2="129" stroke="#ffffff" stroke-width="1.5"/>
+  <line x1="685" y1="115" x2="685" y2="140" stroke="#ffffff" stroke-width="1.5"/>
+  <line x1="695" y1="115" x2="695" y2="140" stroke="#ffffff" stroke-width="1.5"/>
+  <text x="690" y="155" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Metadata</text>
+  <text x="690" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="16" fill="#065f46">Table</text>
 
   <!-- Connection Arrows -->
   <line x1="190" y1="150" x2="240" y2="150" stroke="#334155" stroke-width="2" marker-end="url(#arrowhead)"/>
