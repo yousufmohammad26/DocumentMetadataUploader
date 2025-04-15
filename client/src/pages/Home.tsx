@@ -813,7 +813,8 @@ export default function Home() {
                             <div className="mt-1 pl-4 text-xs text-gray-500 break-all">
                               <span className="text-gray-700 font-medium">File:</span> {doc.fileName}<br/>
                               <span className="text-gray-700 font-medium">Type:</span> {doc.fileType}<br/>
-                              <span className="text-gray-700 font-medium">Key:</span> {doc.fileKey}<br/>
+                              <span className="text-gray-700 font-medium">Key:</span> 
+                              <span className="inline-block mt-1 mb-1 px-2 py-0.5 bg-gray-50 border border-gray-200 rounded-sm text-blue-600 w-full break-all">{doc.fileKey}</span><br/>
                               <span className="text-gray-700 font-medium">Access:</span> {doc.accessLevel}<br/>
                               {doc.metadata && Object.keys(doc.metadata).length > 0 && (
                                 <div className="mt-1">
@@ -1006,7 +1007,7 @@ export default function Home() {
                               }}
                               className="hover:bg-gray-50 transition-colors"
                             >
-                              <td className="px-6 py-4 whitespace-nowrap">
+                              <td className="px-6 py-4" style={{ minWidth: "350px" }}>
                                 <div className="flex items-center">
                                   <div className={`flex-shrink-0 h-10 w-10 rounded-md bg-${colorScheme.lightBg} flex items-center justify-center`}>
                                     <FileText className={`h-5 w-5 text-${colorScheme.accentColor}`} />
@@ -1014,8 +1015,8 @@ export default function Home() {
                                   <div className="ml-4">
                                     <div className="text-sm font-medium text-gray-900">{doc.name}</div>
                                     <div className="text-xs text-gray-500">{doc.fileName}</div>
-                                    <div className="text-xs text-gray-400 font-mono mt-1 break-all overflow-hidden text-ellipsis" style={{maxWidth: "280px"}}>
-                                      <span className="font-medium">Key:</span> {doc.fileKey}
+                                    <div className="text-xs font-mono mt-1 break-all px-2 py-1 bg-gray-50 border border-gray-200 rounded-sm">
+                                      <span className="font-medium text-gray-700">Key:</span> <span className="text-blue-600">{doc.fileKey}</span>
                                     </div>
                                     <div className="flex mt-2 space-x-2">
                                       <TooltipProvider>
