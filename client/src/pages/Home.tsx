@@ -800,7 +800,7 @@ export default function Home() {
                       <h3 className="text-sm font-semibold text-gray-900">Logs</h3>
                     </div>
                   </div>
-                  <div className="px-5 py-4 max-h-[200px] overflow-y-auto text-xs font-mono">
+                  <div className="px-5 py-4 max-h-[400px] overflow-y-auto text-xs font-mono">
                     <div className="space-y-2">
                       {Array.isArray(documents) && documents.length > 0 ? (
                         documents.map((doc, index) => (
@@ -809,6 +809,23 @@ export default function Home() {
                             <span className="text-green-600 font-semibold">Success:</span> Uploaded{' '}
                             <span className="font-bold text-gray-700">{doc.name}</span>{' '}
                             <span className="text-gray-500">({formatFileSize(doc.fileSize)})</span>
+                            
+                            <div className="mt-1 pl-4 text-xs text-gray-500 break-all">
+                              <span className="text-gray-700 font-medium">File:</span> {doc.fileName}<br/>
+                              <span className="text-gray-700 font-medium">Type:</span> {doc.fileType}<br/>
+                              <span className="text-gray-700 font-medium">Key:</span> {doc.fileKey}<br/>
+                              <span className="text-gray-700 font-medium">Access:</span> {doc.accessLevel}<br/>
+                              {doc.metadata && Object.keys(doc.metadata).length > 0 && (
+                                <div className="mt-1">
+                                  <span className="text-gray-700 font-medium">Metadata:</span>
+                                  <ul className="pl-4 mt-0.5">
+                                    {Object.entries(doc.metadata).map(([key, value], idx) => (
+                                      <li key={idx}><span className="text-gray-600">{key}:</span> {value}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         ))
                       ) : (
@@ -997,6 +1014,9 @@ export default function Home() {
                                   <div className="ml-4">
                                     <div className="text-sm font-medium text-gray-900">{doc.name}</div>
                                     <div className="text-xs text-gray-500">{doc.fileName}</div>
+                                    <div className="text-xs text-gray-400 font-mono mt-1 break-all overflow-hidden text-ellipsis" style={{maxWidth: "280px"}}>
+                                      <span className="font-medium">Key:</span> {doc.fileKey}
+                                    </div>
                                     <div className="flex mt-2 space-x-2">
                                       <TooltipProvider>
                                         <Tooltip>
