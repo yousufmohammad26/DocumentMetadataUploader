@@ -96,15 +96,10 @@ export default function Home() {
   const [isUploading, setIsUploading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   
-
-  
   // Edit metadata states
   const [editMetadataOpen, setEditMetadataOpen] = useState(false);
   const [editingDocument, setEditingDocument] = useState<DocumentData | null>(null);
   
-
-  
-
 
   // Form for metadata
   const form = useForm<DocumentMetadata>({
@@ -174,10 +169,6 @@ export default function Home() {
     queryKey: ["/api/aws-account"],
   });
 
-
-
-
-  
   // View document in new tab (fallback option)
   const handleView = async (id: number) => {
     try {
