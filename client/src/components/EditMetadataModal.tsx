@@ -138,9 +138,9 @@ export function EditMetadataModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Topology Metadata</DialogTitle>
+          <DialogTitle>Edit Document Metadata</DialogTitle>
           <DialogDescription>
-            Update the metadata for "{documentName}". Changes will be saved to the topology properties.
+            Update the metadata for "{documentName}". Changes will be saved to the document properties.
           </DialogDescription>
         </DialogHeader>
 
