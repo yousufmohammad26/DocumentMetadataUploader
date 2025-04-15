@@ -41,7 +41,7 @@ export class MemStorage implements IStorage {
         "author": "John Doe"
       },
       accessLevel: "private",
-      uploadedAt: new Date().toISOString()
+      uploadedAt: new Date()
     };
     
     this.documents.set(1, sampleDocument);
