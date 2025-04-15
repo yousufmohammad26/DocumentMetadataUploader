@@ -424,6 +424,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex justify-between items-center">
             <div className="flex items-center">
+              <img src="/logo.svg" alt="Logo" className="h-10 w-10 mr-3" />
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Uploader</h1>
             </div>
             <div className="flex items-center space-x-4">
@@ -1037,9 +1038,12 @@ export default function Home() {
       <footer className="bg-gradient-to-r from-blue-50 to-indigo-50 border-t border-indigo-100 mt-12">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="text-center md:text-left mb-4 md:mb-0">
-              <h3 className="text-lg font-medium bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Manager</h3>
-              <p className="text-sm text-gray-600 mt-1">© Powered by AWS S3 Tables and Yousuf Mohammad</p>
+            <div className="text-center md:text-left mb-4 md:mb-0 flex items-center">
+              <img src="/logo.svg" alt="Logo" className="h-8 w-8 mr-2 hidden md:block" />
+              <div>
+                <h3 className="text-lg font-medium bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Manager</h3>
+                <p className="text-sm text-gray-600 mt-1">© Powered by AWS S3 Tables and Yousuf Mohammad</p>
+              </div>
             </div>
             <div className="flex space-x-6">
               <a href="#" className="text-blue-500 hover:text-indigo-600 transition-colors">
