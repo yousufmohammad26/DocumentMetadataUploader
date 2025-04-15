@@ -54,7 +54,8 @@ export function EditMetadataModal({
   const metadataToArray = (metadata: Record<string, string>) => {
     return Object.entries(metadata).map(([key, value]) => ({
       key,
-      value: String(value)
+      value: String(value),
+      isSystemField: key === 'original-filename' || key === 'topology'
     }));
   };
 
@@ -97,11 +98,21 @@ export function EditMetadataModal({
     setIsSubmitting(true);
     
     try {
+      // Get and identify all fields including system fields (original-filename, topology)
+      const filteredMetadata = data.metadata.filter(item => {
+        // Keep all system fields and valid user fields (those with non-empty keys)
+        return (
+          item.key === 'original-filename' || 
+          item.key === 'topology' || 
+          (item.key.trim() !== "")
+        );
+      });
+      
       // Prepare update payload - keep metadata as array for server
       // The server will handle the conversion to object format
       const updatePayload = {
         name: data.name,
-        metadata: data.metadata.filter(item => item.key.trim() !== ""), // Remove empty keys
+        metadata: filteredMetadata,
         accessLevel: data.accessLevel
       };
 
@@ -215,45 +226,66 @@ export function EditMetadataModal({
                   </div>
                 )}
 
-                {fields.map((field, index) => (
-                  <div key={field.id} className="flex gap-3 items-start">
-                    <div className="grid grid-cols-2 gap-3 flex-grow">
-                      <FormField
-                        control={form.control}
-                        name={`metadata.${index}.key`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input {...field} placeholder="Key" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`metadata.${index}.value`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input {...field} placeholder="Value" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                {fields.map((field, index) => {
+                  // Check if this is a system field (original-filename or topology)
+                  const isSystemField = field.key === 'original-filename' || field.key === 'topology';
+                  
+                  return (
+                    <div key={field.id} className="flex gap-3 items-start">
+                      <div className="grid grid-cols-2 gap-3 flex-grow">
+                        <FormField
+                          control={form.control}
+                          name={`metadata.${index}.key`}
+                          render={({ field: fieldProps }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input 
+                                  {...fieldProps} 
+                                  placeholder="Key" 
+                                  disabled={isSystemField}
+                                  className={isSystemField ? "bg-gray-100 cursor-not-allowed" : ""}
+                                />
+                              </FormControl>
+                              {isSystemField && (
+                                <p className="text-xs text-blue-500 mt-1">
+                                  System field (readonly)
+                                </p>
+                              )}
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`metadata.${index}.value`}
+                          render={({ field: fieldProps }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Input 
+                                  {...fieldProps} 
+                                  placeholder="Value" 
+                                  disabled={isSystemField}
+                                  className={isSystemField ? "bg-gray-100 cursor-not-allowed" : ""}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => remove(index)}
+                        className="h-10 w-10 rounded-full"
+                        disabled={isSystemField}
+                      >
+                        <X className="h-4 w-4" opacity={isSystemField ? 0.5 : 1} />
+                      </Button>
                     </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => remove(index)}
-                      className="h-10 w-10 rounded-full"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 

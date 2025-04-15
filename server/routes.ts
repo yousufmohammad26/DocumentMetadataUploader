@@ -300,10 +300,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'access-level': updateData.accessLevel
         };
         
+        // Make sure we preserve original-filename field from existing metadata
+        if (objectMeta.Metadata?.['original-filename']) {
+          s3Metadata['original-filename'] = objectMeta.Metadata['original-filename'];
+        }
+        
         // Add custom metadata entries
         for (const [key, value] of Object.entries(metadataObject)) {
           const sanitizedKey = key.toLowerCase().replace(/\s+/g, '-');
-          s3Metadata[sanitizedKey] = String(value);
+          // Don't allow overriding of system fields via API (extra protection)
+          if (sanitizedKey !== 'original-filename' && sanitizedKey !== 'topology') {
+            s3Metadata[sanitizedKey] = String(value);
+          }
         }
         
         // Copy the object to itself with new metadata
