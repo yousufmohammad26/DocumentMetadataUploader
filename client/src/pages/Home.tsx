@@ -443,10 +443,10 @@ export default function Home() {
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Document Metadata Uploader</h1>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="flex flex-col items-center px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+              <div className="flex flex-col items-start px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-100 text-green-800 border border-green-200">
                 <div className="flex items-center">
                   <Cloud className="h-3 w-3 mr-1 text-green-600" />
-                  <span>Connected to S3</span>
+                  <span>Connected to S3 Bucket</span>
                 </div>
                 {stats.bucketName && (
                   <div className="text-xs text-green-700 mt-0.5">{stats.bucketName}</div>

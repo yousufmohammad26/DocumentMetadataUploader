@@ -169,9 +169,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Process each metadata entry
           Object.entries(objectDetails.Metadata || {}).forEach(([key, value]) => {
             if (value) {
-              // AWS S3 might be lowercasing the keys, so normalize here
-              let metaKey = key;
-              metadata[metaKey] = value;
+              // Skip system metadata and extract only custom metadata entries
+              if (key !== 'document-name' && key !== 'access-level' && 
+                  key !== 'original-filename' && key !== 'content-type') {
+                // For keys that may have x-amz-meta prefix added by S3, remove it
+                let metaKey = key.startsWith('x-amz-meta-') ? key.substring(11) : key;
+                metadata[metaKey] = value;
+              }
             }
           });
           
@@ -279,16 +283,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const objectMeta = await s3.send(headObjectCommand);
         
-        // Prepare metadata for S3 (must use x-amz-meta- prefix)
+        // Prepare metadata for S3
         const s3Metadata: Record<string, string> = {
           'document-name': updateData.name,
           'access-level': updateData.accessLevel
         };
         
-        // Add custom metadata with x-amz-meta- prefix for consistency with upload
+        // Add custom metadata entries
         for (const [key, value] of Object.entries(metadataObject)) {
           const sanitizedKey = key.toLowerCase().replace(/\s+/g, '-');
-          s3Metadata[`x-amz-meta-${sanitizedKey}`] = String(value);
+          s3Metadata[sanitizedKey] = String(value);
         }
         
         // Copy the object to itself with new metadata
@@ -399,12 +403,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         'access-level': accessLevel
       };
       
-      // Add custom metadata with x-amz-meta- prefix
+      // Add custom metadata entries 
       if (Array.isArray(metadataArr)) {
         metadataArr.forEach((item: { key: string; value: string }) => {
           if (item.key && item.value) {
             const sanitizedKey = item.key.toLowerCase().replace(/\s+/g, '-');
-            s3Metadata[`x-amz-meta-${sanitizedKey}`] = item.value;
+            s3Metadata[sanitizedKey] = item.value;
           }
         });
       }
