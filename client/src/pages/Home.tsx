@@ -418,7 +418,7 @@ export default function Home() {
               <div>
                 <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Docway 360</h1>
                 <p className="text-xs text-gray-600">simplified document metadata tracker application</p>
-                <p className="text-xs italic mt-0.5 bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-600">Powered by AWS S3 Tables & Yousuf Mohammad</p>
+                <p className="text-xs italic mt-0.5 bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-orange-600">Powered by AWS S3 Tables</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -441,8 +441,8 @@ export default function Home() {
                       <AvatarFallback>YM</AvatarFallback>
                     </Avatar>
                     <div className="ml-2 mr-2 text-sm hidden sm:block">
-                      <p className="font-medium text-gray-700">Yousuf Mohammad</p>
-                      <p className="text-xs text-gray-500">Administrator</p>
+                      <p className="font-medium text-gray-700">Administrator</p>
+                      <p className="text-xs text-gray-500">Document Manager</p>
                     </div>
                   </div>
                 </DropdownMenuTrigger>
