@@ -56,11 +56,11 @@ export async function uploadFileToS3(
     const formData = new FormData();
     formData.append('file', file);
     
-    // Log what we're sending - using "name" as the form field name, even though backend looks for "topology" in metadata
+    // Log what we're sending - now using "topology" as the form field name to match server-side logic
     console.log('Uploading file with metadata:', metadata);
     
-    // Keep the field as "name" in the form data since that's what server code expects in req.body
-    formData.append('name', metadata.name || '');
+    // Change the field from "name" to "topology" to match the server-side expectation
+    formData.append('topology', metadata.name || '');
     formData.append('accessLevel', metadata.accessLevel || 'private');
     
     // Add metadata as JSON string
