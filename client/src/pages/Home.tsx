@@ -980,6 +980,25 @@ export default function Home() {
                                         <Button 
                                           variant="ghost" 
                                           size="sm" 
+                                          className="flex items-center text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50"
+                                          onClick={() => handleQuickPreview(doc)}
+                                        >
+                                          <Info className="h-4 w-4 mr-1.5" />
+                                          <span>Quick Info</span>
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>View document summary & metadata</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                  
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button 
+                                          variant="ghost" 
+                                          size="sm" 
                                           className="flex items-center text-blue-600 hover:text-blue-800 hover:bg-blue-50"
                                           onClick={() => handleViewInPreview(doc.id)}
                                         >
@@ -1096,6 +1115,18 @@ export default function Home() {
           documentMetadata={editingDocument.metadata || {}}
           accessLevel={editingDocument.accessLevel}
           onUpdate={handleMetadataUpdateComplete}
+        />
+      )}
+      
+      {/* Quick Preview Modal */}
+      {quickPreviewDocument && (
+        <QuickPreviewModal
+          isOpen={quickPreviewOpen}
+          onClose={() => setQuickPreviewOpen(false)}
+          document={quickPreviewDocument}
+          onView={() => handleViewInPreview(quickPreviewDocument.id)}
+          onDownload={() => handleDownload(quickPreviewDocument.id)}
+          onEdit={() => handleEditMetadata(quickPreviewDocument)}
         />
       )}
     </div>
