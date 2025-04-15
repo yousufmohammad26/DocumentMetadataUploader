@@ -201,7 +201,7 @@ export function EditMetadataModal({
         <DialogHeader>
           <DialogTitle>Edit Document Metadata</DialogTitle>
           <DialogDescription>
-            Update the metadata for "{documentName}". Changes will be saved to the document properties.
+            Update the metadata for this filename. Changes will be saved to the document properties.
           </DialogDescription>
         </DialogHeader>
 
