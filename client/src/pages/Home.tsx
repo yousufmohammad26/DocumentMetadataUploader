@@ -538,15 +538,11 @@ export default function Home() {
                         onFileChange={(file) => {
                           setSelectedFile(file);
                           
-                          // If a file is selected, update the topology field with the file key format
+                          // If a file is selected, update the topology field with the file name
                           if (file) {
                             const fileName = file.name;
-                            // Generate a pseudo file key format (the actual UUID will be generated server-side)
-                            // We'll use timestamp + filename to simulate the format
-                            const timestamp = Date.now().toString(36);
-                            const fileKey = `${timestamp}-${fileName}`;
-                            // Set the topology field value to the file key
-                            form.setValue("name", fileKey);
+                            // Set the topology field value to just the file name
+                            form.setValue("name", fileName);
                           }
                         }}
                         error={undefined} // Removed conditional error message completely
