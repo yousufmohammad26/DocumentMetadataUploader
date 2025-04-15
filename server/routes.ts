@@ -169,14 +169,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Extract custom metadata
           const metadata: Record<string, string> = {};
           
-
+          // Add original-filename and topology to metadata for display (will be shown as non-editable)
+          if (objectDetails.Metadata?.['original-filename']) {
+            metadata['original-filename'] = objectDetails.Metadata['original-filename'];
+          }
+          
+          if (objectDetails.Metadata?.['topology']) {
+            metadata['topology'] = objectDetails.Metadata['topology'];
+          }
           
           // Process each metadata entry
           Object.entries(objectDetails.Metadata || {}).forEach(([key, value]) => {
             if (value) {
-              // Skip system metadata and extract only custom metadata entries
-              if (key !== 'topology' && key !== 'access-level' && 
-                  key !== 'original-filename' && key !== 'content-type') {
+              // Skip system metadata (access-level and content-type) 
+              // But keep original-filename and topology (they're already added above)
+              if (key !== 'access-level' && key !== 'content-type' && 
+                  key !== 'original-filename' && key !== 'topology') {
                 metadata[key] = value;
               }
             }
@@ -461,6 +469,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Convert metadata array to object for storage
       const metadataObject: Record<string, string> = {};
+      
+      // Add original-filename and topology as non-editable metadata fields
+      metadataObject['original-filename'] = fileName;
+      metadataObject['topology'] = docName;
+      
+      // Add user-defined metadata
       if (Array.isArray(metadataArr)) {
         metadataArr.forEach((item: { key: string; value: string }) => {
           if (item.key && item.value) {
