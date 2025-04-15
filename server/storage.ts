@@ -54,22 +54,39 @@ export class MemStorage implements IStorage {
   async createDocument(insertDocument: InsertDocument): Promise<Document> {
     const id = this.documentCurrentId++;
     const now = new Date();
+    
+    // Ensure required fields are present
     const document: Document = { 
       ...insertDocument, 
       id,
-      uploadedAt: now
+      uploadedAt: now,
+      metadata: insertDocument.metadata || {},
+      accessLevel: insertDocument.accessLevel || 'private'
     };
+    
     this.documents.set(id, document);
     return document;
   }
 
-  async updateDocument(id: number, updateData: Partial<InsertDocument>): Promise<Document | undefined> {
+  async updateDocument(id: number, updateData: Partial<InsertDocument> & { metadata?: any }): Promise<Document | undefined> {
     const existingDocument = this.documents.get(id);
     if (!existingDocument) {
       return undefined;
     }
 
-    const updatedDocument = { ...existingDocument, ...updateData };
+    // Handle metadata conversion - if metadata is an array of key-value pairs, convert to object
+    const processedUpdateData = { ...updateData };
+    if (Array.isArray(processedUpdateData.metadata)) {
+      const metadataObject: Record<string, string> = {};
+      processedUpdateData.metadata.forEach((item: { key: string; value: string }) => {
+        if (item.key && item.key.trim()) {
+          metadataObject[item.key.trim()] = item.value || '';
+        }
+      });
+      processedUpdateData.metadata = metadataObject;
+    }
+
+    const updatedDocument = { ...existingDocument, ...processedUpdateData };
     this.documents.set(id, updatedDocument);
     return updatedDocument;
   }

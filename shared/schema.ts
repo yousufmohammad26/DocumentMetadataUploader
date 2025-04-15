@@ -39,7 +39,7 @@ export type Document = typeof documents.$inferSelect;
 // Define the metadata key-value pair type
 export const metadataKeyValueSchema = z.object({
   key: z.string().min(1, "Key is required"),
-  value: z.string().min(1, "Value is required"),
+  value: z.string().optional().default(""),
 });
 
 export type MetadataKeyValue = z.infer<typeof metadataKeyValueSchema>;

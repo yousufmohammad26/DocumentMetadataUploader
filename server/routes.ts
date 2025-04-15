@@ -265,6 +265,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const updateData = documentMetadataSchema.parse(req.body);
       
+      // Convert metadata array to object if it exists
+      const metadataObject: Record<string, string> = {};
+      if (Array.isArray(updateData.metadata)) {
+        updateData.metadata.forEach(item => {
+          if (item.key && item.key.trim()) {
+            metadataObject[item.key.trim()] = item.value || '';
+          }
+        });
+      }
+      
       // For S3 objects, we need to update the metadata in S3 as well
       try {
         // Get the existing object metadata
@@ -282,7 +292,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
         
         // Add custom metadata with x-amz-meta- prefix for consistency with upload
-        for (const [key, value] of Object.entries(updateData.metadata || {})) {
+        for (const [key, value] of Object.entries(metadataObject)) {
           const sanitizedKey = key.toLowerCase().replace(/\s+/g, '-');
           s3Metadata[`x-amz-meta-${sanitizedKey}`] = String(value);
         }
