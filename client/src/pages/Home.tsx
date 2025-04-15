@@ -439,15 +439,9 @@ export default function Home() {
     refreshData();
   };
 
-  // Sort documents by upload date (newest first)
+  // Reverse the documents array to display in reverse order (no explicit sorting)
   const sortedDocuments = Array.isArray(documents) 
-    ? [...documents].sort((a, b) => {
-        // Convert dates to timestamps for comparison
-        const dateA = new Date(a.uploadedAt).getTime();
-        const dateB = new Date(b.uploadedAt).getTime();
-        // Sort in descending order (newest first)
-        return dateB - dateA;
-      })
+    ? [...documents].reverse()
     : [];
   
   // Filter documents based on search term
