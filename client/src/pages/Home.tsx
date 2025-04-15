@@ -852,15 +852,6 @@ export default function Home() {
               <div className="sm:flex-auto">
                 <div className="flex items-center justify-between">
                   <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Uploaded Documents</h2>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={refreshData}
-                    className="flex items-center text-blue-600 hover:text-blue-800 hover:bg-blue-50"
-                  >
-                    <RefreshCw className="h-4 w-4 mr-1.5" />
-                    <span>Refresh</span>
-                  </Button>
                 </div>
                 <p className="mt-2 text-sm text-gray-600">
                   A list of all the documents you've uploaded to your S3 bucket with their metadata.
