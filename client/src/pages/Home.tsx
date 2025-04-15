@@ -897,7 +897,7 @@ export default function Home() {
                           <tr>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Document</th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Metadata</th>
-                            <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
@@ -972,12 +972,12 @@ export default function Home() {
                                   </td>
                                   
                                   {/* Actions column */}
-                                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                                    <div className="flex flex-col space-y-2 items-center">
+                                  <td className="px-6 py-4 whitespace-nowrap text-left">
+                                    <div className="flex flex-col space-y-2 items-start">
                                       <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="flex items-center hover:bg-gray-100 w-full justify-center"
+                                        className="flex items-center hover:bg-gray-100 justify-start"
                                         onClick={() => handleViewInPreview(doc.id)}
                                       >
                                         <Eye className="h-4 w-4 mr-1" />
@@ -987,7 +987,7 @@ export default function Home() {
                                       <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="flex items-center hover:bg-gray-100 w-full justify-center"
+                                        className="flex items-center hover:bg-gray-100 justify-start"
                                         onClick={() => handleDownload(doc.id)}
                                       >
                                         <Download className="h-4 w-4 mr-1" />
@@ -997,7 +997,7 @@ export default function Home() {
                                       <Button
                                         variant="ghost"
                                         size="sm"
-                                        className="flex items-center hover:bg-gray-100 w-full justify-center"
+                                        className="flex items-center hover:bg-gray-100 justify-start"
                                         onClick={() => handleEditMetadata(doc)}
                                       >
                                         <Edit className="h-4 w-4 mr-1" />
