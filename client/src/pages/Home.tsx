@@ -108,6 +108,10 @@ export default function Home() {
   // Edit metadata states
   const [editMetadataOpen, setEditMetadataOpen] = useState(false);
   const [editingDocument, setEditingDocument] = useState<DocumentData | null>(null);
+  
+  // Quick preview states
+  const [quickPreviewOpen, setQuickPreviewOpen] = useState(false);
+  const [quickPreviewDocument, setQuickPreviewDocument] = useState<DocumentData | null>(null);
 
   // Form for metadata
   const form = useForm<DocumentMetadata>({
@@ -388,6 +392,12 @@ export default function Home() {
   const handleEditMetadata = (document: DocumentData) => {
     setEditingDocument(document);
     setEditMetadataOpen(true);
+  };
+  
+  // Handle quick preview
+  const handleQuickPreview = (document: DocumentData) => {
+    setQuickPreviewDocument(document);
+    setQuickPreviewOpen(true);
   };
   
   // Handle metadata update completion
