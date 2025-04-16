@@ -21,14 +21,14 @@ export default function NotFound() {
           <div className="flex justify-center mt-6">
             <Link href="/">
               <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-                Return to Docway 360
+                Return to DocumentIQ
               </Button>
             </Link>
           </div>
           
           <div className="text-center mt-6">
             <p className="text-xs text-gray-500">
-              Docway 360 - simplified document metadata tracker application
+              DocumentIQ - simplified document metadata tracker application
             </p>
           </div>
         </CardContent>
