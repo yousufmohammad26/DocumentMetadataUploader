@@ -829,7 +829,7 @@ export default function Home() {
                     }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Search className={`h-5 w-5 ${searchTerm ? "text-primary" : "text-gray-400`} />
+                    <Search className={`h-5 w-5 ${searchTerm ? "text-primary" : "text-gray-400"}`} />
                   </motion.div>
                 </motion.div>
 
