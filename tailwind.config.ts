@@ -84,6 +84,13 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      boxShadow: {
+        subtle: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+        elevated: "0 2px 8px -2px rgba(0 0 0 / 0.1), 0 2px 5px -2px rgba(0 0 0 / 0.05)",
+      },
+      transitionTimingFunction: {
+        smooth: "cubic-bezier(0.4, 0, 0.2, 1)",
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
