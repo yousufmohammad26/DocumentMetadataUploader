@@ -19,6 +19,16 @@ export type Document = {
   lastUpdated: Date;
 };
 
+export const insertDocumentSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  fileName: z.string().min(1, "Filename is required"),
+  fileKey: z.string().min(1, "File key is required"),
+  fileSize: z.number().min(0, "File size must be positive"),
+  fileType: z.string(),
+  metadata: z.record(z.string()).default({}),
+  accessLevel: z.enum(["public", "private"]).default("private")
+});
+
 // Define the metadata key-value pair type
 export const metadataKeyValueSchema = z.object({
   key: z.string().min(1, "Key is required"),
