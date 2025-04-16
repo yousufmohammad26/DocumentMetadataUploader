@@ -96,11 +96,11 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
-  
+
   // Edit metadata states
   const [editMetadataOpen, setEditMetadataOpen] = useState(false);
   const [editingDocument, setEditingDocument] = useState<DocumentData | null>(null);
-  
+
 
   // Form for metadata
   const form = useForm<DocumentMetadata>({
@@ -148,21 +148,21 @@ export default function Home() {
     storageUsed: number;
     bucketName: string;
   }
-  
+
   const {
     data: stats = { totalUploads: 0, todayUploads: 0, storageUsed: 0, bucketName: "" } as StatsData,
     isLoading: isLoadingStats,
   } = useQuery<StatsData>({
     queryKey: ["/api/stats"],
   });
-  
+
   // Query for AWS account info
   interface AwsAccountData {
     accountIdentifier: string;
     region: string;
     active: boolean;
   }
-  
+
   const {
     data: awsAccount = { accountIdentifier: "", region: "", active: false } as AwsAccountData,
     isLoading: isLoadingAwsAccount,
@@ -174,17 +174,17 @@ export default function Home() {
   const handleView = async (id: number) => {
     try {
       const response = await apiRequest("GET", `/api/documents/${id}/download`);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to get download URL: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
-      
+
       if (!data.presignedUrl) {
         throw new Error("No presigned URL returned from server");
       }
-      
+
       // Open the URL in a new tab for viewing
       window.open(data.presignedUrl, "_blank");
     } catch (error) {
@@ -196,22 +196,22 @@ export default function Home() {
       });
     }
   };
-  
+
   // Download document
   const handleDownload = async (id: number) => {
     try {
       const response = await apiRequest("GET", `/api/documents/${id}/download`);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to get download URL: ${response.statusText}`);
       }
-      
+
       const data = await response.json();
-      
+
       if (!data.presignedUrl) {
         throw new Error("No presigned URL returned from server");
       }
-      
+
       // Create a temporary anchor element and trigger download
       const link = document.createElement('a');
       link.href = data.presignedUrl;
@@ -240,7 +240,7 @@ export default function Home() {
       });
       return;
     }
-    
+
     setIsUploading(true);
     setUploadProgress({ percentage: 0, status: "Starting upload..." });
 
@@ -249,7 +249,7 @@ export default function Home() {
       const result = await uploadFileToS3(selectedFile, data, setUploadProgress);
 
       if (result.success) {
-          
+
         // Show success toast BEFORE any form reset operations
         // This ensures the toast is displayed and not affected by form operations
         toast({
@@ -257,7 +257,7 @@ export default function Home() {
           description: "Document successfully uploaded and saved!",
           variant: "default",
         });
-        
+
         // Reset form state after toast is displayed
         try {
           // Reset form state completely, including isSubmitted flag
@@ -265,12 +265,12 @@ export default function Home() {
           form.clearErrors();
           setSelectedFile(null);
           setUploadProgress(null);
-          
+
           // Use the custom clearFile method we defined in the FileUpload component
           if (fileUploadRef.current && fileUploadRef.current.clearFile) {
             fileUploadRef.current.clearFile();
           }
-          
+
           // Reset form submission state by creating a new instance
           const formState = form.formState;
           Object.defineProperty(formState, 'isSubmitted', {
@@ -280,7 +280,7 @@ export default function Home() {
         } catch (resetError) {
           console.error('Error during form reset:', resetError);
         }
-        
+
         // Refresh all data including documents list to show the new document
         queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
         queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
@@ -303,25 +303,25 @@ export default function Home() {
       setIsUploading(false);
     }
   };
-  
+
   // Synchronize documents from S3 bucket
   const syncFromS3 = async (silent: boolean = false) => {
     if (isSyncing) return;
-    
+
     setIsSyncing(true);
     try {
       // Get the sync from S3 result
       const response = await apiRequest("GET", "/api/documents/sync-from-s3");
       const result = await response.json();
-      
+
       if (result.success) {
         // Simply invalidate the documents query to refresh the list
         queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
-        
+
         // Also refresh stats and account info
         queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
         queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
-        
+
         // Show success toast only if not in silent mode
         if (!silent) {
           toast({
@@ -355,20 +355,20 @@ export default function Home() {
   const addMetadataField = () => {
     append({ key: "", value: "" });
   };
-  
+
   // Handle edit metadata
   const handleEditMetadata = (document: DocumentData) => {
     setEditingDocument(document);
     setEditMetadataOpen(true);
   };
-  
+
   // Handle refresh for all document-related data
   const refreshData = () => {
     // Refresh all related data
     queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
     queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
     queryClient.invalidateQueries({ queryKey: ["/api/aws-account"] });
-    
+
     // Show toast for confirmation
     toast({
       title: "Refreshed",
@@ -376,13 +376,13 @@ export default function Home() {
       variant: "default",
     });
   };
-  
+
   // Handle metadata update completion
   const handleMetadataUpdateComplete = () => {
     // Update both documents and stats
     queryClient.invalidateQueries({ queryKey: ["/api/documents"] });
     queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
-    
+
     // Show toast for confirmation
     toast({
       title: "Metadata Updated",
@@ -395,7 +395,7 @@ export default function Home() {
   const sortedDocuments = Array.isArray(documents) 
     ? [...documents]
     : [];
-  
+
   // Filter documents based on search term - only search in metadata
   const filteredDocuments = searchTerm && Array.isArray(sortedDocuments)
     ? sortedDocuments.filter((doc: DocumentData) =>
@@ -426,7 +426,7 @@ export default function Home() {
                 <Cloud className="h-3 w-3 mr-1 text-green-600" />
                 <span>Connected to S3 Bucket {stats.bucketName}</span>
               </div>
-              
+
               {/* User Profile with Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -482,7 +482,7 @@ export default function Home() {
                         label="Document File"
                         onFileChange={(file) => {
                           setSelectedFile(file);
-                          
+
                           // If a file is selected, update the topology field with Year/MMM/ format
                           if (file) {
                             const now = new Date();
@@ -492,7 +492,7 @@ export default function Home() {
                             const monthName = monthNames[now.getMonth()];
                             // Create the topology path with Year/MMM/ format
                             const topologyPath = `${year}/${monthName}/`;
-                            
+
                             // Set the topology field value to the path
                             form.setValue("name", topologyPath);
                           }
@@ -534,7 +534,7 @@ export default function Home() {
                           </h3>
                           <p className="text-xs text-green-700 mt-1">Add custom metadata to make your document more searchable and organized</p>
                         </div>
-                        
+
                         <div className="grid grid-cols-6 gap-6">
                           <div className="col-span-6">
                             <FormField
@@ -567,19 +567,19 @@ export default function Home() {
                                 Add Metadata
                               </Button>
                             </div>
-                            
+
                             {fields.length === 0 && (
                               <div className="text-sm text-gray-500 py-2 text-center border border-dashed rounded-md">
                                 No metadata added. Click "Add Metadata" to add key-value pairs.
                               </div>
                             )}
-                            
+
                             {fields.map((field, index) => {
                               // Get the current key value from the form
                               const currentKey = form.watch(`metadata.${index}.key`);
                               // Get tag colors based on the key (if it exists)
                               const { bg, text } = currentKey ? getMetadataTagColors(currentKey) : { bg: "", text: "" };
-                              
+
                               return (
                                 <motion.div 
                                   key={field.id} 
@@ -762,7 +762,7 @@ export default function Home() {
                             <span className="text-green-600 font-semibold">Success:</span> Uploaded{' '}
                             <span className="font-bold text-gray-700">{doc.name}</span>{' '}
                             <span className="text-gray-500">({formatFileSize(doc.fileSize)})</span>
-                            
+
                             <div className="mt-1 pl-4 text-xs text-gray-500 break-all">
                               <span className="text-gray-700 font-medium">File:</span> {doc.fileName}<br/>
                               <span className="text-gray-700 font-medium">Type:</span> {doc.fileType}<br/>
@@ -829,10 +829,10 @@ export default function Home() {
                     }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Search className={`h-5 w-5 ${searchTerm ? "text-primary" : "text-gray-400"}`} />
+                    <Search className={`h-5 w-5 ${searchTerm ? "text-primary" : "text-gray-400`} />
                   </motion.div>
                 </motion.div>
-                
+
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -937,7 +937,7 @@ export default function Home() {
                         {filteredDocuments.map((doc: DocumentData) => {
                           // Get color scheme based on document type and metadata
                           const colorScheme = getDocumentColorScheme(doc.metadata, doc.fileType);
-                          
+
                           return (
                             <motion.tr 
                               key={doc.id}
@@ -980,7 +980,7 @@ export default function Home() {
                                           </TooltipContent>
                                         </Tooltip>
                                       </TooltipProvider>
-                                      
+
                                       <TooltipProvider>
                                         <Tooltip>
                                           <TooltipTrigger asChild>
@@ -1075,7 +1075,7 @@ export default function Home() {
 
 
 
-      
+
       {/* Edit Metadata Modal */}
       {editingDocument && (
         <EditMetadataModal
@@ -1088,7 +1088,7 @@ export default function Home() {
           onUpdate={handleMetadataUpdateComplete}
         />
       )}
-      
+
 
     </div>
   );
