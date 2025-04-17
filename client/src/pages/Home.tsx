@@ -798,7 +798,7 @@ export default function Home() {
                   </div>
                   <div className="p-4">
                     <img 
-                      src="/architecture_diagram.png" 
+                      src={Architecture} 
                       alt="Architecture Diagram" 
                       className="w-full rounded-md border border-gray-200"
                     />
