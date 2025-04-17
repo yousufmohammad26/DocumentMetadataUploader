@@ -8,8 +8,8 @@
   }
 
   body {
-    @apply antialiased bg-background text-foreground tracking-tight;
-    font-family: Calibri, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    @apply antialiased bg-background text-foreground tracking-tight leading-relaxed;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
