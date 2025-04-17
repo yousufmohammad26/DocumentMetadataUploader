@@ -576,52 +576,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get AWS account information
-  app.get('/api/aws-account', async (req: Request, res: Response) => {
-    try {
-      // Extract part of the access key to simulate showing account info
-      // Typically AWS account IDs are 12 digits, and we can extract a few digits to display safely
-      const accessKeyId = process.env.AWS_ACCESS_KEY_ID || "";
-      const accountIdentifier = accessKeyId.length > 6 ? accessKeyId.substring(0, 4) + '...' + accessKeyId.substring(accessKeyId.length - 4) : "Not available";
-      
-      res.json({
-        accountIdentifier,
-        region: process.env.AWS_REGION || "us-east-1",
-        active: true
-      });
-    } catch (error) {
-      res.status(500).json({ message: 'Failed to retrieve AWS account information' });
-    }
-  });
-  
-  // Get S3 bucket statistics
-  app.get('/api/stats', async (req: Request, res: Response) => {
-    try {
-      const documents = await storage.getAllDocuments();
-      
-      const totalUploads = documents.length;
-      
-      // Calculate today's uploads
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const todayUploads = documents.filter(doc => 
-        doc.uploadedAt && new Date(doc.uploadedAt) >= today
-      ).length;
-      
-      // Calculate total storage used
-      const storageUsed = documents.reduce((total, doc) => total + doc.fileSize, 0);
-      
-      res.json({
-        totalUploads,
-        todayUploads,
-        storageUsed,
-        bucketName
-      });
-    } catch (error) {
-      res.status(500).json({ message: 'Failed to retrieve stats' });
-    }
-  });
-
   const httpServer = createServer(app);
   return httpServer;
 }
