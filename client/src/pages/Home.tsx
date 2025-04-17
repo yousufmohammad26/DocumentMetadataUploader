@@ -950,29 +950,19 @@ export default function Home() {
               ) : (
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gradient-to-r from-gray-50 to-blue-50">
-                      <tr>
-                        <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           File Name
-                        </th>
+                        </TableHead>
                         <TableHead className="bg-muted/50">Metadata</TableHead>
-<TableHead className="bg-muted/50">Size</TableHead>
-
-                        <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
+                        <TableHead className="bg-muted/50">Size</TableHead>
+                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           Access Level
-                        </th>
-                      </tr>
-                    </thead>
-                    const [currentPage, setCurrentPage] = React.useState(1);
-const itemsPerPage = 10;
-const totalPages = Math.ceil(filteredDocuments.length / itemsPerPage);
-
-const paginatedDocuments = filteredDocuments.slice(
-  (currentPage - 1) * itemsPerPage,
-  currentPage * itemsPerPage
-);
-
-<TableBody>
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
   <AnimatePresence>
     {paginatedDocuments.map((doc: DocumentData) => {
       const colorScheme = getDocumentColorScheme(doc.metadata, doc.fileType);
@@ -1108,6 +1098,19 @@ const paginatedDocuments = filteredDocuments.slice(
               )}
             </div>
           </div>
+          {/* Add pagination state */}
+          {React.useState(() => {
+            const [currentPage, setCurrentPage] = React.useState(1);
+            const itemsPerPage = 10;
+            const totalPages = Math.ceil(filteredDocuments.length / itemsPerPage);
+            
+            const paginatedDocuments = filteredDocuments.slice(
+              (currentPage - 1) * itemsPerPage,
+              currentPage * itemsPerPage
+            );
+            
+            return { currentPage, setCurrentPage, totalPages, paginatedDocuments };
+          })}
         </div>
       </main>
 
