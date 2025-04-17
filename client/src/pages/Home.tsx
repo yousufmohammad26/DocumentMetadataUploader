@@ -277,6 +277,41 @@ export default function Home() {
             value: false,
             writable: true
           });
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div className="mt-4">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                />
+              </PaginationItem>
+              
+              {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    onClick={() => setCurrentPage(page)}
+                    isActive={currentPage === page}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      )}
+
         } catch (resetError) {
           console.error('Error during form reset:', resetError);
         }
@@ -920,23 +955,27 @@ export default function Home() {
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           File Name
                         </th>
-                        <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
-                          Metadata
-                        </th>
-                        <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
-                          Size
-                        </th>
+                        <TableHead className="bg-muted/50">Metadata</TableHead>
+<TableHead className="bg-muted/50">Size</TableHead>
 
                         <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-indigo-600 uppercase tracking-wider">
                           Access Level
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      <AnimatePresence>
-                        {filteredDocuments.map((doc: DocumentData) => {
-                          // Get color scheme based on document type and metadata
-                          const colorScheme = getDocumentColorScheme(doc.metadata, doc.fileType);
+                    const [currentPage, setCurrentPage] = React.useState(1);
+const itemsPerPage = 10;
+const totalPages = Math.ceil(filteredDocuments.length / itemsPerPage);
+
+const paginatedDocuments = filteredDocuments.slice(
+  (currentPage - 1) * itemsPerPage,
+  currentPage * itemsPerPage
+);
+
+<TableBody>
+  <AnimatePresence>
+    {paginatedDocuments.map((doc: DocumentData) => {
+      const colorScheme = getDocumentColorScheme(doc.metadata, doc.fileType);
 
                           return (
                             <motion.tr 
