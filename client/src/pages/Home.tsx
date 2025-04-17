@@ -278,39 +278,6 @@ export default function Home() {
             writable: true
           });
 
-      {/* Pagination Controls */}
-      {totalPages > 1 && (
-        <div className="mt-4">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious 
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                />
-              </PaginationItem>
-              
-              {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
-                <PaginationItem key={page}>
-                  <PaginationLink
-                    onClick={() => setCurrentPage(page)}
-                    isActive={currentPage === page}
-                  >
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      )}
 
         } catch (resetError) {
           console.error('Error during form reset:', resetError);
@@ -441,6 +408,15 @@ export default function Home() {
         )
       )
     : sortedDocuments;
+
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 10;
+  const totalPages = Math.ceil(filteredDocuments.length / itemsPerPage);
+
+  const paginatedDocuments = filteredDocuments.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -963,9 +939,9 @@ export default function Home() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-  <AnimatePresence>
-    {paginatedDocuments.map((doc: DocumentData) => {
-      const colorScheme = getDocumentColorScheme(doc.metadata, doc.fileType);
+                      <AnimatePresence>
+                        {paginatedDocuments.map((doc: DocumentData) => {
+                          const colorScheme = getDocumentColorScheme(doc.metadata, doc.fileType);
 
                           return (
                             <motion.tr 
@@ -1092,25 +1068,47 @@ export default function Home() {
                           );
                         })}
                       </AnimatePresence>
-                    </tbody>
+                    </TableBody>
                   </table>
                 </div>
               )}
             </div>
           </div>
           {/* Add pagination state */}
-          {React.useState(() => {
-            const [currentPage, setCurrentPage] = React.useState(1);
-            const itemsPerPage = 10;
-            const totalPages = Math.ceil(filteredDocuments.length / itemsPerPage);
-            
-            const paginatedDocuments = filteredDocuments.slice(
-              (currentPage - 1) * itemsPerPage,
-              currentPage * itemsPerPage
-            );
-            
-            return { currentPage, setCurrentPage, totalPages, paginatedDocuments };
-          })}
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="mt-4">
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious 
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                    />
+                  </PaginationItem>
+
+                  {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
+                    <PaginationItem key={page}>
+                      <PaginationLink
+                        onClick={() => setCurrentPage(page)}
+                        isActive={currentPage === page}
+                      >
+                        {page}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ))}
+
+                  <PaginationItem>
+                    <PaginationNext
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            </div>
+          )}
+
         </div>
       </main>
 
