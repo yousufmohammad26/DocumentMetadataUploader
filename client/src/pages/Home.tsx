@@ -1,4 +1,3 @@
-
 import { Table, TableHeader, TableBody, TableHead, TableRow } from "@/components/ui/table"
 import Profile from "../../public/Profile.jpg"
 import Architecture from "../../public/architecture_diagram.png"
@@ -186,6 +185,11 @@ export default function Home() {
   // View document in new tab (fallback option)
   const handleView = async (id: number) => {
     try {
+      const document = documents.find(doc => doc.id === id);
+      if (!document) {
+        throw new Error("Document not found");
+      }
+
       const response = await apiRequest("GET", `/api/documents/${id}/download`);
 
       if (!response.ok) {
@@ -198,10 +202,53 @@ export default function Home() {
         throw new Error("No presigned URL returned from server");
       }
 
-      // Open the URL in a new tab for viewing
-      window.open(data.presignedUrl, "_blank");
+      const isImage = document.fileType.startsWith('image/');
+      const isPDF = document.fileType === 'application/pdf';
+
+      if (isImage) {
+        // For images, open in a modal or new window with proper styling
+        const win = window.open("", "_blank");
+        if (win) {
+          win.document.write(`
+            <html>
+              <head>
+                <title>Image Viewer - ${document.fileName}</title>
+                <style>
+                  body { margin: 0; background: #1a1a1a; height: 100vh; display: flex; align-items: center; justify-content: center; }
+                  img { max-width: 95%; max-height: 95vh; object-fit: contain; }
+                </style>
+              </head>
+              <body>
+                <img src="${data.presignedUrl}" alt="${document.fileName}" />
+              </body>
+            </html>
+          `);
+        }
+      } else if (isPDF) {
+        // For PDFs, embed in a new window with full viewport
+        const win = window.open("", "_blank");
+        if (win) {
+          win.document.write(`
+            <html>
+              <head>
+                <title>PDF Viewer - ${document.fileName}</title>
+                <style>
+                  body { margin: 0; height: 100vh; }
+                  embed { width: 100%; height: 100%; }
+                </style>
+              </head>
+              <body>
+                <embed src="${data.presignedUrl}" type="application/pdf" />
+              </body>
+            </html>
+          `);
+        }
+      } else {
+        // For other files, use default browser behavior
+        window.open(data.presignedUrl, "_blank", "noopener,noreferrer");
+      }
     } catch (error) {
-      console.error("Error opening document in new tab:", error);
+      console.error("Error opening document in viewer:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to view document",
