@@ -1,4 +1,4 @@
-# Docway 360
+# DocumentIQ
 
 A lightweight document management platform designed for efficient file organization with AWS S3 integration and quick metadata tracking.
 

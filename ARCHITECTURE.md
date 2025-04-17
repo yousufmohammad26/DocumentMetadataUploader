@@ -1,4 +1,4 @@
-# Docway 360 - System Architecture
+# DocumentIQ
 
 ## Architecture Overview
 
