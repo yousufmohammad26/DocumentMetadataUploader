@@ -456,7 +456,7 @@ export default function Home() {
                 <DropdownMenuTrigger asChild>
                   <div className="cursor-pointer flex items-center bg-white p-1.5 rounded-full shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-200">
                     <Avatar className="h-8 w-8 border border-gray-100">
-                      <AvatarImage src="./attached_assets/Profile.jpg" alt="User Profile" />
+                      <AvatarImage src={Profile} alt="User Profile" />
                       <AvatarFallback>YM</AvatarFallback>
                     </Avatar>
                     <div className="ml-2 mr-2 text-sm hidden sm:block">
