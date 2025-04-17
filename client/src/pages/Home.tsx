@@ -1,7 +1,7 @@
 
 import { Table, TableHeader, TableBody, TableHead, TableRow } from "@/components/ui/table"
-import Profile from "/attached_assets/Profile.jpg"
-import Architecture from "/attached_assets/Architecture.png"
+import Profile from "../../public/Profile.jpg"
+import Architecture from "../../public/architecture_diagram.png"
 import { 
   Pagination,
   PaginationContent,
