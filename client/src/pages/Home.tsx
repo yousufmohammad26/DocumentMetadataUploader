@@ -841,7 +841,10 @@ export default function Home() {
                     type="text"
                     placeholder="Search documents..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setCurrentPage(1); // Reset to first page when searching
+                    }}
                     className="pr-10"
                   />
                   <motion.div 
