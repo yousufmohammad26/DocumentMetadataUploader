@@ -197,7 +197,7 @@ export function EditMetadataModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Edit Document Metadata</DialogTitle>
           <DialogDescription>
@@ -261,7 +261,7 @@ export function EditMetadataModal({
                 </Button>
               </div>
 
-              <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-2">
+              <div className="space-y-6 pr-2">
                 {/* Fields Section */}
                 <div className="space-y-3">
                   <h3 className="text-sm font-medium text-blue-700 flex items-center border-b pb-1 border-blue-100">
