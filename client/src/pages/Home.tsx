@@ -1,5 +1,13 @@
 
 import { Table, TableHeader, TableBody, TableHead, TableRow } from "@/components/ui/table"
+import { 
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 import React, { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
