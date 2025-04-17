@@ -17,7 +17,7 @@ function AuthModal({ isOpen, onAuthenticate }: { isOpen: boolean; onAuthenticate
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const expectedToken = process.env.VITE_AUTH_TOKEN;
+    const expectedToken = import.meta.env.VITE_AUTH_TOKEN;
     
     if (token === expectedToken) {
       onAuthenticate(true);
