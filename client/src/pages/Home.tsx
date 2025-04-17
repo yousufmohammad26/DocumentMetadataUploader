@@ -476,7 +476,7 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center justify-center px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-100 text-green-800 border border-green-200">
                 <Cloud className="h-3 w-3 mr-1 text-green-600" />
-                <span>Connected to AWS </span>
+                <span>Connected to AWS S3 Bucket: {process.env.AWS_S3_BUCKET_NAME || 'document-metadata-bucket'}</span>
               </div>
 
               {/* User Profile with Dropdown */}
