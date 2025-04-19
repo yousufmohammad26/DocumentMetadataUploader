@@ -22,10 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import {
-  DocumentMetadata,
-  documentMetadataSchema
-} from "@shared/schema";
+import { DocumentMetadata, documentMetadataSchema } from "@shared/schema";
 import { FileUpload } from "@/components/ui/file-upload";
 import {
   uploadFileToS3,
@@ -55,7 +52,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -73,9 +77,9 @@ import {
   ClipboardList,
   RefreshCw,
   RotateCw,
-  Eye
+  Eye,
 } from "lucide-react";
-import JsonView from '@uiw/react-json-view';
+import JsonView from "@uiw/react-json-view";
 
 export default function Home() {
   const { toast } = useToast();
@@ -416,11 +420,11 @@ export default function Home() {
   const [isQuerying, setIsQuerying] = useState(false);
 
   const handleQuery = async () => {
-    console.log("Running Athena query:", query)
+    console.log("Running Athena query:", query);
     setIsQuerying(true);
     try {
       const response = await apiRequest("POST", "/api/query-athena", {
-        query
+        query,
       });
       const data = await response.json();
       console.log("Athena query results:", data.results);
@@ -460,7 +464,10 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center justify-center px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-100 text-green-800 border border-green-200">
                 <Cloud className="h-3 w-3 mr-1 text-green-600" />
-                <span>Connected to AWS S3 Bucket: {process.env.AWS_S3_BUCKET_NAME || 'document-metadata-bucket'}</span>
+                <span>
+                  Connected to AWS S3 Bucket:{" "}
+                  {process.env.AWS_S3_BUCKET_NAME || "document-metadata-bucket"}
+                </span>
               </div>
 
               {/* User Profile with Dropdown */}
@@ -824,13 +831,13 @@ export default function Home() {
                   </div>
                   <div className="p-4">
                     <div className="space-y-4">
-                      <textarea 
+                      <textarea
                         className="w-full h-32 p-3 border rounded-md font-mono text-sm"
                         placeholder="Enter your Athena SQL query..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                       />
-                      <Button 
+                      <Button
                         onClick={handleQuery}
                         disabled={isQuerying}
                         className="w-full"
@@ -847,21 +854,7 @@ export default function Home() {
                           </>
                         )}
                       </Button>
-
-                      {queryResults && (
-                        <div className="mt-4">
-                          <h4 className="text-sm font-semibold mb-2">Query Results:</h4>
-                          <div className="max-h-96 overflow-auto">
-                            <JsonView 
-                              src={queryResults} 
-                              displayDataTypes={false}
-                              displayObjectSize={false}
-                              enableClipboard={true}
-                              quotesOnKeys={false}
-                            />
-                          </div>
-                        </div>
-                      )}
+                      
                     </div>
                   </div>
                 </div>
@@ -924,7 +917,7 @@ export default function Home() {
                               <br />
                               {doc.metadata &&
                                 Object.keys(doc.metadata).length > 0 && (
-                               <div className="mt-1">
+                                  <div className="mt-1">
                                     <span className="text-gray-700 font-medium">
                                       Metadata:
                                     </span>
