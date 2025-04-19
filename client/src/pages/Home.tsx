@@ -70,7 +70,8 @@ import {
   Tag,
   Cloud,
   Plus,
-  ClipboardList
+  ClipboardList,
+  RefreshCw
 } from "lucide-react";
 
 export default function Home() {
