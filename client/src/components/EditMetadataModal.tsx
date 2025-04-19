@@ -73,12 +73,17 @@ export function EditMetadataModal({
 
   // Update form values when props change
   useEffect(() => {
-    form.reset({
+    const defaultValues = {
       name: documentName,
       metadata: documentMetadata ? metadataToArray(documentMetadata) : [],
       accessLevel: (accessLevel === 'public' || accessLevel === 'private') 
         ? accessLevel as 'public' | 'private'
         : 'private',
+    };
+    
+    form.reset(defaultValues, {
+      keepDefaultValues: true,
+      keepIsSubmitted: false,
     });
   }, [documentName, documentMetadata, accessLevel, form]);
 
