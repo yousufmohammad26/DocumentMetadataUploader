@@ -1,3 +1,4 @@
+
 # DocumentIQ
 
 A lightweight document management platform designed for efficient file organization with AWS S3 integration and quick metadata tracking.
@@ -21,37 +22,26 @@ A lightweight document management platform designed for efficient file organizat
 
 ### Prerequisites
 
-- Node.js
-- npm
+- Replit account
 - AWS account with S3 bucket
 - AWS credentials
 
 ### Environment Variables
 
-The following environment variables are required:
+Set the following environment variables in Replit's Secrets tab:
 
 - `AWS_ACCESS_KEY_ID`: Your AWS access key
 - `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
 - `AWS_REGION`: The AWS region (e.g., us-east-1)
 - `AWS_S3_BUCKET_NAME`: Your S3 bucket name
 
-### Installation
+### Development
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yousufmohammad26/DocumentMetadataUploader.git
-   cd DocumentMetadataUploader
-   ```
+1. Fork this repl
+2. Add your AWS credentials in the Secrets tab
+3. Click the Run button to start the development server
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+The server will run on port 5000 and the client will be available on port 3000.
 
 ## Architecture
 

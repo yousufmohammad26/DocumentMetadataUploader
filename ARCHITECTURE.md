@@ -1,3 +1,4 @@
+
 # DocumentIQ
 
 ## Architecture Overview
@@ -19,7 +20,7 @@ The architecture follows a simple flow:
 - **API Communication**: Uses fetch API wrapped in custom React Query hooks
 
 ### Backend Architecture (Express)
-- **API Server**: Express.js REST API endpoints
+- **API Server**: Express.js REST API endpoints running on port 5000
 - **Storage**: In-memory storage for document metadata
 - **Validation**: Zod schema validation for request/response data
 - **Authentication**: Basic authentication for AWS S3 operations
@@ -47,6 +48,13 @@ The architecture follows a simple flow:
 3. **Search and Filter**:
    - Client-side filtering of documents based on metadata
    - Real-time animated updates of the document list
+
+## Deployment
+
+The application is deployed on Replit with the following configuration:
+- Development server runs on port 5000
+- Production deployment automatically handles HTTPS and domain routing
+- Environment variables are managed through Replit Secrets
 
 ## Technology Stack
 
