@@ -1,17 +1,4 @@
-
 import { executeAthenaQuery } from './athena';
-
-// Add this route handler where appropriate
-app.post('/api/query-athena', async (req, res) => {
-  try {
-    const { query, database } = req.body;
-    const results = await executeAthenaQuery(query, database);
-    res.json({ results });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to execute Athena query' });
-  }
-});
-
 import type { Express, Request, Response, NextFunction } from "express";
 import type { FileRequest } from "multer";
 import { v4 as uuidv4 } from 'uuid';
@@ -25,6 +12,17 @@ import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Add Athena query endpoint
+  app.post('/api/query-athena', async (req, res) => {
+    try {
+      const { query, database } = req.body;
+      const results = await executeAthenaQuery(query, database);
+      res.json({ results });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to execute Athena query' });
+    }
+  });
+
   // Configure AWS S3
   const s3 = new S3Client({
     region: process.env.AWS_REGION || "us-east-1",
@@ -535,8 +533,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         });
       }
-      
-
       
       // Store document metadata in storage
       console.log('Creating document in storage with data:', JSON.stringify({
