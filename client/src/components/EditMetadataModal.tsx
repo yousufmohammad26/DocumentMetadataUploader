@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { documentMetadataSchema, DocumentMetadata } from '@shared/schema';
-import { apiRequest } from '@/lib/queryClient';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { X, Plus, Tag, Lock, FileText, FolderTree, Calendar, CalendarDays, RotateCw, Check, Eye } from 'lucide-react';
 
@@ -188,12 +188,10 @@ export function EditMetadataModal({
       });
 
       // Close the modal and trigger refresh
+      await queryClient.invalidateQueries(['documents']);
       onUpdate();
-      form.reset(undefined, {
-        keepValues: false,
-        keepDirtyValues: false,
-      });
       onClose();
+      form.reset();
     } catch (error) {
       console.error('Error updating metadata:', error);
       toast({
