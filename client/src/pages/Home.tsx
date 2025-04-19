@@ -73,7 +73,8 @@ import {
   Plus,
   ClipboardList,
   RefreshCw,
-  RotateCw
+  RotateCw,
+  Eye
 } from "lucide-react";
 
 export default function Home() {
