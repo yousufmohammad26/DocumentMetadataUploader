@@ -176,9 +176,10 @@ export function EditMetadataModal({
       }
 
       toast({
-        title: 'Success',
-        description: 'Document metadata updated successfully',
+        title: 'Changes Saved',
+        description: 'Document metadata has been successfully updated',
         variant: 'default',
+        duration: 3000,
       });
 
       // Close the modal and trigger refresh
@@ -187,9 +188,12 @@ export function EditMetadataModal({
     } catch (error) {
       console.error('Error updating metadata:', error);
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to update metadata',
+        title: 'Update Failed',
+        description: error instanceof Error 
+          ? `Failed to save changes: ${error.message}`
+          : 'Failed to update document metadata. Please try again.',
         variant: 'destructive',
+        duration: 5000,
       });
     } finally {
       setIsSubmitting(false);
