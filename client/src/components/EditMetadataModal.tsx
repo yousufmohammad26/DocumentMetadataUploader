@@ -164,16 +164,15 @@ export function EditMetadataModal({
         );
       });
 
-      // Prepare update payload - keep metadata as array for server
-      // Since we removed the topology field from the UI, we'll use the existing document name
+      // Prepare update payload
       const updatePayload = {
-        name: data.name, //Use the updated name from the form
+        name: data.name,
         metadata: filteredMetadata,
         accessLevel: data.accessLevel
       };
 
       // Call API to update document metadata
-      const response = await apiRequest('PUT', `/api/documents/${documentId}/metadata`, updatePayload);
+      const response = await apiRequest('PATCH', `/api/documents/${documentId}`, updatePayload);
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
