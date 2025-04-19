@@ -72,7 +72,10 @@ import {
   Cloud,
   Plus,
   ClipboardList,
-  RefreshCw
+  RefreshCw,
+  X,
+  Eye,
+  RotateCw,
 } from "lucide-react";
 
 export default function Home() {
@@ -259,12 +262,27 @@ export default function Home() {
     setUploadProgress({ percentage: 0, status: "Starting upload..." });
 
     try {
-      // Start the upload to S3
-      const result = await uploadFileToS3(
-        selectedFile,
-        data,
-        setUploadProgress,
-      );
+      if (!selectedFile) {
+        throw new Error('No file selected');
+      }
+
+      // Upload file to S3
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+      formData.append('accessLevel', data.accessLevel);
+      formData.append('name', data.name); // Added name field to FormData
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to upload file' }));
+        throw new Error(errorData.message || 'Failed to upload file');
+      }
+
+      const result = await response.json();
 
       if (result.success) {
         // Show success toast BEFORE any form reset operations
@@ -310,11 +328,8 @@ export default function Home() {
     } catch (error) {
       console.error("Error in handleUpload function:", error);
       toast({
-        title: "Error",
-        description:
-          error instanceof Error
-            ? error.message
-            : "An error occurred during upload",
+        title: "Upload Failed",
+        description: error instanceof Error ? error.message : "Failed to upload file",
         variant: "destructive",
       });
     } finally {
