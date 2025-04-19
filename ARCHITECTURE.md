@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 
-![Architecture Diagram](/attached_assets/Architecture.png)
+![Architecture Diagram](/client/public/assets/Architecture.png)
 
 The architecture follows a simple flow:
 1. Browser sends requests to S3
