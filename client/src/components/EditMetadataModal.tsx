@@ -415,9 +415,10 @@ export function EditMetadataModal({
                 type="submit" 
                 disabled={isSubmitting}
                 className={`${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                onClick={() => {
-                  console.log('Form state:', form.getValues());
-                  console.log('Form errors:', form.formState.errors);
+                onClick={(e) => {
+                  e.preventDefault();
+                  const data = form.getValues();
+                  handleSubmit(data);
                 }}
               >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
