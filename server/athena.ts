@@ -44,7 +44,6 @@ export async function executeAthenaQuery(query: string) {
     const results = await athenaClient.send(new GetQueryResultsCommand({
       QueryExecutionId: queryExecutionId
     }));
-
     return results.ResultSet?.Rows;
   } catch (error) {
     console.error('Error executing Athena query:', error);

@@ -857,15 +857,6 @@ export default function Home() {
                                   <TableHead key={i}>{col.VarCharValue}</TableHead>
                                 ))}
                               </TableHeader>
-                              <TableBody>
-                                {queryResults.slice(1).map((row: any, i: number) => (
-                                  <TableRow key={i}>
-                                    {row.Data?.map((col: any, j: number) => (
-                                      <td key={j} className="p-2 border-t">{col.VarCharValue}</td>
-                                    ))}
-                                  </TableRow>
-                                ))}
-                              </TableBody>
                             </Table>
                           </div>
                         </div>
