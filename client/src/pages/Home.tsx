@@ -412,7 +412,6 @@ export default function Home() {
   );
 
   const [query, setQuery] = useState("");
-  const [database, setDatabase] = useState("");
   const [queryResults, setQueryResults] = useState<any[]>(null);
   const [isQuerying, setIsQuerying] = useState(false);
 
@@ -420,8 +419,7 @@ export default function Home() {
     setIsQuerying(true);
     try {
       const response = await apiRequest("POST", "/api/athena/query", {
-        query,
-        database,
+        query
       });
       const data = await response.json();
       setQueryResults(data);
@@ -829,13 +827,6 @@ export default function Home() {
                         placeholder="Enter your Athena SQL query..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                      />
-                      <Input
-                        type="text"
-                        placeholder="Database name (e.g. default)"
-                        value={database}
-                        onChange={(e) => setDatabase(e.target.value)}
-                        className="mb-4"
                       />
                       <Button 
                         onClick={handleQuery}
