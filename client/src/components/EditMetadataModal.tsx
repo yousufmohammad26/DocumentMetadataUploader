@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { documentMetadataSchema, DocumentMetadata } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { X, Plus, Tag, Lock, FileText, FolderTree, Calendar, CalendarDays } from 'lucide-react';
+import { X, Plus, Tag, Lock, FileText, FolderTree, Calendar, CalendarDays, RotateCw, Check } from 'lucide-react';
 
 import {
   Dialog,
@@ -80,7 +80,7 @@ export function EditMetadataModal({
         ? accessLevel as 'public' | 'private'
         : 'private',
     };
-    
+
     form.reset(defaultValues, {
       keepDefaultValues: true,
       keepIsSubmitted: false,
@@ -97,12 +97,12 @@ export function EditMetadataModal({
   const addMetadataField = () => {
     append({ key: "", value: "" });
   };
-  
+
   // Validate that metadata keys don't use reserved names
   const validateMetadataKey = (key: string, index: number) => {
     const reservedKeys = ['original-filename', 'topology', 'year', 'month'];
     const lowercaseKey = key.toLowerCase().trim();
-    
+
     if (reservedKeys.includes(lowercaseKey)) {
       form.setError(`metadata.${index}.key`, { 
         type: 'manual', 
@@ -115,21 +115,21 @@ export function EditMetadataModal({
 
   // Handle form submission
   const handleSubmit = async (data: DocumentMetadata) => {
-    if (isSubmitting) return; // Prevent double submission
+    if (isSubmitting || !documentId) return; // Prevent double submission and handle missing documentId
     setIsSubmitting(true);
-    
+
     try {
       // Check if any metadata keys use reserved names
       const reservedKeys = ['original-filename', 'topology', 'year', 'month'];
       let hasReservedKeys = false;
-      
+
       // Validate each non-system metadata field
       data.metadata.forEach((item, index) => {
         // Skip validation for existing system fields
         if (item.key === 'original-filename' || item.key === 'topology' || item.key === 'year' || item.key === 'month') {
           return;
         }
-        
+
         // Check if user is trying to add a reserved key
         const lowercaseKey = item.key.toLowerCase().trim();
         if (reservedKeys.includes(lowercaseKey)) {
@@ -140,7 +140,7 @@ export function EditMetadataModal({
           hasReservedKeys = true;
         }
       });
-      
+
       // If reserved keys were found, stop the submission
       if (hasReservedKeys) {
         toast({
@@ -151,7 +151,7 @@ export function EditMetadataModal({
         setIsSubmitting(false);
         return;
       }
-      
+
       // Get and identify all fields including system fields
       const filteredMetadata = data.metadata.filter(item => {
         // Keep all system fields and valid user fields (those with non-empty keys)
@@ -163,20 +163,20 @@ export function EditMetadataModal({
           (item.key.trim() !== "")
         );
       });
-      
+
       // Prepare update payload - keep metadata as array for server
       // Since we removed the topology field from the UI, we'll use the existing document name
       const updatePayload = {
-        name: documentName, // Keep original topology/name value
+        name: data.name, //Use the updated name from the form
         metadata: filteredMetadata,
         accessLevel: data.accessLevel
       };
 
       // Call API to update document metadata
-      const response = await apiRequest('PATCH', `/api/documents/${documentId}`, updatePayload);
-      
+      const response = await apiRequest('PUT', `/api/documents/${documentId}/metadata`, updatePayload);
+
       if (!response.ok) {
-        const error = await response.json();
+        const error = await response.json().catch(() => ({}));
         throw new Error(error.message || 'Failed to update metadata');
       }
 
@@ -189,6 +189,7 @@ export function EditMetadataModal({
 
       // Close the modal and trigger refresh
       onUpdate();
+      form.reset(); //Added form reset
       onClose();
     } catch (error) {
       console.error('Error updating metadata:', error);
@@ -278,7 +279,7 @@ export function EditMetadataModal({
                     <Lock className="h-3.5 w-3.5 mr-1.5" />
                     Fields
                   </h3>
-                  
+
                   <div className="grid grid-cols-2 gap-4 mt-3">
                     {fields.filter(field => 
                       field.key === 'original-filename' || 
@@ -290,7 +291,7 @@ export function EditMetadataModal({
                       let bgColor;
                       let textColor;
                       let Icon;
-                      
+
                       switch(field.key) {
                         case 'original-filename':
                           bgColor = 'bg-blue-100';
@@ -317,7 +318,7 @@ export function EditMetadataModal({
                           textColor = 'text-gray-800';
                           Icon = Tag;
                       }
-                      
+
                       return (
                         <div key={field.id} className="flex flex-col p-2 rounded-md border border-blue-50">
                           <div className={`px-2.5 py-1 rounded-md font-medium text-xs ${bgColor} ${textColor} mb-1.5 inline-flex items-center self-start`}>
@@ -330,7 +331,7 @@ export function EditMetadataModal({
                     })}
                   </div>
                 </div>
-                
+
                 {/* User Defined Section */}
                 <div className="space-y-3">
                   <div className="flex justify-between items-center border-b pb-1 border-gray-200">
@@ -339,7 +340,7 @@ export function EditMetadataModal({
                       User Defined
                     </h3>
                   </div>
-                  
+
                   {fields.filter(field => 
                     field.key !== 'original-filename' && 
                     field.key !== 'topology' && 
@@ -358,7 +359,7 @@ export function EditMetadataModal({
                     ).map((field) => {
                       // Find the actual index in the fields array
                       const index = fields.findIndex(f => f.id === field.id);
-                      
+
                       return (
                         <div key={field.id} className="flex gap-3 items-start border border-gray-100 p-2 rounded-md hover:bg-gray-50 transition-colors">
                           <div className="grid grid-cols-2 gap-3 flex-grow">
@@ -423,9 +424,19 @@ export function EditMetadataModal({
               <Button 
                 type="submit" 
                 disabled={isSubmitting}
-                className={`${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`bg-primary hover:bg-primary/90 text-white ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                {isSubmitting ? 'Saving...' : 'Save Changes'}
+                {isSubmitting ? (
+                  <>
+                    <RotateCw className="h-4 w-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Check className="h-4 w-4 mr-2" />
+                    Save Changes
+                  </>
+                )}
               </Button>
             </DialogFooter>
           </form>
