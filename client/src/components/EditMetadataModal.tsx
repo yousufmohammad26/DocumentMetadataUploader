@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { documentMetadataSchema, DocumentMetadata } from '@shared/schema';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
-import { X, Plus, Tag, Lock, FileText, FolderTree, Calendar, CalendarDays, RotateCw, Check } from 'lucide-react';
+import { X, Plus, Tag, Lock, FileText, FolderTree, Calendar, CalendarDays, RotateCw, Check, Eye } from 'lucide-react';
 
 import {
   Dialog,
