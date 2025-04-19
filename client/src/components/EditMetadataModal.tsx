@@ -51,10 +51,11 @@ export function EditMetadataModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Convert record to array of key-value pairs
-  const metadataToArray = (metadata: Record<string, string>) => {
-    return Object.entries(metadata).map(([key, value]) => ({
+  const metadataToArray = (metadata: Record<string, string> | null | undefined) => {
+    if (!metadata) return [];
+    return Object.entries(metadata || {}).map(([key, value]) => ({
       key,
-      value: String(value),
+      value: String(value || ''),
       isSystemField: key === 'original-filename' || key === 'topology'
     }));
   };
