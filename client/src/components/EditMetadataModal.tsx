@@ -208,17 +208,11 @@ export function EditMetadataModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      <DialogContent aria-describedby="edit-metadata-description" aria-labelledby="edit-metadata-title" className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Edit Document Metadata</DialogTitle>
-          <DialogDescription>
-            {documentMetadata && documentMetadata['original-filename'] ? (
-              <span>
-                Update the metadata for <span className="font-bold bg-yellow-100 px-1 rounded">{documentMetadata['original-filename']}</span>. Changes will be saved to the document properties.
-              </span>
-            ) : (
-              <span>Update document metadata. Changes will be saved to the document properties.</span>
-            )}
+          <DialogTitle id="edit-metadata-title">Edit Document Metadata</DialogTitle>
+          <DialogDescription id="edit-metadata-description">
+            Make changes to document metadata and access level.
           </DialogDescription>
         </DialogHeader>
 
