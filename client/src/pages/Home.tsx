@@ -67,7 +67,8 @@ import {
   Edit,
   Upload,
   FileCode,
-  Tag
+  Tag,
+  Cloud
 } from "lucide-react";
 
 export default function Home() {
