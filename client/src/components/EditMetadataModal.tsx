@@ -110,6 +110,7 @@ export function EditMetadataModal({
 
   // Handle form submission
   const handleSubmit = async (data: DocumentMetadata) => {
+    if (isSubmitting) return; // Prevent double submission
     setIsSubmitting(true);
     
     try {
