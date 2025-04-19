@@ -856,15 +856,15 @@ export default function Home() {
                         )}
                       </Button>
 
-                      {queryResults && (
+                      {queryResults && queryResults[1] && queryResults[1]["Data"] && (
                         <div className="mt-4">
                           <h4 className="text-sm font-semibold mb-2">Query Results:</h4>
                           <div className="border rounded-md p-4 bg-gray-50 max-h-[500px] overflow-auto">
                             <JsonView 
-                              value={queryResults}
+                              value={queryResults[1]["Data"]}
                               displayDataTypes={false}
                               displayObjectSize={false}
-                              enableClipboard={true}
+                              enableClipboard={false}
                               style={{
                                 background: 'transparent',
                                 padding: '0.5rem'
