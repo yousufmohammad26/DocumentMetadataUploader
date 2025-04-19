@@ -189,7 +189,10 @@ export function EditMetadataModal({
 
       // Close the modal and trigger refresh
       onUpdate();
-      form.reset(); //Added form reset
+      form.reset(undefined, {
+        keepValues: false,
+        keepDirtyValues: false,
+      });
       onClose();
     } catch (error) {
       console.error('Error updating metadata:', error);
