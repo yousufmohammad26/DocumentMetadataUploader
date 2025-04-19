@@ -29,6 +29,10 @@ The architecture follows a simple flow:
 ### AWS Integration
 - **S3 Storage**: Document files stored in AWS S3 buckets
 - **Metadata Management**: Document metadata stored as object metadata in S3
+- **Athena Integration**: SQL querying capabilities for metadata tables using AWS Athena
+  - Custom catalog for S3 table metadata
+  - Query execution with result management
+  - Async query processing with status tracking
 - **Presigned URLs**: Generated for secure downloads and uploads
 - **AWS SDK**: Using AWS SDK v3 for Node.js
 
@@ -48,6 +52,8 @@ The architecture follows a simple flow:
 3. **Search and Filter**:
    - Client-side filtering of documents based on metadata
    - Real-time animated updates of the document list
+   - Advanced SQL querying through AWS Athena for complex metadata analysis
+   - Asynchronous query execution with progress tracking
 
 ## Deployment
 
