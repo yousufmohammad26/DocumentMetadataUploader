@@ -56,60 +56,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
-import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import {
-  AlertCircle,
   FileText,
   Search,
   Download,
   Edit,
-  Plus,
-  X,
-  Eye,
-  RefreshCw,
-  RotateCw,
-  Image as ImageIcon,
-  Archive,
-  Table,
-  Calendar,
-  FileCode,
-  Info,
-  ClipboardList,
-  Presentation,
-  FileQuestion,
-  Music,
-  Video,
-  Code,
-  Filter,
-  Check,
-  ChevronDown,
-  LogOut,
-  Settings,
-  User,
   Upload,
-  PieChart,
-  Tag,
-  Cloud,
-  Bell,
+  FileCode,
+  Tag
 } from "lucide-react";
 
 export default function Home() {
