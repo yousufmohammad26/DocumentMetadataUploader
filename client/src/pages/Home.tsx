@@ -69,7 +69,8 @@ import {
   FileCode,
   Tag,
   Cloud,
-  Plus
+  Plus,
+  ClipboardList
 } from "lucide-react";
 
 export default function Home() {
