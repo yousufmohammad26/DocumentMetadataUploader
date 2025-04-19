@@ -78,6 +78,7 @@ import {
   RefreshCw,
   RotateCw,
   Eye,
+  X,
 } from "lucide-react";
 import JsonView from "@uiw/react-json-view";
 
@@ -854,7 +855,24 @@ export default function Home() {
                           </>
                         )}
                       </Button>
-                      
+
+                      {queryResults && (
+                        <div className="mt-4">
+                          <h4 className="text-sm font-semibold mb-2">Query Results:</h4>
+                          <div className="border rounded-md p-4 bg-gray-50 max-h-[500px] overflow-auto">
+                            <JsonView 
+                              value={queryResults}
+                              displayDataTypes={false}
+                              displayObjectSize={false}
+                              enableClipboard={true}
+                              style={{
+                                background: 'transparent',
+                                padding: '0.5rem'
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
