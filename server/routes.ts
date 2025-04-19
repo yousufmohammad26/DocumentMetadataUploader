@@ -1,3 +1,17 @@
+
+import { executeAthenaQuery } from './athena';
+
+// Add this route handler where appropriate
+app.post('/api/query-athena', async (req, res) => {
+  try {
+    const { query, database } = req.body;
+    const results = await executeAthenaQuery(query, database);
+    res.json({ results });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to execute Athena query' });
+  }
+});
+
 import type { Express, Request, Response, NextFunction } from "express";
 import type { FileRequest } from "multer";
 import { v4 as uuidv4 } from 'uuid';
