@@ -75,6 +75,7 @@ import {
   RotateCw,
   Eye
 } from "lucide-react";
+import JsonView from '@uiw/react-json-view';
 
 export default function Home() {
   const { toast } = useToast();
@@ -850,15 +851,7 @@ export default function Home() {
                       {queryResults && (
                         <div className="mt-4">
                           <h4 className="text-sm font-semibold mb-2">Query Results:</h4>
-                          <div className="max-h-60 overflow-auto">
-                            <Table>
-                              <TableHeader>
-                                {queryResults[0]?.Data?.map((col: any, i: number) => (
-                                  <TableHead key={i}>{col.VarCharValue}</TableHead>
-                                ))}
-                              </TableHeader>
-                            </Table>
-                          </div>
+                          <JsonView src={queryResults} />
                         </div>
                       )}
                     </div>
@@ -923,7 +916,7 @@ export default function Home() {
                               <br />
                               {doc.metadata &&
                                 Object.keys(doc.metadata).length > 0 && (
-                                  <div className="mt-1">
+                               <div className="mt-1">
                                     <span className="text-gray-700 font-medium">
                                       Metadata:
                                     </span>
