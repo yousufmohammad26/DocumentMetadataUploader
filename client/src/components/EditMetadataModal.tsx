@@ -411,7 +411,15 @@ export function EditMetadataModal({
               <Button type="button" variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={`${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={() => {
+                  console.log('Form state:', form.getValues());
+                  console.log('Form errors:', form.formState.errors);
+                }}
+              >
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
               </Button>
             </DialogFooter>
