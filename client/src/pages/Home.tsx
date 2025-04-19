@@ -277,7 +277,7 @@ export default function Home() {
 
         // Reset form state after toast is displayed
         try {
-          // Reset form state completely, including isSubmitted flag
+          // Reset form state completely
           form.reset();
           form.clearErrors();
           setSelectedFile(null);
@@ -287,13 +287,6 @@ export default function Home() {
           if (fileUploadRef.current && fileUploadRef.current.clearFile) {
             fileUploadRef.current.clearFile();
           }
-
-          // Reset form submission state by creating a new instance
-          const formState = form.formState;
-          Object.defineProperty(formState, "isSubmitted", {
-            value: false,
-            writable: true,
-          });
         } catch (resetError) {
           console.error("Error during form reset:", resetError);
         }
