@@ -416,7 +416,7 @@ export default function Home() {
     currentPage * itemsPerPage,
   );
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("SELECT user_metadata FROM yousuf_demo_s3table_metadata");
   const [queryResults, setQueryResults] = useState<any[]>(null);
   const [isQuerying, setIsQuerying] = useState(false);
 
