@@ -411,6 +411,32 @@ export default function Home() {
     currentPage * itemsPerPage,
   );
 
+  const [query, setQuery] = useState("");
+  const [database, setDatabase] = useState("");
+  const [queryResults, setQueryResults] = useState<any[]>(null);
+  const [isQuerying, setIsQuerying] = useState(false);
+
+  const handleQuery = async () => {
+    setIsQuerying(true);
+    try {
+      const response = await apiRequest("POST", "/api/athena/query", {
+        query,
+        database,
+      });
+      const data = await response.json();
+      setQueryResults(data);
+    } catch (error) {
+      console.error("Error running Athena query:", error);
+      toast({
+        title: "Error",
+        description: "Failed to run Athena query",
+        variant: "destructive",
+      });
+    } finally {
+      setIsQuerying(false);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
@@ -781,6 +807,78 @@ export default function Home() {
                       alt="Architecture Diagram"
                       className="w-full rounded-md border border-gray-200"
                     />
+                  </div>
+                </div>
+
+                {/* Athena Query */}
+                <div className="bg-white shadow-md rounded-lg overflow-hidden border border-blue-100 hover:shadow-lg transition-shadow duration-300 mb-6">
+                  <div className="px-5 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+                    <div className="flex items-center">
+                      <div className="bg-blue-500 rounded-full p-1 mr-2">
+                        <Search className="h-3.5 w-3.5 text-white" />
+                      </div>
+                      <h3 className="text-sm font-semibold text-gray-900">
+                        Athena Query
+                      </h3>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <div className="space-y-4">
+                      <textarea 
+                        className="w-full h-32 p-3 border rounded-md font-mono text-sm"
+                        placeholder="Enter your Athena SQL query..."
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                      />
+                      <Input
+                        type="text"
+                        placeholder="Database name (e.g. default)"
+                        value={database}
+                        onChange={(e) => setDatabase(e.target.value)}
+                        className="mb-4"
+                      />
+                      <Button 
+                        onClick={handleQuery}
+                        disabled={isQuerying}
+                        className="w-full"
+                      >
+                        {isQuerying ? (
+                          <>
+                            <RotateCw className="h-4 w-4 mr-2 animate-spin" />
+                            Running Query...
+                          </>
+                        ) : (
+                          <>
+                            <Search className="h-4 w-4 mr-2" />
+                            Run Query
+                          </>
+                        )}
+                      </Button>
+
+                      {queryResults && (
+                        <div className="mt-4">
+                          <h4 className="text-sm font-semibold mb-2">Query Results:</h4>
+                          <div className="max-h-60 overflow-auto">
+                            <Table>
+                              <TableHeader>
+                                {queryResults[0]?.Data?.map((col: any, i: number) => (
+                                  <TableHead key={i}>{col.VarCharValue}</TableHead>
+                                ))}
+                              </TableHeader>
+                              <TableBody>
+                                {queryResults.slice(1).map((row: any, i: number) => (
+                                  <TableRow key={i}>
+                                    {row.Data?.map((col: any, j: number) => (
+                                      <td key={j} className="p-2 border-t">{col.VarCharValue}</td>
+                                    ))}
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
