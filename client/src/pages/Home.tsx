@@ -423,8 +423,8 @@ export default function Home() {
         query
       });
       const data = await response.json();
-      console.log("Athena query results:", data);
-      setQueryResults(data);
+      console.log("Athena query results:", data.results);
+      setQueryResults(data.results);
     } catch (error) {
       console.error("Error running Athena query:", error);
       toast({
