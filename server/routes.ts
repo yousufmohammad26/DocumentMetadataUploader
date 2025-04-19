@@ -1,6 +1,5 @@
 import { executeAthenaQuery } from './athena';
-import type { Express, Request, Response, NextFunction } from "express";
-import type { FileRequest } from "multer";
+import type { Express, Request, Response } from "express";
 import { v4 as uuidv4 } from 'uuid';
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -15,8 +14,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Add Athena query endpoint
   app.post('/api/query-athena', async (req, res) => {
     try {
-      const { query, database } = req.body;
-      const results = await executeAthenaQuery(query, database);
+      const { query } = req.body;
+      const results = await executeAthenaQuery(query);
       res.json({ results });
     } catch (error) {
       res.status(500).json({ error: 'Failed to execute Athena query' });

@@ -1,5 +1,5 @@
 
-import { AthenaClient, StartQueryExecutionCommand, GetQueryExecutionCommand, GetQueryResultsCommand } from "@aws-sdk/client-athena";
+import { AthenaClient, StartQueryExecutionCommand, GetQueryExecutionCommand, GetQueryResultsCommand, ListDataCatalogsCommand, ListDatabasesCommand } from "@aws-sdk/client-athena";
 
 const athenaClient = new AthenaClient({
   region: process.env.AWS_REGION,
@@ -9,14 +9,26 @@ const athenaClient = new AthenaClient({
   }
 });
 
-export async function executeAthenaQuery(query: string, database: string) {
+export async function executeAthenaQuery(query: string) {
   try {
+
+    const catalogs = await athenaClient.send(new ListDataCatalogsCommand({}));
+    console.log("Catalogs:", catalogs);
+
+    const tables = await athenaClient.send(new ListDatabasesCommand({
+      CatalogName: `yousuf_demo_s3table_catalog`
+    }));
+    console.log("Tables:", tables);
+    
     // Start query execution
     const startQueryResponse = await athenaClient.send(new StartQueryExecutionCommand({
       QueryString: query,
-      QueryExecutionContext: { Database: database },
+      QueryExecutionContext: { 
+        Database: 'aws_s3_metadata', 
+        Catalog: `yousuf_demo_s3table_catalog`
+      },
       ResultConfiguration: {
-        OutputLocation: `s3://${process.env.AWS_S3_BUCKET_NAME}/athena-results/`
+        OutputLocation: `s3://yousufgenerals3bucket/results/`
       }
     }));
 

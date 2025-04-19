@@ -24,8 +24,7 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import {
   DocumentMetadata,
-  documentMetadataSchema,
-  MetadataKeyValue,
+  documentMetadataSchema
 } from "@shared/schema";
 import { FileUpload } from "@/components/ui/file-upload";
 import {
@@ -416,12 +415,14 @@ export default function Home() {
   const [isQuerying, setIsQuerying] = useState(false);
 
   const handleQuery = async () => {
+    console.log("Running Athena query:", query)
     setIsQuerying(true);
     try {
-      const response = await apiRequest("POST", "/api/athena/query", {
+      const response = await apiRequest("POST", "/api/query-athena", {
         query
       });
       const data = await response.json();
+      console.log("Athena query results:", data);
       setQueryResults(data);
     } catch (error) {
       console.error("Error running Athena query:", error);
