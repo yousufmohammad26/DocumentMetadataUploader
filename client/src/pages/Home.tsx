@@ -851,7 +851,15 @@ export default function Home() {
                       {queryResults && (
                         <div className="mt-4">
                           <h4 className="text-sm font-semibold mb-2">Query Results:</h4>
-                          <JsonView src={queryResults} />
+                          <div className="max-h-96 overflow-auto">
+                            <JsonView 
+                              src={queryResults} 
+                              displayDataTypes={false}
+                              displayObjectSize={false}
+                              enableClipboard={true}
+                              quotesOnKeys={false}
+                            />
+                          </div>
                         </div>
                       )}
                     </div>
